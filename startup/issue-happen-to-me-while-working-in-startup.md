@@ -7,7 +7,7 @@
 - I only focused on Education, I Graduated Electronic and Communication Engineering from [2012 to 2016], in Anna University Affiliated Collge (T.J.S Engineering College) those are my college days, 
 - i got arrears in Wireless communication, Computer architecture, Measurement and Instrument paper. I clear that in [2017] during 2015-2017 are my more confusing year. 
 
-- Not taught on paper published work to real world application [Youtube Line](https://www.youtube.com/watch?v=gF9EwcG0dfg&list=PLkvtzcMGVO8-uoXirLVzPaPS23nr8TS1F) , **during college not even know the proper difference between 'Scientist vs Engineer vs Tech'. I think engineer are scientist.**
+- Not taught on paper published work to real world application [Youtube Line](https://www.youtube.com/watch?v=gF9EwcG0dfg&list=PLkvtzcMGVO8-uoXirLVzPaPS23nr8TS1F) , **during college not even know the proper difference between 'Scientist vs Engineer vs Tech'. I think engineer are scientist.** $\rightarrow$ *After, ChatGPT, Google Gemini, Copilot* only know they cheating.
   
 - College Maintaining Members & Staff, even people come from ISRO, BSNL Industrial Visit,Some company Campus Interview all are cheated. 
 
