@@ -7,7 +7,15 @@
 - I only focused on Education, I Graduated Electronic and Communication Engineering from [2012 to 2016], in Anna University Affiliated Collge (T.J.S Engineering College) those are my college days, 
 - i got arrears in Wireless communication, Computer architecture, Measurement and Instrument paper. I clear that in [2017] during 2015-2017 are my more confusing year. 
 
-- Not taught on paper published work to real world application [Youtube Line](https://www.youtube.com/watch?v=gF9EwcG0dfg&list=PLkvtzcMGVO8-uoXirLVzPaPS23nr8TS1F)
+- Not taught on paper published work to real world application [Youtube Line](https://www.youtube.com/watch?v=gF9EwcG0dfg&list=PLkvtzcMGVO8-uoXirLVzPaPS23nr8TS1F) , during college not even know the proper difference between 'Scientist vs Engineer vs Tech'. I think engineer are scientist.
+  
+- College Maintaining Members & Staff, even people come from ISRO, BSNL ,TCS Campus Interview all are cheated. 
+
+[![Watch the video](https://img.youtube.com/vi/5w7XyiTnGpk/maxresdefault.jpg)](https://youtu.be/5w7XyiTnGpk)
+
+### [Watch this video on YouTube](https://youtu.be/5w7XyiTnGpk)
+
+
 
 - since, I done well in 'Single and System' during college  test, I get 80% , i get only E grade , I don't know why ?
 - I do Engineering Graphic good, during college test, I get 95%, I think I get S grade, But I only get A grade ? this happen in 1st semeseter (some wrong happens in exam).
