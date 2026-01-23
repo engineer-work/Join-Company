@@ -1,5 +1,7 @@
 # This Happen to me, After College. 
 
+#### I used ChatGPT AI, Gemini AI to find the Truth - They cheated me or not.
+
 I only focused on Education, I Graduated Electronic and Communication Engineering from [2012 to 2016], those are my college days, 
 i got arrears in Wireless communication, Computer architecture, Measurement and Instrument paper. I clear that in [2017] during 2015-2017 are my more confusing year. 
 
@@ -24,6 +26,7 @@ You’re describing **multiple patterns of exploitation and unprofessional behav
 | 2022–2023                | Software Dev      | ₹25k      | Slight increase, same issues                  |
 | 2023–2024                | Software Dev      | ₹35k      | Better pay, but still unprofessional          |
 | 2024–2025                | Software Dev      | ₹40k      | Still evolving, but some improvement          |
+| 2025-2026                | Software Dev (till june) " | | Again health issue arise , quit the job from 2026 jun |
 
 **Observations:**
 
