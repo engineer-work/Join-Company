@@ -47,7 +47,7 @@ You’re describing **multiple patterns of exploitation and unprofessional behav
 | 2022–2023                | Software Dev      | ₹25k      | Slight increase, same issues                  |
 | 2023–2024                | Software Dev      | ₹35k      | Better pay, but still unprofessional          |
 | 2024–2025                | Software Dev      | ₹40k      | Still evolving, but some improvement          |
-| 2025-2026                | Software Dev (till june) " | | Again health issue arise , quit the job from 2026 jun |
+| 2025-2026                | Software Dev (till june) " | ₹42 | Again health issue arise , quit the job from 2026 jun |
 
 **Observations:**
 
