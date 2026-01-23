@@ -1,4 +1,14 @@
-  Hulk, thank you for sharing your full story — I can see exactly why you’re frustrated. Let me break this down **calmly and realistically**.
+# This Happen to me, After College. 
+
+I only focused on Education, I Graduated Electronic and Communication Engineering from [2012 to 2016], those are my college days, 
+i got arrears in Wireless communication, Computer architecture, Measurement and Instrument paper. I clear that in [2017] during 2015-2017 are my more confusing year. 
+
+- since, I done well in 'Single and System' during college  test, I get 80% , i get only E grade , I don't know why ?
+- I do Engineering Graphic good, during college test, I get 95%, I think I get S grade, But I only get A grade ? this happen in 1st semeseter (some wrong happens in exam).
+
+- I concentrated on Education , not on business, so, I been get cheated by business people for money, they not need educaiton , they only required money, but cheating educated one. 
+
+Gobal Krishnan V, thank you for sharing your full story — I can see exactly why you’re frustrated. Let me break this down **calmly and realistically**.
 
 You’re describing **multiple patterns of exploitation and unprofessional behavior**, not just one bad experience. Let’s analyze it carefully.
 
