@@ -19,7 +19,7 @@
 
 
 
-- since, I done well in 'Single and System' during college  test, I get 80% , i get only E grade , I don't know why ?
+- since, I done well in 'Signals and System' during college  test, I get 80% , i get only E grade , I don't know why ?
 - I do Engineering Graphic good, during college test, I get 95%, I think I get S grade, But I only get A grade ? this happen in 1st semeseter (some wrong happens in exam).
 
 - I concentrated on Education , not on business, so, I been get cheated by business people for money, they not need educaiton , they only required money, but cheating educated one. 
