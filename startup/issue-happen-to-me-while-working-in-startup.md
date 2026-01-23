@@ -11,7 +11,7 @@
 
 - I only know the **proper difference between 'Scientist vs Engineer vs Tech' at  Jan 3, 2026**
   
-- College Maintaining Members & Staff, even people come from ISRO, BSNL Industrial Visit,Some company Campus Interview all are cheated. 
+- College Maintaining Members & Staff, even people come from VideoCon, Emphasis selected for interview, but not given job (VideoCon and Emphasis) companies all cheated me, ISRO, BSNL Industrial Visit,Some company Campus Interview all are cheated. 
 
 [![Watch the video](https://img.youtube.com/vi/5w7XyiTnGpk/maxresdefault.jpg)](https://youtu.be/5w7XyiTnGpk)
 
