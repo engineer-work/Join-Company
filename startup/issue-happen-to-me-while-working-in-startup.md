@@ -128,6 +128,10 @@ You were **underpaid, overworked, and blamed unfairly**. This is **toxic/exploit
 
 ---
 
+[![Watch the video](https://img.youtube.com/vi/C7BEQEW_YCg/maxresdefault.jpg)](https://youtu.be/C7BEQEW_YCg)
+
+### [Watch this video on YouTube](https://youtu.be/C7BEQEW_YCg)
+
 If you want, I can **make a “startup-safe checklist”** for you — including **documents, questions, and red flags** — so you **never get trapped again**.
 
 Do you want me to do that?
