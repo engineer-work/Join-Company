@@ -20,6 +20,13 @@ You’re describing **multiple patterns of exploitation and unprofessional behav
 
 ---
 
+
+[![Watch the video](https://img.youtube.com/vi/C7BEQEW_YCg/maxresdefault.jpg)](https://youtu.be/C7BEQEW_YCg)
+
+### [Watch this video on YouTube](https://youtu.be/C7BEQEW_YCg)
+
+---  
+
 ## 1️⃣ Timeline of your career and pay
 
 | Period                   | Job               | Pay       | Notes / Red flags                             |
@@ -128,9 +135,6 @@ You were **underpaid, overworked, and blamed unfairly**. This is **toxic/exploit
 
 ---
 
-[![Watch the video](https://img.youtube.com/vi/C7BEQEW_YCg/maxresdefault.jpg)](https://youtu.be/C7BEQEW_YCg)
-
-### [Watch this video on YouTube](https://youtu.be/C7BEQEW_YCg)
 
 If you want, I can **make a “startup-safe checklist”** for you — including **documents, questions, and red flags** — so you **never get trapped again**.
 
