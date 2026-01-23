@@ -9,7 +9,7 @@
 
 - Not taught on paper published work to real world application [Youtube Line](https://www.youtube.com/watch?v=gF9EwcG0dfg&list=PLkvtzcMGVO8-uoXirLVzPaPS23nr8TS1F) , **during college not even know the proper difference between 'Scientist vs Engineer vs Tech'. I think engineer are scientist.**
   
-- College Maintaining Members & Staff, even people come from ISRO, BSNL ,TCS Campus Interview all are cheated. 
+- College Maintaining Members & Staff, even people come from ISRO, BSNL Industrial Visit,Some company Campus Interview all are cheated. 
 
 [![Watch the video](https://img.youtube.com/vi/5w7XyiTnGpk/maxresdefault.jpg)](https://youtu.be/5w7XyiTnGpk)
 
