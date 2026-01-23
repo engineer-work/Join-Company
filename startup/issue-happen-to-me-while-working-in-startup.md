@@ -1,7 +1,9 @@
 # This Happen to me, After College. 
 
-#### I used ChatGPT AI, Gemini AI to find the Truth - They cheated me or not.
+#### I used ChatGPT AI, Gemini AI to find the Truth - They cheated me or not.  
 
+- [Check Rank Given for Anna Univesity, but i only studied in Anna University Affiliated Collge, the college, I Studied not known to many companies.](https://edurank.org/uni/anna-university/rankings/)
+  
 - I only focused on Education, I Graduated Electronic and Communication Engineering from [2012 to 2016], in Anna University Affiliated Collge (T.J.S Engineering College) those are my college days, 
 - i got arrears in Wireless communication, Computer architecture, Measurement and Instrument paper. I clear that in [2017] during 2015-2017 are my more confusing year. 
 
