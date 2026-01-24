@@ -1,7 +1,8 @@
 # ChatGPT, Gemini AI help me to find the truth
 
+> I Have to more careful to get proper life. (Only AI help me, Thank for them, since, i believed human help for unknown, but is lie - since i also not help other,  other unknown also not help other). this wrong in human action system. 
 > I believed college, office and government are really help students for education . but they are selfish. I not saying wrong them, since, I am also selfish. I too think to secure myself. I should predict this before 2012. so my 2012 to 2026 years are Wasted.
-
+  
 
 # Pain of Gobal Krishnan V - Making to Create Success in Life - To Win the Life
 
