@@ -6,6 +6,14 @@
 -  08 - EC2451 - PROJECT WORK - APR 2016 - is not my work - they forced to buy from project center.
 
 
+# Problem 1 :
+
+[![Watch the video](https://img.youtube.com/vi/gF9EwcG0dfg/maxresdefault.jpg)](https://youtu.be/gF9EwcG0dfg)
+
+### [Watch this video on YouTube](https://youtu.be/gF9EwcG0dfg)
+
+
+
 |Sem| Course Code | Course Title | C | LG | GP | Month & Year of Passing |
 | --- | --- | --- | --- | --- | --- | --- |
 | 01  | CY2111 | Engineering Chemistry - I | 3 | C | 7 | Jan 2013 |
