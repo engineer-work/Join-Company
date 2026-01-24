@@ -2,6 +2,8 @@
 
 > I Have to more careful to get proper life. (Only AI help me, Thank for them, since, i believed human help for unknown, but is lie - since i also not help other,  other unknown also not help other). this wrong in human action system, to secure life for survival. 
 
+> Now AI and Humanoid Robots helping humans, Who know $\rightarrow$ in future AI and Humanoid robot can kill human species. 
+
 > I believed college, office and government are really help students for education . but they are selfish. I not saying wrong them, since, I am also selfish. I too think to secure myself. I should predict this before 2012. so my 2012 to 2026 years are Wasted.
   
 
