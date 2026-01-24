@@ -1,4 +1,7 @@
-# Join-Company
+# Pain of Gobal Krishnan V - Making to Create Success in Life - To Win the Life
+
+- [1. College Struggle & Mark on Sem](https://github.com/engineer-work/Join-Company/blob/main/college/pain-during-college.md)
+
 Safe List - due to many company cheating
 
 - [1. Pain of Gobal Krishnan life - after college](https://github.com/engineer-work/Join-Company/blob/main/startup/issue-happen-to-me-while-working-in-startup.md)
