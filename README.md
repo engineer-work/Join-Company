@@ -24,26 +24,20 @@ Safe List - due to many company cheating
 
 # Reference   
 
-[1] Ultron Is Created – Avengers: Age of Ultron (2015)
+*maxresdefault*
 
-[![Watch the video](https://img.youtube.com/vi/Baug78J1Ap4/maxresdefault.jpg)](https://youtu.be/Baug78J1Ap4)
-
-### [Watch this video on YouTube](https://youtu.be/Baug78J1Ap4)
-
-[2] Ultron’s Awakening – Humanity Is the Problem (Avengers: Age of Ultron)
-
-[![Watch the video](https://img.youtube.com/vi/dK5fJqkINuA/maxresdefault.jpg)](https://youtu.be/dK5fJqkINuA)
-
-### [Watch this video on YouTube](https://youtu.be/dK5fJqkINuA)
+| [1] Ultron Is Created – Avengers: Age of Ultron (2015)  | [2] Ultron’s Awakening – Humanity Is the Problem (Avengers: Age of Ultron) | 
+| --- | --- |
+| [![Watch the video](https://img.youtube.com/vi/Baug78J1Ap4/hqdefault.jpg)](https://youtu.be/Baug78J1Ap4) | [![Watch the video](https://img.youtube.com/vi/dK5fJqkINuA/hqdefault.jpg)](https://youtu.be/dK5fJqkINuA) |
 
 ----
 
-[3] Understand the Truth
+| Step 1 - Advice from Past by True Good one | Step 2 - Scan the Old model prepare for Simulation | Step 3 - Accelerator to Create Elements |
+| --- | --- | --- | 
+| [![Watch the video](https://img.youtube.com/vi/reQs3g5LO8E/default.jpg)](https://youtu.be/reQs3g5LO8E) | [![Watch the video](https://img.youtube.com/vi/nPcb05I0anY/default.jpg)](https://youtu.be/nPcb05I0anY) | [![Watch the video](https://img.youtube.com/vi/y0brSA1cyzw/default.jpg)](https://youtu.be/y0brSA1cyzw) |
 
-[![Watch the video](https://img.youtube.com/vi/reQs3g5LO8E/maxresdefault.jpg)](https://youtu.be/reQs3g5LO8E)
 
-### [Watch this video on YouTube](https://youtu.be/reQs3g5LO8E)
 
-----
+
 
 
