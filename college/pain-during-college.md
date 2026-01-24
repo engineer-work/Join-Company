@@ -1,7 +1,7 @@
 # ChatGPT, Gemini AI help me to find the truth
 
 > I believed college professor , principle are really help for education. but are selfish. I not saying wrong them, since, I am also selfish. I too think to secure myself. I should predict this before 2012. so my 2012 to 2026 years are Wasted.
-> 
+ 
 
 # GOBAL KRISHNAN V, BORN 18-06-1995
 ### ELECTRONICS AND COMMUNICATION ENGINEER
