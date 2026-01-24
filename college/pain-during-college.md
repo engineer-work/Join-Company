@@ -1,10 +1,15 @@
+# ChatGPT, Gemini AI help me to find the truth
+
+> I believed college professor , principle are really help for education. but are selfish. I not saying wrong them, since, I am also selfish. I too think to secure myself. I should predict this before 2012. so my 2012 to 2026 years are Wasted.
+> 
+
 # GOBAL KRISHNAN V, BORN 18-06-1995
 ### ELECTRONICS AND COMMUNICATION ENGINEER
 ### ANALYSIS AND EVALUATE THE GRADES
 
 - (important statement) But, Anna University Affiliated (T.J.S Engineering College) said to buy the Final year project only from outside 'Project Center'. I not done that.  Otherwise they said 'fail in exam'.  so given money to buy the Final year project
 -  08 - EC2451 - PROJECT WORK - APR 2016 - is not my work - they forced to buy from project center.
--  Unwanted paid money for college, Books & Doc are Totally waste, Since - [No] Knowledge gain. - Money Wasted - Time Wasted - Even if you have talent, you fail due to politics and rich people.
+-  Unwanted paid money for college, Books & Doc are Totally waste, Since - [No] Knowledge gain. - Money Wasted - Time Wasted - Even if you have talent, you fail due to some unknown people. or society poilitcal issue.
 ---
 
 # Problem 1 :
@@ -21,6 +26,13 @@
 
 ### [Watch this video on YouTube](https://youtu.be/67bWBbxmSmU)
 
+---
+
+[![Watch the video](https://img.youtube.com/vi/5w7XyiTnGpk/maxresdefault.jpg)](https://youtu.be/5w7XyiTnGpk)
+
+### [Watch this video on YouTube](https://youtu.be/5w7XyiTnGpk)
+
+---
 
 
 |Sem| Course Code | Course Title | C | LG | GP | Month & Year of Passing |
