@@ -15,7 +15,7 @@
 
 # Application
 
- Profile - [ORCID](https://orcid.org/my-orcid?orcid=0009-0001-3787-2860)                
+ Profile - [ORCID](https://orcid.org/0009-0001-3787-2860)                
 
 Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my future learning notes*
 
