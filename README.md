@@ -1,3 +1,4 @@
+
 # ChatGPT, Gemini AI help me to find the truth
 
 ### “Survival makes humans selective in whom they help.”
@@ -12,7 +13,7 @@
 
 > I believed college, office and government are really help students for education . but they are selfish. I not saying wrong them, since, I am also selfish. I too think to secure myself. I should predict this before 2012. so my 2012 to 2026 years are Wasted. But, I learned somewhat during those years.
 
-# Application
+# Application [ORCID](https://orcid.org/my-orcid?orcid=0009-0001-3787-2860)
 
 Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my future learning notes*
 
