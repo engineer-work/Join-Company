@@ -1,0 +1,4 @@
+# My Wish is SpaceShip, Money to Make that SpaceShip, With 100% Good Health and Wealth support to travel in Space to Find the Hidden Truth.
+
+> Develop an ultra-safe spaceship with comprehensive 20-year warranty and guarantee coverage for all critical components. The spacecraft shall be equipped with autonomous (Humanoid) robotic systems that enable self-monitoring, self-healing, and continuous operation for long-duration space missions.
+  
