@@ -42,6 +42,11 @@ Safe List - due to many company cheating
 | --- | --- | --- | 
 | [![Watch the video](https://img.youtube.com/vi/reQs3g5LO8E/mqdefault.jpg)](https://youtu.be/reQs3g5LO8E) | [![Watch the video](https://img.youtube.com/vi/nPcb05I0anY/mqdefault.jpg)](https://youtu.be/nPcb05I0anY) | [![Watch the video](https://img.youtube.com/vi/y0brSA1cyzw/mqdefault.jpg)](https://youtu.be/y0brSA1cyzw) |
 
+| $10^{-35}$ to $10^{22}$ Range of Object - Minimal & Narrow Level Object Simulation |
+| --- |
+| [![Watch the video](https://img.youtube.com/vi/F4Tu90jTZ-s/maxresdefault.jpg)](https://youtu.be/F4Tu90jTZ-s) |
+
+
 
 
 
