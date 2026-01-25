@@ -4,7 +4,7 @@
 > What I am doing is my interest. Do what you like. Don’t look at me. Even if I don’t get money, I do what I like.
 For me, (Math, Science, Engineering, Tech, Medical) good education in any field is enough. Each person should focus on their own field. Don’t watch other interest topics. Find your interest and work on it. These are free. This can be done without money.
 
-> Is not depends on me. it is each on wish, no one bother about others wishes. Find you own wishes.
+> Is not depends on me. it is each on wish, no one bother about others wishes. Find your own wishes.
 
 ### “Survival makes humans selective in whom they help.”
 
