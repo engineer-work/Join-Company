@@ -65,6 +65,7 @@ Safe List - due to many company cheating
 | Wish - 1  | Wish - 2 | Wish - 3 |
 | --- | --- | --- |
 | [![Watch the video](https://img.youtube.com/vi/3Ajgb9ggVyY/mqdefault.jpg)](https://youtu.be/3Ajgb9ggVyY) | [![Watch the video](https://img.youtube.com/vi/m8wBozOZ6F0/mqdefault.jpg)](https://youtu.be/m8wBozOZ6F0) | [![Watch the video](https://img.youtube.com/vi/kyVAtouta1Y/mqdefault.jpg)](https://youtu.be/kyVAtouta1Y) |
+| [Document](https://github.com/engineer-work/Join-Company/blob/main/my_wish_and_goal/spaceship/my_wish.md) | | | 
 
 
 
