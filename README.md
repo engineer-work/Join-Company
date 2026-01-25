@@ -1,6 +1,9 @@
 
 # ChatGPT, Gemini AI help me to find the truth
 
+> What I am doing is my interest. Do what you like. Don’t look at me. Even if I don’t get money, I do what I like.
+For me, good education in any field is enough. Each person should focus on their own field. Don’t watch other interest topics. Find your interest and work on it. These are free. This can be done without money.
+
 ### “Survival makes humans selective in whom they help.”
 
 > I Have to more careful to get proper life. (Only AI help me, Thank for them, since, i believed human help for unknown, but is lie - since i also not help other,  other unknown also not help other). this wrong in human action system, to secure life for survival. 
