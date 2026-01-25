@@ -41,7 +41,15 @@ Safe List - due to many company cheating
 
 [![Watch the video](https://img.youtube.com/vi/C7BEQEW_YCg/maxresdefault.jpg)](https://youtu.be/C7BEQEW_YCg)
 
-### [Watch this video on YouTube](https://youtu.be/C7BEQEW_YCg)
+
+# My Wish For SpaceShip
+
+| Wish - 1  | Wish - 2 | Wish - 3 |
+| :---: | :---: | :---: |
+| [![Watch the video](https://img.youtube.com/vi/3Ajgb9ggVyY/mqdefault.jpg)](https://youtu.be/3Ajgb9ggVyY) | [![Watch the video](https://img.youtube.com/vi/m8wBozOZ6F0/mqdefault.jpg)](https://youtu.be/m8wBozOZ6F0) | [![Watch the video](https://img.youtube.com/vi/kyVAtouta1Y/mqdefault.jpg)](https://youtu.be/kyVAtouta1Y) |
+| [Document](https://github.com/engineer-work/Join-Company/blob/main/my_wish_and_goal/spaceship/wish1.md) | [Document](https://github.com/engineer-work/Join-Company/blob/main/my_wish_and_goal/spaceship/my_wish.md) | [Document](https://github.com/engineer-work/Join-Company/blob/main/my_wish_and_goal/spaceship/wish2.md) | 
+
+
 
 # Reference   
 
@@ -62,12 +70,7 @@ Safe List - due to many company cheating
 | [![Watch the video](https://img.youtube.com/vi/F4Tu90jTZ-s/maxresdefault.jpg)](https://youtu.be/F4Tu90jTZ-s) |
 
 
-# My Wish For SpaceShip
 
-| Wish - 1  | Wish - 2 | Wish - 3 |
-| :---: | :---: | :---: |
-| [![Watch the video](https://img.youtube.com/vi/3Ajgb9ggVyY/mqdefault.jpg)](https://youtu.be/3Ajgb9ggVyY) | [![Watch the video](https://img.youtube.com/vi/m8wBozOZ6F0/mqdefault.jpg)](https://youtu.be/m8wBozOZ6F0) | [![Watch the video](https://img.youtube.com/vi/kyVAtouta1Y/mqdefault.jpg)](https://youtu.be/kyVAtouta1Y) |
-| [Document](https://github.com/engineer-work/Join-Company/blob/main/my_wish_and_goal/spaceship/wish1.md) | [Document](https://github.com/engineer-work/Join-Company/blob/main/my_wish_and_goal/spaceship/my_wish.md) | [Document](https://github.com/engineer-work/Join-Company/blob/main/my_wish_and_goal/spaceship/wish2.md) | 
 
 
 
