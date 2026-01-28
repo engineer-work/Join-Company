@@ -191,7 +191,7 @@ That’s it.
 
 If you want, next I can:
 
-# Convert this into a **single clean diagram**
+convert this into a **single clean diagram**
 
 ![](https://raw.githubusercontent.com/engineer-work/Join-Company/refs/heads/main/images/difference.png)
 
