@@ -15,7 +15,7 @@
 
 Almost right — small correction 🙂.
 
-- Memorization-Centric Education System are during school and college.
+- **Memorization-Centric Education System** are during school and college.
 
 **Rote learning is *not* the name of the education system.**
 It is the **method or approach** used *within* an education system.
