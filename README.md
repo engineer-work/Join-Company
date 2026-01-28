@@ -1,4 +1,6 @@
 # About myself and School Life 
+> Hello, My name is **Gobal Krishnan V**.
+
 > I born in 18 Jun 1995 in Chennai, Tamil Nadu, India, I done schooling from **Don Bosco Matriculation Hr. Sec. School, Erukkancherry** from 1998 (Pre.K.G) to 2012 (12th std). 
 
 > Till 10th std, subject try to learn in school is (Tamil, English, Mathematics, Science (Physics, Chemistry, Botany, Zoology, Computer Science, Moral Science, EVS), Social Science (Geographic , History and Civics).
