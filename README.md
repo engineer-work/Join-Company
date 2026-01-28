@@ -12,6 +12,12 @@
 
 > I said about my education system during school and [college (2012 to 2016)](https://github.com/engineer-work/Join-Company/blob/main/college/pain-during-college.md). is  [**Memorization-Centric Education System**](https://github.com/engineer-work/Join-Company/blob/main/education_system/readme.md) from 2020 india as changed the Education, but many state and district not changed, many school and college not know how to adapt to it , even after 6 years after change the education system (2026).
 
+# Switch From Learning $\rightarrow$ from *M* to *R* 
+ | English | Tamil | 
+ | --- | --- |
+ | [![Watch the video](https://img.youtube.com/vi/ddAHOtXetb0/maxresdefault.jpg)](https://youtu.be/ddAHOtXetb0) | [![Watch the video](https://img.youtube.com/vi/99vAZkCt0fk/maxresdefault.jpg)](https://youtu.be/99vAZkCt0fk) |
+
+
 # ChatGPT, Gemini AI help me to find the truth
 
 > What I am doing is my interest. Do what you like. Don’t look at me. Even if I don’t get money, I do what I like.
@@ -82,10 +88,6 @@ Safe List - due to many company cheating
 
 
 
-# Switch From Learning $\rightarrow$ from *M* to *R* 
- | English | Tamil | 
- | --- | --- |
- | [![Watch the video](https://img.youtube.com/vi/ddAHOtXetb0/maxresdefault.jpg)](https://youtu.be/ddAHOtXetb0) | [![Watch the video](https://img.youtube.com/vi/99vAZkCt0fk/maxresdefault.jpg)](https://youtu.be/99vAZkCt0fk) |
 
 
 
