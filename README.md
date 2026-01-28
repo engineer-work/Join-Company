@@ -1,5 +1,8 @@
 # About myself and School Life 
-> Hello, My name is **Gobal Krishnan V**.
+
+Profile - [ORCID](https://orcid.org/0009-0001-3787-2860) 
+
+> Hello, My name is **Gobal Krishnan V**.  
 
 > I born in 18 Jun 1995 in Chennai, Tamil Nadu, India, I done schooling from **Don Bosco Matriculation Hr. Sec. School, Erukkancherry** from 1998 (Pre.K.G) to 2012 (12th std). 
 
@@ -30,9 +33,7 @@ For me, (Math, Science, Engineering, Tech, Medical) good education in any field 
 > I believed college, office and government are really help students for education . but they are selfish. I not saying wrong them, since, I am also selfish. I too think to secure myself. I should predict this before 2012. so my 2012 to 2026 years are Wasted. But, I learned somewhat during those years.
 
 # Application
-
- Profile - [ORCID](https://orcid.org/0009-0001-3787-2860)                
-
+               
 Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my future learning notes*
 
 1. [MathSci Editor](https://engineer-work.github.io/MathSci/)
