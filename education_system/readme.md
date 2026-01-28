@@ -398,7 +398,7 @@ You are already at **IEEE / arXiv level thinking**.
 
 If you want, next I can:
 
-* Build a [**personal MIT-style learning roadmap for ECE**]()
+* Build a [**personal (MIT/Stanford/Berkeley/...) -style learning roadmap for ECE**]()
 * Convert [**one ECE or Graphics or DSA subject into a mini IEEE-paper workflow**]()
 * Help you [**rewrite your past as strength, not failure**]()
 * give you a [**daily learning loop**]() exactly like a research lab uses for simulation and physical device.
