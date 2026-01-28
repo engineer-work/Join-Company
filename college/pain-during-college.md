@@ -2,7 +2,7 @@
 
 > I Learned based Education System, give more credit to theory, not on Practical, since i finished schooling in 2012, current system are different in learning method with simulation based learning the education in different all over the world. but they only changed system in 2020, even though many state of country not accepting the new system of education.
 
-> I Graduated in 2017, I have arrears in engineering on [sem 5 - Computer Architecture and Organization],[sem 6 - Measurement and Instruments],[sem 7 - Wireless Communication], [sem 8 - Wireless Network, Mobile Adhoc Network] this are theory paper. I finally cleared those paper in 2017.
+> I Graduated in 2017, I have arrears in engineering on **[sem 5 - Computer Architecture and Organization]**, **[sem 6 - Measurement and Instruments]**, **[sem 7 - Wireless Communication]**, **[sem 8 - Wireless Network, Mobile Adhoc Network]** this are theory paper. I finally cleared those paper in 2017.
 
 > My batch in engineering is 2012-2016, due to this arrears, 1 year taken to completed (i.e) 2017, I have completed.
 
