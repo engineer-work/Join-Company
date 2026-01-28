@@ -34,6 +34,8 @@ So the clean answer is:
 
 # To Improvement in Career Growth and Knowledge 
 
+![](https://raw.githubusercontent.com/engineer-work/Join-Company/refs/heads/main/images/system_change.png)
+
 I see what you’re asking now 👍
 You want a **clear conceptual summary** of the learning system shown in the image — not emotional, not motivational — but **structural and academic**, like MIT / Stanford style.
 
@@ -187,6 +189,9 @@ That’s it.
 If you want, next I can:
 
 * convert this into a **single clean diagram**
+
+![]()
+
 * map your **ECE background** to this system
 * or give you a **daily learning loop** exactly like a research lab uses
 
