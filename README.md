@@ -1,7 +1,41 @@
+# About myself and School Life 
+> I born in 18 Jun 1995 in Chennai, Tamil Nadu, India, I done schooling from **Don Bosco Matriculation Hr. Sec. School, Erukkancherry** from 1998 (Pre.K.G) to 2012 (12th std). 
+
+> Till 10th std, subject try to learn in school is (Tamil, English, Mathematics, Science (Physics, Chemistry, Botany, Zoology, Computer Science, Moral Science, EVS), Social Science (Geographic , History and Civics).
+
+> For 11th and 12 std, subject to learn in school is (Tamil, English, Mathematics, Physics, Chemistry, Computer Science)
+
+> I said about my education system during school and college (2012 to 2016).
 
 # Education System  
 
-> I born in 18 Jun 1995 in Chennai, Tamil Nadu, India, I done schooling from **Don Bosco Matriculation Hr. Sec. School, Erukkancherry** from 1998 (Pre.K.G) to 2012 (12th std). 
+Almost right — small correction 🙂
+
+**Rote learning is *not* the name of the education system.**
+It is the **method or approach** used *within* an education system.
+
+### Clear distinction
+
+* **Rote learning** → learning method
+* **Education system** → structure (schools, exams, curriculum, evaluation)
+
+### Correct ways to say it
+
+✔ *“This education system is **based on rote learning**.”*
+✔ *“The system follows a **rote-learning approach**.”*
+✔ *“It is a **memorization-centric education system**.”*
+
+### If you want a short label for the system
+
+Commonly used phrases:
+
+* **Rote-based education system**
+* **Memorization-centric education**
+* **Exam-oriented education system**
+
+So the clean answer is:
+👉 **Rote learning = method, not the system name**
+
 
 # ChatGPT, Gemini AI help me to find the truth
 
