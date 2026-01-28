@@ -1,4 +1,8 @@
 
+# Education System  
+
+> I born in 18 Jun 1995 in Chennai, Tamil Nadu, India, I done schooling from **Don Bosco Matriculation Hr. Sec. School, Erukkancherry** from 1998 (Pre.K.G) to 2012 (12th std). 
+
 # ChatGPT, Gemini AI help me to find the truth
 
 > What I am doing is my interest. Do what you like. Don’t look at me. Even if I don’t get money, I do what I like.
