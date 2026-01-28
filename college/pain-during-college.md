@@ -12,27 +12,10 @@
 -  Unwanted paid money for college, Books & Doc are Totally waste, Since - [No] Knowledge gain. - Money Wasted - Time Wasted - Even if you have talent, you fail due to some unknown people. or society poilitcal issue.
 ---
 
-# Problem 1 :
+| Problem 1 | Problem 2 | Problem 3 |
+|--- | --- | ---  |
+| [![Watch the video](https://img.youtube.com/vi/gF9EwcG0dfg/mqdefault.jpg)](https://youtu.be/gF9EwcG0dfg) | [![Watch the video](https://img.youtube.com/vi/67bWBbxmSmU/mqdefault.jpg)](https://youtu.be/67bWBbxmSmU) | [![Watch the video](https://img.youtube.com/vi/5w7XyiTnGpk/mqdefault.jpg)](https://youtu.be/5w7XyiTnGpk) |
 
-[![Watch the video](https://img.youtube.com/vi/gF9EwcG0dfg/maxresdefault.jpg)](https://youtu.be/gF9EwcG0dfg)
-
-### [Watch this video on YouTube](https://youtu.be/gF9EwcG0dfg)
-
----
-
-# Problem 2 : 
-
-[![Watch the video](https://img.youtube.com/vi/67bWBbxmSmU/maxresdefault.jpg)](https://youtu.be/67bWBbxmSmU)
-
-### [Watch this video on YouTube](https://youtu.be/67bWBbxmSmU)
-
----
-
-[![Watch the video](https://img.youtube.com/vi/5w7XyiTnGpk/maxresdefault.jpg)](https://youtu.be/5w7XyiTnGpk)
-
-### [Watch this video on YouTube](https://youtu.be/5w7XyiTnGpk)
-
----
 
 
 |Sem| Course Code | Course Title | C | LG | GP | Month & Year of Passing |
