@@ -1,8 +1,13 @@
 # ChatGPT, Gemini AI help me to find the truth
 
 > I Learned based Education System, give more credit to theory, not on Practical, since i finished schooling in 2012, current system are different in learning method with simulation based learning the education in different all over the world. but they only changed system in 2020, even though many state of country not accepting the new system of education.
-> 
+
+> I Graduated in 2017, I have arrears in engineering on [sem 5 - Computer Architecture and Organization],[sem 6 - Measurement and Instruments],[sem 7 - Wireless Communication], [sem 8 - Wireless Network, Mobile Adhoc Network] this are theory paper. I finally cleared those paper in 2017.
+
+> My batch in engineering is 2012-2016, due to this arrears, 1 year taken to completed (i.e) 2017, I have completed.
+
 > I believed college professor , principle are really help for education. but are selfish. I not saying wrong them, since, I am also selfish. I too think to secure myself. I should predict this before 2012. so my 2012 to 2026 years are Wasted.
+
  
 
 # GOBAL KRISHNAN V, BORN 18-06-1995
