@@ -1,6 +1,6 @@
 # About myself and School Life 
 
-Profile - [ORCID](https://orcid.org/0009-0001-3787-2860) 
+*Profile* - [ORCID](https://orcid.org/0009-0001-3787-2860) 
 
 > Hello, My name is **Gobal Krishnan V**.  
 
