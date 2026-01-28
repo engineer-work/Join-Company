@@ -11,7 +11,12 @@
 > For 11th and 12 std, subject to learn in school is (Tamil, English, Mathematics, Physics, Chemistry, Computer Science)
 
 > I said about my education system during school and [college (2012 to 2016)](https://github.com/engineer-work/Join-Company/blob/main/college/pain-during-college.md). is  [**Memorization-Centric Education System**](https://github.com/engineer-work/Join-Company/blob/main/education_system/readme.md) from 2020 india as changed the Education, but many state and district not changed, many school and college not know how to adapt to it , even after 6 years after change the education system (2026).
- 
+
+# Switch From Learning $\rightarrow$ M to R 
+ | English | Tamil | 
+ | --- | --- |
+ | [![Watch the video](https://img.youtube.com/vi/ddAHOtXetb0/maxresdefault.jpg)](https://youtu.be/ddAHOtXetb0) | [![Watch the video](https://img.youtube.com/vi/99vAZkCt0fk/maxresdefault.jpg)](https://youtu.be/99vAZkCt0fk) |
+
 
 # ChatGPT, Gemini AI help me to find the truth
 
