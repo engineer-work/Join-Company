@@ -38,6 +38,7 @@ Commonly used phrases:
 So the clean answer is:
 👉 **Rote learning = method, not the system name**
 
+![](https://raw.githubusercontent.com/engineer-work/Join-Company/refs/heads/main/images/memory.jpeg)
 
 # ChatGPT, Gemini AI help me to find the truth
 
