@@ -12,6 +12,13 @@
 
 > I said about my education system during school and [college (2012 to 2016)](https://github.com/engineer-work/Join-Company/blob/main/college/pain-during-college.md). is  [**Memorization-Centric Education System**](https://github.com/engineer-work/Join-Company/blob/main/education_system/readme.md) from 2020 india as changed the Education, but many state and district not changed, many school and college not know how to adapt to it , even after 6 years after change the education system (2026).
 
+# (Marriage and Love) are (fake & lie)
+
+| Part 1 - English | Part 1 - Tamil | Part 2 - English | Part 2 - Tamil | 
+| --- | --- | --- | --- |
+| [![Watch the video](https://img.youtube.com/vi/STxDFxxeX08/mqdefault.jpg)](https://youtu.be/STxDFxxeX08) | [![Watch the video](https://img.youtube.com/vi/7Mhyczjha1c/mqdefault.jpg)](https://youtu.be/7Mhyczjha1c) | [![Watch the video](https://img.youtube.com/vi/-swmWqU22gY/mqdefault.jpg)](https://youtu.be/-swmWqU22gY) |[![Watch the video](https://img.youtube.com/vi/AWzUls8sUJg/mqdefault.jpg)](https://youtu.be/AWzUls8sUJg)| 
+
+
 # Switch From Learning $\rightarrow$ from *M* to *R* 
  | English | Tamil | 
  | --- | --- |
