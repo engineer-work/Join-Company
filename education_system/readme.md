@@ -1,6 +1,12 @@
  
 # Education System  
 
+| English | Tamil | 
+| --- | --- |
+| [![Watch the video](https://img.youtube.com/vi/UdXtLi_8STU/maxresdefault.jpg)](https://youtu.be/UdXtLi_8STU) | [![Watch the video](https://img.youtube.com/vi/MJoNqzOD5ck/maxresdefault.jpg)](https://youtu.be/MJoNqzOD5ck) |
+
+
+
 Almost right — small correction 🙂.
 
 - For me **Memorization-Centric Education System** are during school and college. (Exam are connected).
