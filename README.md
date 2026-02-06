@@ -12,7 +12,7 @@
 
 > I said about my education system during school and [college (2012 to 2016)](https://github.com/engineer-work/Join-Company/blob/main/college/pain-during-college.md). is  [**Memorization-Centric Education System**](https://github.com/engineer-work/Join-Company/blob/main/education_system/readme.md) from 2020 india as changed the Education, but many state and district not changed, many school and college not know how to adapt to it , even after 6 years after change the education system (2026).
 
-> [Atom man]() helps me from wrong people 
+> [Atom man]() helps me from wrong people. 
 
 # (Marriage and Love) are (fake & lie)
 
