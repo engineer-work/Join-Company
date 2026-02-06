@@ -5,7 +5,7 @@
 | --- | --- |
 | [![Watch the video](https://img.youtube.com/vi/UdXtLi_8STU/maxresdefault.jpg)](https://youtu.be/UdXtLi_8STU) | [![Watch the video](https://img.youtube.com/vi/MJoNqzOD5ck/maxresdefault.jpg)](https://youtu.be/MJoNqzOD5ck) |
 
-| Atom man - The Convergence of Understanding - Tamil | Atom man -The Architecture of Adaptive Learning -Tamil | |
+| Atom man - The Convergence of Understanding - Tamil | Atom man -The Architecture of Adaptive Learning -Tamil | The Atom Man Allegory - Modeling Over Memorization - Tamil | 
 | --- | --- | --- |
 | [![Watch the video](https://img.youtube.com/vi/W2voOcb5vCA/maxresdefault.jpg)](https://youtu.be/W2voOcb5vCA)    |  [![Watch the video](https://img.youtube.com/vi/QtkuQpNm4ag/maxresdefault.jpg)](https://youtu.be/QtkuQpNm4ag)   |     |
 
