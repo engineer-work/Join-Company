@@ -9,6 +9,11 @@
 | --- | --- | --- |
 | [![Watch the video](https://img.youtube.com/vi/W2voOcb5vCA/maxresdefault.jpg)](https://youtu.be/W2voOcb5vCA)    |  [![Watch the video](https://img.youtube.com/vi/QtkuQpNm4ag/maxresdefault.jpg)](https://youtu.be/QtkuQpNm4ag)   |   [![Watch the video](https://img.youtube.com/vi/yyU4QPREQqg/maxresdefault.jpg)](https://youtu.be/yyU4QPREQqg)  |
 
+| Atom man - The Convergence of Understanding - English | Atom man -The Architecture of Adaptive Learning -English | The Atom Man Allegory - Modeling Over Memorization - English | 
+| --- | --- | --- |
+| [![Watch the video](https://img.youtube.com/vi/vwxSduuzqGQ/maxresdefault.jpg)](https://youtu.be/vwxSduuzqGQ)   |  [![Watch the video](https://img.youtube.com/vi/mwtnRiVYpGs/maxresdefault.jpg)](https://youtu.be/mwtnRiVYpGs)   |   [![Watch the video](https://img.youtube.com/vi/2T8NLg6l05o/maxresdefault.jpg)](https://youtu.be/2T8NLg6l05o)  |
+
+
 
 Almost right — small correction 🙂.
 
