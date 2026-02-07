@@ -1,4 +1,5 @@
-*youtube video - click the image.*
+*click the images, for video*
+
 
 # About myself and School Life 
 
