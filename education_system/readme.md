@@ -1,5 +1,6 @@
  
 # Education System  
+*click the images, for video*
 
 | English | Tamil | 
 | --- | --- |
