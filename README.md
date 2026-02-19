@@ -33,7 +33,7 @@
 | [![Watch the video](https://img.youtube.com/vi/N-wd35bUIhc/maxresdefault.jpg)](https://youtu.be/N-wd35bUIhc) | [![Watch the video](https://img.youtube.com/vi/_eJjmWl-yLU/maxresdefault.jpg)](https://youtu.be/_eJjmWl-yLU) |
 
 
-# Switch From Learning $\rightarrow$ from *M* to *R* 
+# Switch From Learning - from *M* to *R* 
  
 | English | Tamil | 
 | --- | --- |
