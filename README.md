@@ -28,6 +28,8 @@
 
 # Productive Procrastination - Escape Loop Error.
 
+[Critique](https://engineer-work.github.io/Join-Company/audio/audio_file.html) 
+
 | English | Tamil | 
 | --- | --- | 
 | [![Watch the video](https://img.youtube.com/vi/N-wd35bUIhc/maxresdefault.jpg)](https://youtu.be/N-wd35bUIhc) | [![Watch the video](https://img.youtube.com/vi/_eJjmWl-yLU/maxresdefault.jpg)](https://youtu.be/_eJjmWl-yLU) |
