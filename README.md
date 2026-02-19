@@ -17,7 +17,7 @@
  
 > [Atom man](https://engineer-work.github.io/Join-Company/atom%20man/atom_man.html) helps me from wrong people. I not seen (him/her/any object), (he/she/it) i don't know what is that, but, that person comes in light form. So, I kept the light object name as **Atom Man**
 
-> [Learning Games](https://engineer-work.github.io/Join-Company/game%20app/game_app.md) 
+> [Learning Games](https://engineer-work.github.io/Join-Company/game%20app/game_app.html) 
 
 # (Marriage and Love) are (fake & lie)
 
@@ -69,12 +69,12 @@ Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my f
 
 
 
-- [1. College Struggle & Mark on Sem](https://github.com/engineer-work/Join-Company/blob/main/college/pain-during-college.html)
+- [1. College Struggle & Mark on Sem](https://engineer-work.github.io/Join-Company/college/pain-during-college.html)
 
 Safe List - due to many company cheating
 
-- [1. Pain of Gobal Krishnan life - after college](https://github.com/engineer-work/Join-Company/blob/main/startup/issue-happen-to-me-while-working-in-startup.html)
-- [2. Safe Check list for Start up](https://github.com/engineer-work/Join-Company/blob/main/startup/initial-safe-check-list.html)
+- [1. Pain of Gobal Krishnan life - after college](https://engineer-work.github.io/Join-Company/startup/issue-happen-to-me-while-working-in-startup.html)
+- [2. Safe Check list for Start up](https://engineer-work.github.io/Join-Company/startup/initial-safe-check-list.html)
 
 [![Watch the video](https://img.youtube.com/vi/C7BEQEW_YCg/maxresdefault.jpg)](https://youtu.be/C7BEQEW_YCg)
 
