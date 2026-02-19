@@ -13,11 +13,11 @@
 
 > For 11th and 12 std, subject to learn in school is (Tamil, English, Mathematics, Physics, Chemistry, Computer Science)
 
-> I said about my education system during school and [college (2012 to 2016)](https://engineer-work.github.io/Join-Company/college/pain-during-college.html). is  [**Memorization-Centric Education System**](https://engineer-work.github.io/Join-Company/education_system/readme.html) from 2020 india as changed the Education, but many state and district not changed, many school and college not know how to adapt to it , even after 6 years after change the education system (2026).
+> I said about my education system during school and [college (2012 to 2016)](https://engineer-work.github.io/Join-Company/college/pain-during-college.html). is  [**Memorization-Centric Education System**](https://engineer-work.github.io/Join-Company/education_system/education_system.html) from 2020 india as changed the Education, but many state and district not changed, many school and college not know how to adapt to it , even after 6 years after change the education system (2026).
  
-> [Atom man](https://engineer-work.github.io/Join-Company/atom%20man/readme.md) helps me from wrong people. I not seen (him/her/any object), (he/she/it) i don't know what is that, but, that person comes in light form. So, I kept the light object name as **Atom Man**
+> [Atom man](https://engineer-work.github.io/Join-Company/atom%20man/atom_man.html) helps me from wrong people. I not seen (him/her/any object), (he/she/it) i don't know what is that, but, that person comes in light form. So, I kept the light object name as **Atom Man**
 
-> [Learning Games](https://engineer-work.github.io/Join-Company/game%20app/readme.md) 
+> [Learning Games](https://engineer-work.github.io/Join-Company/game%20app/game_app.md) 
 
 # (Marriage and Love) are (fake & lie)
 
@@ -69,12 +69,12 @@ Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my f
 
 
 
-- [1. College Struggle & Mark on Sem](https://github.com/engineer-work/Join-Company/blob/main/college/pain-during-college.md)
+- [1. College Struggle & Mark on Sem](https://github.com/engineer-work/Join-Company/blob/main/college/pain-during-college.html)
 
 Safe List - due to many company cheating
 
-- [1. Pain of Gobal Krishnan life - after college](https://github.com/engineer-work/Join-Company/blob/main/startup/issue-happen-to-me-while-working-in-startup.md)
-- [2. Safe Check list for Start up](https://github.com/engineer-work/Join-Company/blob/main/startup/initial-safe-check-list.md)
+- [1. Pain of Gobal Krishnan life - after college](https://github.com/engineer-work/Join-Company/blob/main/startup/issue-happen-to-me-while-working-in-startup.html)
+- [2. Safe Check list for Start up](https://github.com/engineer-work/Join-Company/blob/main/startup/initial-safe-check-list.html)
 
 [![Watch the video](https://img.youtube.com/vi/C7BEQEW_YCg/maxresdefault.jpg)](https://youtu.be/C7BEQEW_YCg)
 
@@ -84,7 +84,7 @@ Safe List - due to many company cheating
 | Wish - 1  | Wish - 2 | Wish - 3 |
 | :---: | :---: | :---: |
 | [![Watch the video](https://img.youtube.com/vi/3Ajgb9ggVyY/mqdefault.jpg)](https://youtu.be/3Ajgb9ggVyY) | [![Watch the video](https://img.youtube.com/vi/m8wBozOZ6F0/mqdefault.jpg)](https://youtu.be/m8wBozOZ6F0) | [![Watch the video](https://img.youtube.com/vi/kyVAtouta1Y/mqdefault.jpg)](https://youtu.be/kyVAtouta1Y) |
-| [Document](https://github.com/engineer-work/Join-Company/blob/main/my_wish_and_goal/spaceship/wish1.md) | [Document](https://github.com/engineer-work/Join-Company/blob/main/my_wish_and_goal/spaceship/my_wish.md) | [Document](https://github.com/engineer-work/Join-Company/blob/main/my_wish_and_goal/spaceship/wish2.md) | 
+| [Document](https://github.com/engineer-work/Join-Company/blob/main/my_wish_and_goal/spaceship/wish1.html) | [Document](https://github.com/engineer-work/Join-Company/blob/main/my_wish_and_goal/spaceship/my_wish.html) | [Document](https://github.com/engineer-work/Join-Company/blob/main/my_wish_and_goal/spaceship/wish2.html) | 
 
 
 
