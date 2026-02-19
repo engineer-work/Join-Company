@@ -34,9 +34,10 @@
 
 
 # Switch From Learning $\rightarrow$ from *M* to *R* 
- | English | Tamil | 
- | --- | --- |
- | [![Watch the video](https://img.youtube.com/vi/ddAHOtXetb0/maxresdefault.jpg)](https://youtu.be/ddAHOtXetb0) | [![Watch the video](https://img.youtube.com/vi/99vAZkCt0fk/maxresdefault.jpg)](https://youtu.be/99vAZkCt0fk) |
+ 
+| English | Tamil | 
+| --- | --- |
+| [![Watch the video](https://img.youtube.com/vi/ddAHOtXetb0/maxresdefault.jpg)](https://youtu.be/ddAHOtXetb0) | [![Watch the video](https://img.youtube.com/vi/99vAZkCt0fk/maxresdefault.jpg)](https://youtu.be/99vAZkCt0fk) |
 
 # ChatGPT, Gemini AI help me to find the truth
 
