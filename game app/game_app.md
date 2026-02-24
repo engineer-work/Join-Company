@@ -13,4 +13,4 @@
 # Books for Learning & Understand
 
 1. [Stanford - CoreNLP](https://stanfordnlp.github.io/CoreNLP/)
-2. [Speech and Language Processing - Third Edition draft - Daniel Jurafsky (Stanford University) - James H. Martin (University of Colorado at Boulder) ] (https://web.stanford.edu/~jurafsky/slp3/ed3book_jan26.pdf)
+2. [Speech and Language Processing - Third Edition draft - Daniel Jurafsky (Stanford University) - James H. Martin (University of Colorado at Boulder)](https://web.stanford.edu/~jurafsky/slp3/ed3book_jan26.pdf)
