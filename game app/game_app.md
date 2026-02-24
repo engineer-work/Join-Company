@@ -1,3 +1,6 @@
+# Note Taking
+1. [Note Taking Method - Cornell Univerity](https://canvas.cornell.edu/courses/1451)
+
 # Medical 
 
 1. [Anatomy Insight](https://www.anatomyinsight.com/home)
@@ -6,6 +9,7 @@
 
 # IXL
 1. [English](https://uk.ixl.com/)
+
 
 
 ---
