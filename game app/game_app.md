@@ -1,6 +1,9 @@
 # Note Taking
 1. [Note Taking Method - Cornell Univerity](https://canvas.cornell.edu/courses/1451)
 
+# MindSet Testing 
+1. [MindSet](https://mindsetonline.com/testyourmindset/)
+
 # Medical 
 
 1. [Anatomy Insight](https://www.anatomyinsight.com/home)
