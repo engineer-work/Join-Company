@@ -7,6 +7,8 @@
 
 > Hello, My name is **Gobal Krishnan V**.  
 
+> I only like Remote Job, (Email : dr.bot.engineer@gmail.com, gobalkrishnan.work@gmail.com),Since, I record all mail based on job, since, if working for money is so danger, give me good job to improve knowledge and good growth.
+
 > I born in 18 Jun 1995 in Chennai, Tamil Nadu, India, I done schooling from **Don Bosco Matriculation Hr. Sec. School, Erukkancherry** from 1998 (Pre.K.G) to 2012 (12th std). 
 
 > Till 10th std, subject try to learn in school is (Tamil, English, Mathematics, Science (Physics, Chemistry, Botany, Zoology, Computer Science, Moral Science, EVS), Social Science (Geographic , History and Civics).
