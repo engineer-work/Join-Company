@@ -35,7 +35,6 @@
 
 > I studied in single school for 15 years, 4 years in college, **I not have friends, no love in my heart**. **I not need friends and love**, *My thought is only trigger to work for money*.  **Life is Wasted by Education System.** It only based on my life. Each have their own perspective of life. **I don't have rights to say or directs the other life**.
 
-
 # (Marriage and Love) are (fake & lie)
 
 | Part 1 - English | Part 1 - Tamil | Part 2 - English | Part 2 - Tamil | 
@@ -48,6 +47,10 @@
 | --- | --- | --- | 
 | [![Watch the video](https://img.youtube.com/vi/dj7pVQ6jjNw/maxresdefault.jpg)](https://youtu.be/dj7pVQ6jjNw) | [![Watch the video](https://img.youtube.com/vi/g1-sKPk3hpI/maxresdefault.jpg)](https://youtu.be/g1-sKPk3hpI) | [![Watch the video](https://img.youtube.com/vi/KuDAdtJNKNw/mqdefault.jpg)](https://youtu.be/KuDAdtJNKNw), [![Watch the video](https://img.youtube.com/vi/7OZL8oX7OoE/mqdefault.jpg)](https://youtu.be/7OZL8oX7OoE) |
 
+# View of World  
+|  | | | |
+| --- |--- | --- | --- | 
+| [![Watch the video](https://img.youtube.com/vi/cs-1v-iSEps/maxresdefault.jpg)](https://youtu.be/cs-1v-iSEps) [![Watch the video](https://img.youtube.com/vi/dkvhy1-YrKg/maxresdefault.jpg)](https://youtu.be/dkvhy1-YrKg) [![Watch the video](https://img.youtube.com/vi/EqgfRxL-sac/maxresdefault.jpg)](https://youtu.be/EqgfRxL-sac) |  [![Watch the video](https://img.youtube.com/vi/Zys098ROGak/maxresdefault.jpg)](https://youtu.be/Zys098ROGak)  [![Watch the video](https://img.youtube.com/vi/H-yBmvcFi7A/maxresdefault.jpg)](https://youtu.be/H-yBmvcFi7A) [![Watch the video](https://img.youtube.com/vi/jUl6oiiz5Rw/maxresdefault.jpg)](https://youtu.be/jUl6oiiz5Rw) | [![Watch the video](https://img.youtube.com/vi/ScTiSnWGnyY/maxresdefault.jpg)](https://youtu.be/ScTiSnWGnyY)  [![Watch the video](https://img.youtube.com/vi/hGDHkvt7EQQ/maxresdefault.jpg)](https://youtu.be/hGDHkvt7EQQ) [![Watch the video](https://img.youtube.com/vi/7_pmUGUASx8/maxresdefault.jpg)](https://youtu.be/7_pmUGUASx8) | [![Watch the video](https://img.youtube.com/vi/Iy2Dcg46HjM/mqdefault.jpg)](https://youtu.be/Iy2Dcg46HjM) |
 
 
 # Productive Procrastination - Escape Loop Error.
