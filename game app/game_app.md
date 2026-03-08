@@ -13,6 +13,9 @@
 # IXL
 1. [English](https://uk.ixl.com/)
 
+# Physics 
+
+1. [new3jcn] (https://www.new3jcn.com/simulation.html)
 
 
 ---
