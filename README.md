@@ -23,7 +23,9 @@
 
 > I not interested in Marriage and Love, since it all fake for money, their no true love. **I too act to others as good for money.** 
 
-> What you learn in School, College is totally waste $\rightarrow$ if you forget ? but the education system, **force to do in [Memorization-Centric Education System](https://engineer-work.github.io/Join-Company/education_system/education_system.html) for that system collecting and spending the money from our parents hardwork**. *Please, In future don't need to go to school,college.* since lot of free material in **Youtube** and **Internet**. I studied in single school for 15 years, 4 years in college, I not have friends, no love in my heart. My thought is only trigger to work for money.  Life is Wasted by Education System. It only based on my life. Each have their own perspective of life. I don't have rights to say or directs the other life. 
+> What you learn in School, College is totally waste $\rightarrow$ if you forget ? but the education system, **force to do in [Memorization-Centric Education System](https://engineer-work.github.io/Join-Company/education_system/education_system.html) for that system collecting and spending the money from our parents hardwork**. *Please, In future don't need to go to school,college.* since lot of free material in **Youtube** and **Internet**.
+
+> I studied in single school for 15 years, 4 years in college, **I not have friends, no love in my heart**. *My thought is only trigger to work for money*.  **Life is Wasted by Education System.** It only based on my life. Each have their own perspective of life. **I don't have rights to say or directs the other life**. 
 
 # (Marriage and Love) are (fake & lie)
 
