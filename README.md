@@ -25,6 +25,12 @@
 
 > What you learn in School, College is totally waste $\rightarrow$ if you forget ? but the education system, **force to do in [Memorization-Centric Education System](https://engineer-work.github.io/Join-Company/education_system/education_system.html) for that system collecting and spending the money from our parents hardwork**. *Please, In future don't need to go to school,college.* since lot of free material in **Youtube** and **Internet**.
 
+> Don't think why I not saying wrong about school. You itself know, how school doing, then why I said about school.
+
+> I join Engineering from **12th cut-off mark only in counselling in Anna University** *(during my 12th is total marks is 995/1200 marks)*, I studied Engineering in Education Loan. But, I don't know, why, I studied **Engineering** $\rightarrow$ only *Time, Health, Money wasted. We believe, that our life become great, but, if you don't have background, what you studing is totally waste.*
+
+>  I don't know why joined Engineering, then finding for **JOB**. Many cheating for their life. If forcing me, to cheating like them for my life. *What to do? Did, I start to cheat like other or not. for my life to collect money , If the of education system is good , Sport based System is , any System is good , giving fake word?* 
+
 > I studied in single school for 15 years, 4 years in college, **I not have friends, no love in my heart**. **I not need friends and love**, *My thought is only trigger to work for money*.  **Life is Wasted by Education System.** It only based on my life. Each have their own perspective of life. **I don't have rights to say or directs the other life**. 
 
 # (Marriage and Love) are (fake & lie)
