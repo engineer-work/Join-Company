@@ -2,6 +2,10 @@
 
 > I using this resource for make simulator, I am not expertise in making simulation, but I know how to use formula to do an console based calculation, but if supercomputing level scientific computing also, I required help expert in those fields. Since I not used or not even seen the Supercomputer, Server Rack, AI Data Center.
 
+| Math Lab | Physics Lab | Chemisty Lab | 
+| --- | --- | --- |
+|[![Watch the video](https://img.youtube.com/vi/rNoeRFC17fQ/maxresdefault.jpg)](https://youtu.be/rNoeRFC17fQ)| | [![Watch the video](https://img.youtube.com/vi/l1hMkDTg2lg/maxresdefault.jpg)](https://youtu.be/l1hMkDTg2lg) |
+
 ## Performance Engineering
 - [en.algorithmica.org/hpc](https://en.algorithmica.org/hpc/) – Online book on high‑performance computing
 - [Performance Engineering of Software Systems - 6.172 - Fall 2018 - Undergraduate](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/)
