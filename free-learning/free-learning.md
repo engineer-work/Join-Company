@@ -15,3 +15,10 @@
 
 1. [Multivariable Calculus - 18.02 - Fall 2007 - Undergraduate](https://ocw.mit.edu/courses/18-02-multivariable-calculus-fall-2007/)
 2. [Multivariable Calculus - 18.02SC - Fall 2010 - Undergraduate](https://ocw.mit.edu/courses/18-02sc-multivariable-calculus-fall-2010/)
+
+## Mathematics - Differential Equation 
+
+1. [Differential Equations, 18.03 - Spring 2010 - Undergraduate](https://ocw.mit.edu/courses/18-03-differential-equations-spring-2010/)
+2. [Differential Equations - 18.03SC - Fall 2011 - Undergraduate](https://ocw.mit.edu/courses/18-03sc-differential-equations-fall-2011/)
+
+
