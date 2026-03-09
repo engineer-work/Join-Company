@@ -4,7 +4,7 @@
 
 | Math Lab | Physics Lab | Chemisty Lab | 
 | --- | --- | --- |
-|[![Watch the video](https://img.youtube.com/vi/rNoeRFC17fQ/maxresdefault.jpg)](https://youtu.be/rNoeRFC17fQ)| | [![Watch the video](https://img.youtube.com/vi/l1hMkDTg2lg/maxresdefault.jpg)](https://youtu.be/l1hMkDTg2lg) |
+|[![Watch the video](https://img.youtube.com/vi/rNoeRFC17fQ/maxresdefault.jpg)](https://youtu.be/rNoeRFC17fQ) | [![Watch the video](https://img.youtube.com/vi/YbFgNsM6r44/maxresdefault.jpg)](https://youtu.be/YbFgNsM6r44) | [![Watch the video](https://img.youtube.com/vi/l1hMkDTg2lg/maxresdefault.jpg)](https://youtu.be/l1hMkDTg2lg) |
 
 ## Performance Engineering
 - [en.algorithmica.org/hpc](https://en.algorithmica.org/hpc/) – Online book on high‑performance computing
