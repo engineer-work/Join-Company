@@ -3,7 +3,7 @@
 
 # About myself and School Life 
 
-*Profile* - [ORCID](https://orcid.org/0009-0001-3787-2860) 
+*Profile* - [ORCID](https://orcid.org/0009-0001-3787-2860),   [Free Learning Courses](https://engineer-work.github.io/Join-Company/free-learning/free-learning.html)
 
 > Hello, My name is **Gobal Krishnan V**.  
 
