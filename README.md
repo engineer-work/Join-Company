@@ -1,5 +1,13 @@
 *click the images, for video*
 
+# Application
+               
+Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my future learning notes*
+
+1. [MathSci Editor](https://engineer-work.github.io/MathSci/)
+2. [Focus Reader](https://engineer-work.github.io/Focus-Reader/)
+3. [Cornell Note Taking](https://engineer-work.github.io/cornell-notes-pro/)
+4. [Youtube](https://www.youtube.com/@gobalkrishnanv-j2w)
 
 # About myself and School Life 
 
@@ -88,13 +96,7 @@ For me, (Math, Science, Engineering, Tech, Medical) good education in any field 
 
 > I believed college, office and government are really help students for education . but they are selfish. I not saying wrong them, since, I am also selfish. I too think to secure myself. I should predict this before 2012. so my 2012 to 2026 years are Wasted. But, I learned somewhat during those years.
 
-# Application
-               
-Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my future learning notes*
 
-1. [MathSci Editor](https://engineer-work.github.io/MathSci/)
-2. [Focus Reader](https://engineer-work.github.io/Focus-Reader/)
-3. [Youtube](https://www.youtube.com/@gobalkrishnanv-j2w)
 
 # Pain of Gobal Krishnan V - Making to Create Success in Life - To Win the Life
 
