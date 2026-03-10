@@ -9,6 +9,12 @@ Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my f
 3. [Cornell Note Taking](https://engineer-work.github.io/cornell-notes-pro/)
 4. [Youtube](https://www.youtube.com/@gobalkrishnanv-j2w)
 
+# Marvel Comic Identity
+
+| English | Tamil |
+| --- | --- |
+| [![Watch the video](https://img.youtube.com/vi/aoMtd3-ZucM/maxresdefault.jpg)](https://youtu.be/aoMtd3-ZucM) | [![Watch the video](https://img.youtube.com/vi/OJGB7xKW4nQ/maxresdefault.jpg)](https://youtu.be/OJGB7xKW4nQ) | 
+
 # About myself and School Life 
 
 *Profile* - [ORCID](https://orcid.org/0009-0001-3787-2860),   [Free Learning Courses to Make Simulator](https://engineer-work.github.io/Join-Company/free-learning/free-learning.html)
