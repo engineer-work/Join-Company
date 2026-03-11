@@ -1,6 +1,6 @@
 # Free Learning Resource to Make Simulator
 
-> I using this resource for make simulator, I am not expertise in making simulation, but I know how to use formula to do an console based calculation, but if supercomputing level scientific computing also, I required help expert in those fields. Since I not used or not even seen the Supercomputer, Server Rack, AI Data Center.
+> I using this resource for make simulator, I am not expertise in making simulation, but I know how to use formula to do an console based calculation, but if supercomputing level scientific computing also, I required help expert in those fields. Since I not used or not even seen the Supercomputer, Server Rack, AI Data Center. I just using normal  [Desktop Computer for Scientific Computing and Simple Simulation](https://engineer-work.github.io/Join-Company/device/current_specification_device.html)
 
 | Math Lab | Physics Lab | Chemisty Lab | 
 | --- | --- | --- |
