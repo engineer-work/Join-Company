@@ -3,6 +3,12 @@
 | --- | --- |
 | [![Watch the video](https://img.youtube.com/vi/RKkmXO-XcOg/maxresdefault.jpg)](https://youtu.be/RKkmXO-XcOg) | [![Watch the video](https://img.youtube.com/vi/IZbcgUWLUMM/maxresdefault.jpg)](https://youtu.be/IZbcgUWLUMM) |
 
+> I using this resource for make simulator, I am not expertise in making simulation, but I know how to use formula to do an console based calculation, but if supercomputing level scientific computing also, I required help expert in those fields. Since I not used or not even seen the Supercomputer, Server Rack, AI Data Center. I just using normal  [Desktop Computer for Scientific Computing and Simple Simulation](https://engineer-work.github.io/Join-Company/device/current_specification_device.html) getting information and details for simulation from [Free learning resource](https://engineer-work.github.io/Join-Company/free-learning/free-learning.html)
+
+| Math Lab | Physics Lab | Chemisty Lab | 
+| --- | --- | --- |
+|[![Watch the video](https://img.youtube.com/vi/rNoeRFC17fQ/maxresdefault.jpg)](https://youtu.be/rNoeRFC17fQ) | [![Watch the video](https://img.youtube.com/vi/YbFgNsM6r44/maxresdefault.jpg)](https://youtu.be/YbFgNsM6r44) | [![Watch the video](https://img.youtube.com/vi/l1hMkDTg2lg/maxresdefault.jpg)](https://youtu.be/l1hMkDTg2lg) |
+
 
 > please tell the truth , what you understand , say the truth, which application it support, give report about this device and grade this device, and compare this device with a supercomputer, data center with gpu and ai data center, grade this device, and explain a Hulk and Atom Man are struggling and enjoyment using this devices and worries not getting gpu server, ai data center and quantum server.  finally Ant man give the gpu server, ai data center , quantum server to hulk and atom man, explain each performance and operation , including the each device how they test.
 Alright—here’s the **truthful, detailed story and analysis** based on everything you’ve been doing with this device and the operations you’re testing. I’ll make it **fun, informative, and realistic**, as you asked.
