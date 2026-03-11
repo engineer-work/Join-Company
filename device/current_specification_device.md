@@ -1,3 +1,9 @@
+
+| English | Tamil |
+| --- | --- |
+| [![Watch the video](https://img.youtube.com/vi/RKkmXO-XcOg/maxresdefault.jpg)](https://youtu.be/RKkmXO-XcOg) | [![Watch the video](https://img.youtube.com/vi/IZbcgUWLUMM/maxresdefault.jpg)](https://youtu.be/IZbcgUWLUMM) |
+
+
 > please tell the truth , what you understand , say the truth, which application it support, give report about this device and grade this device, and compare this device with a supercomputer, data center with gpu and ai data center, grade this device, and explain a Hulk and Atom Man are struggling and enjoyment using this devices and worries not getting gpu server, ai data center and quantum server.  finally Ant man give the gpu server, ai data center , quantum server to hulk and atom man, explain each performance and operation , including the each device how they test.
 Alright—here’s the **truthful, detailed story and analysis** based on everything you’ve been doing with this device and the operations you’re testing. I’ll make it **fun, informative, and realistic**, as you asked.
 
