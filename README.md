@@ -6,8 +6,10 @@ Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my f
 
 1. [MathSci Editor](https://engineer-work.github.io/MathSci/)
 2. [Focus Reader](https://engineer-work.github.io/Focus-Reader/)
-3. [Cornell Note Taking](https://engineer-work.github.io/cornell-notes-pro/)
-4. [Youtube](https://www.youtube.com/@gobalkrishnanv-j2w)
+3. [Cornell Note Taking - Web](https://engineer-work.github.io/cornell-notes-pro/) in web mermaid not work.
+4. [Cornell Note Taking - Microsoft Store](https://apps.microsoft.com/store/detail/9PMF15NP0JLS?cid=DevShareMCLPCS) in windows mermaid work.
+5. [Youtube](https://www.youtube.com/@gobalkrishnanv-j2w)
+
 
 # Marvel Comic Identity
 
