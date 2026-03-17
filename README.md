@@ -19,7 +19,7 @@ Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my f
 
 # About myself and School Life 
 
-*Profile* - [ORCID](https://orcid.org/0009-0001-3787-2860),   [Free Learning Courses to Make Simulator](https://engineer-work.github.io/Join-Company/free-learning/free-learning.html) , [Desktop computer for Scientific Computing & Simple Simulation](https://engineer-work.github.io/Join-Company/device/current_specification_device.html)
+*Profile* - [My Learning Habit](https://docs.google.com/spreadsheets/d/e/2PACX-1vTNRg4Puo7QCFcm4ZXVF1dnX4qL6ofzOsO__GwuHJr-yke0QUXZtI51cr9Mt8Ui7QSoKTzOlr_SuB-G/pubhtml?gid=1898283119&single=true) [ORCID](https://orcid.org/0009-0001-3787-2860),   [Free Learning Courses to Make Simulator](https://engineer-work.github.io/Join-Company/free-learning/free-learning.html) , [Desktop computer for Scientific Computing & Simple Simulation](https://engineer-work.github.io/Join-Company/device/current_specification_device.html)
 
 > Hello, My name is **Gobal Krishnan V**.  
 
