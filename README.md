@@ -11,15 +11,15 @@ Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my f
 5. [Youtube](https://www.youtube.com/@gobalkrishnanv-j2w)
 
 
-# Marvel Comic Identity
+# Marvel Comic Identity & Intuition For Simulation
 
-| English | Tamil |
-| --- | --- |
-| [![Watch the video](https://img.youtube.com/vi/aoMtd3-ZucM/maxresdefault.jpg)](https://youtu.be/aoMtd3-ZucM) | [![Watch the video](https://img.youtube.com/vi/OJGB7xKW4nQ/maxresdefault.jpg)](https://youtu.be/OJGB7xKW4nQ) | 
+| English | Tamil | Tamil | English |
+| --- | --- | --- | --- | 
+| [![Watch the video](https://img.youtube.com/vi/aoMtd3-ZucM/maxresdefault.jpg)](https://youtu.be/aoMtd3-ZucM) | [![Watch the video](https://img.youtube.com/vi/OJGB7xKW4nQ/maxresdefault.jpg)](https://youtu.be/OJGB7xKW4nQ) | [![Watch the video](https://img.youtube.com/vi/4RK_EZbkV9A/default.jpg)](https://youtu.be/4RK_EZbkV9A) [![Watch the video](https://img.youtube.com/vi/NX3F7EdG9mM/default.jpg)](https://youtu.be/NX3F7EdG9mM) [![Watch the video](https://img.youtube.com/vi/Ivo3AJPYWD0/default.jpg)](https://youtu.be/Ivo3AJPYWD0) | [![Watch the video](https://img.youtube.com/vi/rZs4mnu1ZMg/maxresdefault.jpg)](https://youtu.be/rZs4mnu1ZMg) |
 
 # About myself and School Life 
 
-*Profile* - [My Learning Habit](https://docs.google.com/spreadsheets/d/e/2PACX-1vTNRg4Puo7QCFcm4ZXVF1dnX4qL6ofzOsO__GwuHJr-yke0QUXZtI51cr9Mt8Ui7QSoKTzOlr_SuB-G/pubhtml?gid=1898283119&single=true) [ORCID](https://orcid.org/0009-0001-3787-2860),   [Free Learning Courses to Make Simulator](https://engineer-work.github.io/Join-Company/free-learning/free-learning.html) , [Desktop computer for Scientific Computing & Simple Simulation](https://engineer-work.github.io/Join-Company/device/current_specification_device.html)
+*Profile* - [My Learning Habit](https://docs.google.com/spreadsheets/d/e/2PACX-1vTNRg4Puo7QCFcm4ZXVF1dnX4qL6ofzOsO__GwuHJr-yke0QUXZtI51cr9Mt8Ui7QSoKTzOlr_SuB-G/pubhtml?gid=1898283119&single=true) , [ORCID](https://orcid.org/0009-0001-3787-2860),   [Free Learning Courses to Make Simulator](https://engineer-work.github.io/Join-Company/free-learning/free-learning.html) , [Desktop computer for Scientific Computing & Simple Simulation](https://engineer-work.github.io/Join-Company/device/current_specification_device.html)
 
 > Hello, My name is **Gobal Krishnan V**.  
 
