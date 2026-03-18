@@ -6,6 +6,8 @@
 
 > Then, why Society? School, College, Office ? giving wrong and more work, without understanding individual, but collecting lot of money.
 
+> Becareful,  **No God and No Demon**, It **just a binary classification** like Day and Night. Many cheating innocent one, just using this binary classification algorithm.
+
 # Application
                
 Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my future learning notes*
