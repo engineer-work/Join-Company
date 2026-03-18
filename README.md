@@ -1,4 +1,4 @@
-
+![](https://raw.githubusercontent.com/engineer-work/Join-Company/refs/heads/main/images/text.png) 
 | ⚖️ Disclaimer | 💭 My Personal Thought | 
 |---|---|
 | ⚖️📄 All content on this website represents my personal opinions and experiences only. It is intended for educational, informational, and personal documentation purposes. | 💰🔢 “Money is just a number. Who gave the rights to control the innocent species by money?” 🎭💬 For money, I have to act good to others. 🤝🙂 But we don’t know—people in front of us may act good, 🕵️‍♂️⚠️ while indirectly doing wrong. ❓🧠 Are you able to find/understand this? 🔇🚫 **So, I don’t like to talk to anyone.** 📧📄 I **prefer proper email communication to document interactions with unknown people.** |
@@ -6,9 +6,8 @@
 | ⚠️🕊️ The content is not intended to incite harm, hatred, discrimination, or public disturbance. It should not be interpreted as advice or a directive to act. | 🏫🏢❓ Then, why Society? School, College, Office? giving wrong and more work, without understanding individual, but collecting lot of money. |
 | 👁️‍🗨️📌 Viewers are responsible for their own interpretations and actions. I am not liable for any consequences arising from the use or misunderstanding of this content. | ⚠️🚫👼😈 Becareful, **No God and No Demon**, It **just a binary classification** like Day and Night. Many cheating innocent one, just using this binary classification algorithm. |
 
-
 # Application
-               
+    
 Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my future learning notes*
 
 1. [MathSci Editor](https://engineer-work.github.io/MathSci/)
