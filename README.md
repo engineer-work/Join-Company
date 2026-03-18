@@ -1,5 +1,11 @@
 *click the images, for video*
 
+> "**Money** is just a number. Who gave the rights to control the innocent species by money".
+
+> No one have the rights to control other by any material like (money, food, water, air, land, fire, marriage, education, love, etc.)
+
+> Then, why Society? School, College, Office ? giving wrong and more work, without understanding individual, but collecting lot of money.
+
 # Application
                
 Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my future learning notes*
