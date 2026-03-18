@@ -1,4 +1,5 @@
 ![](https://raw.githubusercontent.com/engineer-work/Join-Company/refs/heads/main/images/text.png) 
+
 | ⚖️ Disclaimer | 💭 My Personal Thought | 
 |---|---|
 | ⚖️📄 All content on this website represents my personal opinions and experiences only. It is intended for educational, informational, and personal documentation purposes. | 💰🔢 “Money is just a number. Who gave the rights to control the innocent species by money?” 🎭💬 For money, I have to act good to others. 🤝🙂 But we don’t know—people in front of us may act good, 🕵️‍♂️⚠️ while indirectly doing wrong. ❓🧠 Are you able to find/understand this? 🔇🚫 **So, I don’t like to talk to anyone.** 📧📄 I **prefer proper email communication to document interactions with unknown people.** |
