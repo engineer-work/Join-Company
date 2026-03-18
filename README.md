@@ -1,24 +1,11 @@
-**Disclaimer**
 
-All content on this website represents my personal opinions and experiences only. It is intended for educational, informational, and personal documentation purposes.
+| ⚖️ Disclaimer | 💭 My Personal Thought | 
+|---|---|
+| ⚖️📄 All content on this website represents my personal opinions and experiences only. It is intended for educational, informational, and personal documentation purposes. | 💰🔢 "**Money** is just a number. Who gave the rights to control the innocent species by money". |
+| 🚫🎯 I do not make any claims against any specific individual, organization, government, religion, or community. Any resemblance or interpretation otherwise is purely coincidental. | 🛑⚖️ No one have the rights to control other by any material like (money, food, water, air, land, fire, marriage, education, love, etc.) |
+| ⚠️🕊️ The content is not intended to incite harm, hatred, discrimination, or public disturbance. It should not be interpreted as advice or a directive to act. | 🏫🏢❓ Then, why Society? School, College, Office? giving wrong and more work, without understanding individual, but collecting lot of money. |
+| 👁️‍🗨️📌 Viewers are responsible for their own interpretations and actions. I am not liable for any consequences arising from the use or misunderstanding of this content. | ⚠️🚫👼😈 Becareful, **No God and No Demon**, It **just a binary classification** like Day and Night. Many cheating innocent one, just using this binary classification algorithm. |
 
-I do not make any claims against any specific individual, organization, government, religion, or community. Any resemblance or interpretation otherwise is purely coincidental.
-
-The content is not intended to incite harm, hatred, discrimination, or public disturbance. It should not be interpreted as advice or a directive to act.
-
-Viewers are responsible for their own interpretations and actions. I am not liable for any consequences arising from the use or misunderstanding of this content.
-
-----
-
-*click the images, for video*
-
-> "**Money** is just a number. Who gave the rights to control the innocent species by money".
-
-> No one have the rights to control other by any material like (money, food, water, air, land, fire, marriage, education, love, etc.)
-
-> Then, why Society? School, College, Office ? giving wrong and more work, without understanding individual, but collecting lot of money.
-
-> Becareful,  **No God and No Demon**, It **just a binary classification** like Day and Night. Many cheating innocent one, just using this binary classification algorithm.
 
 # Application
                
@@ -166,8 +153,6 @@ Safe List - due to many company cheating
 | $10^{-35}$ to $10^{22}$ Range of Object - Minimal & Narrow Level Object Simulation |
 | --- |
 | [![Watch the video](https://img.youtube.com/vi/F4Tu90jTZ-s/maxresdefault.jpg)](https://youtu.be/F4Tu90jTZ-s) |
-
-
 
 
 
