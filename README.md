@@ -1,3 +1,15 @@
+**Disclaimer**
+
+All content on this website represents my personal opinions and experiences only. It is intended for educational, informational, and personal documentation purposes.
+
+I do not make any claims against any specific individual, organization, government, religion, or community. Any resemblance or interpretation otherwise is purely coincidental.
+
+The content is not intended to incite harm, hatred, discrimination, or public disturbance. It should not be interpreted as advice or a directive to act.
+
+Viewers are responsible for their own interpretations and actions. I am not liable for any consequences arising from the use or misunderstanding of this content.
+
+----
+
 *click the images, for video*
 
 > "**Money** is just a number. Who gave the rights to control the innocent species by money".
