@@ -31,6 +31,10 @@ Here are a few clean and powerful rephrasings of your full idea—choose the ton
 
 If you want, I can refine it further into a **movie concept, manifesto, legal argument, or philosophical statement**.
 
+----
+
+
+
 Here are several clear, structured rephrasings of your full idea, in different tones:
 
 ---
