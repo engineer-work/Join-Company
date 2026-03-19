@@ -33,6 +33,9 @@ If you want, I can refine it further into a **movie concept, manifesto, legal ar
 
 ----
 
+| English | Tamil |
+| --- | --- |
+| [![Watch the video](https://img.youtube.com/vi/Kxu5VoOqSvg/maxresdefault.jpg)](https://youtu.be/Kxu5VoOqSvg) ||
 
 
 Here are several clear, structured rephrasings of your full idea, in different tones:
