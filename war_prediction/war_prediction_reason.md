@@ -1,5 +1,6 @@
 > "3rd World War, is only who earn money from School, College cheating giving education, if all field of education system." and **toxic office culture and company cheating innocent employee for money and control the opposite gender**. More talent one create a Humanoid robot with AI , with BioAI too. planned to act all human who cheated his and his lover life. for money.
 
+> Wrong ? Grading and Rank System - Only Some Top ranking, Some Low ranking, and More Elite and Rich Student are getting permanent job after 1947, Why innocent Top ranking, Low ranking, not rich person are Struggling in toxic School, College and Office Culture ???
 Here are a few clean and powerful rephrasings of your full idea—choose the tone you like:
 
 ---
