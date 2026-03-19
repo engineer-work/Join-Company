@@ -1,0 +1,1 @@
+> "3rd World War, is only who earn money from School, College cheating giving education, if all field of education system."  More talent one create a Humanoid robot with AI , with BioAI too. planned to act all human who cheated his and his lover life. for money.
