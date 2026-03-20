@@ -32,7 +32,7 @@ Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my f
 
 > Family Members – My father's name is Vajravel, my mother's name is Vasugi V, and my younger brother's name is Kishore Kumar V. My younger brother and I do not talk to each other due to money problems in our lives.
 
-> Since I have not been able to get a proper job, I faced a lot of toxic culture in companies. Because of that, my health was affected, so I resigned from my job. As a result, there are problems in the family due to financial issues.
+> Since I have not been able to get a proper job, [I faced a lot of toxic culture in companies](https://www.youtube.com/watch?v=C7BEQEW_YCg). Because of that, my health was affected, so I resigned from my job. As a result, there are problems in the family due to financial issues.
 
 > I only talk to my parents. Sometimes, in rare cases, my younger brother and I talk to each other, but only about food. Other than that, I do not even know about him.
 
