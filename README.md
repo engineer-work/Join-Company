@@ -28,7 +28,9 @@ Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my f
 
 *Profile* - [My Learning Habit](https://docs.google.com/spreadsheets/d/e/2PACX-1vTNRg4Puo7QCFcm4ZXVF1dnX4qL6ofzOsO__GwuHJr-yke0QUXZtI51cr9Mt8Ui7QSoKTzOlr_SuB-G/pubhtml?gid=1898283119&single=true) , [ORCID](https://orcid.org/0009-0001-3787-2860),   [Free Learning Courses to Make Simulator](https://engineer-work.github.io/Join-Company/free-learning/free-learning.html) , [Desktop computer for Scientific Computing & Simple Simulation](https://engineer-work.github.io/Join-Company/device/current_specification_device.html)
 
-> Hello, My name is **Gobal Krishnan V**.  
+> Hello, My name is **Gobal Krishnan V**.
+
+> **Family Member** - My Father Name is **Vajravel**, My Mother Name is **Vasugi V**, and My younger brother Name is **Kishore Kumar V**. Me and My younger brother, not talk each other. Due to Money problem in life. I only talk to my parents, some time only rare cases myself and my younger brother talk to each other only for food. Other then. I not even know about him. *I not have boy friends & not have girl friends, I not like friends*. **I only spend more time with Book, Phone, VR glass (360,180), and Computer for my Personal activity to live life. Since, the society constructed based on money, All act to other for survival.** 
 
 > I only like Remote Job, (Email : dr.bot.engineer@gmail.com, gobalkrishnan.work@gmail.com)  . Since, **I record all mail based on job**. since, if **working for money** is so **danger**, give me **good job to improve knowledge and good growth**.
 
