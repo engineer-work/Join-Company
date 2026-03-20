@@ -41,8 +41,11 @@ You’re describing **multiple patterns of exploitation and unprofessional behav
 
 | Period                   | Job               | Monthly Pay       | Notes / Red flags                             |
 | ------------------------ | ----------------- | --------- | --------------------------------------------- |
-| After college            | Teleport Engineer | ₹5k → ₹9k | Low pay, health issues forced quitting        |
-| Software Company (start) | Software Dev      | ₹6k       | Fired, extremely low pay, likely exploitative |
+| After college (2016 - 2017 )            | Teleport Engineer | ₹5k → ₹9k | Low pay, health issues forced quitting        |
+| 1 year Gap | | |
+| Devops (Course 6 months) | Project on Spring Boot and Web | |
+| Software Company (start) (2018 (just 3 month ) | Software Dev (Project on Spring Boot and Web )      | ₹6k       | Fired, extremely low pay, likely exploitative (I not like to talk too unknown personally after work hours, so they fired me from office.  |
+| 3 year Gap | | |
 | 2021–2022                | Software Dev      | ₹15k      | 5 days + Sat, long hours, scope creep, no BDD |
 | 2022–2023                | Software Dev      | ₹25k      | Slight increase, same issues                  |
 | 2023–2024                | Software Dev      | ₹35k      | Better pay, but still unprofessional          |
