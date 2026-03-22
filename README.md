@@ -15,7 +15,8 @@ Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my f
 2. [Focus Reader](https://engineer-work.github.io/Focus-Reader/)
 3. [Cornell Note Taking - Web](https://engineer-work.github.io/cornell-notes-pro/) in web mermaid not work.
 4. [Cornell Note Taking - Microsoft Store](https://apps.microsoft.com/store/detail/9PMF15NP0JLS?cid=DevShareMCLPCS) in windows mermaid work.
-5. [Youtube](https://www.youtube.com/@gobalkrishnanv-j2w)
+5. [Planner App](https://engineer-work.github.io/planner-app/) only for education. 
+6. [Youtube](https://www.youtube.com/@gobalkrishnanv-j2w)
 
 
 # Marvel Comic Identity & Intuition For Simulation
