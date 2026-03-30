@@ -7,7 +7,7 @@
 | ⚠️🕊️ The content is not intended to incite harm, hatred, discrimination, or public disturbance. It should not be interpreted as advice or a directive to act. | 🏫🏢❓ Then, why Society? School, College, Office? giving wrong and more work, without understanding individual, but collecting lot of money. |
 | 👁️‍🗨️📌 Viewers are responsible for their own interpretations and actions. I am not liable for any consequences arising from the use or misunderstanding of this content. | ⚠️🚫👼😈 Becareful, **No God and No Demon**, It **just a binary classification** like Day and Night. Many cheating innocent one, just using this binary classification algorithm. |
 
-> [Plagiarism—copying others’ work]() and claiming it as one’s own—does happen in India, but it is a global issue, and organizations like IEEE and Springer Nature strictly prohibit it and take action when detected.
+> Plagiarism—copying others’ work and claiming it as one’s own—does happen in India, but it is a global issue, and organizations like [Rishis, Siddhar](https://engineer-work.github.io/Join-Company/free-learning/not_copy/nc2.html), [Religion](https://engineer-work.github.io/Join-Company/free-learning/not_copy/nc1.html), [IEEE](https://engineer-work.github.io/Join-Company/free-learning/not_copy/ieee_nc.html) and [Springer Nature](https://engineer-work.github.io/Join-Company/free-learning/not_copy/springer_nc.html) strictly prohibit it and take action when detected.
 
 # Application
     
