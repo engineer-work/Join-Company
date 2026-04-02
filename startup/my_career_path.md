@@ -31,7 +31,7 @@ If you want next, I can **convert this into a professional resume version** (wit
 - Now that work AI itself do. Then why human for that job paying lot of money. but big organization, giving more money to them ??
 - In below video, I so lot of reference from Youtube.
 
-[![Watch the video](https://img.youtube.com/vi/FLNCDsbrlJ0/default.jpg)](https://youtu.be/FLNCDsbrlJ0)   [![Watch the video](https://img.youtube.com/vi/9-ejlKQsHCU/default.jpg)](https://youtu.be/9-ejlKQsHCU?si=UxKRw67cFJ3u_JM1)  [![Watch the video](https://img.youtube.com/vi/J5YTBfy14Os/default.jpg)](https://youtu.be/J5YTBfy14Os?si=BgRFxdT8Cd-MVrEc) [![Watch the video](https://img.youtube.com/vi/Mqbp0RmMAc8/default.jpg)](https://youtu.be/Mqbp0RmMAc8)  [![Watch the video](https://img.youtube.com/vi/0yttL0e1Pak/default.jpg)](https://youtu.be/0yttL0e1Pak?si=wWohdlAs07M8VJ78)
+[![Watch the video](https://img.youtube.com/vi/FLNCDsbrlJ0/default.jpg)](https://youtu.be/FLNCDsbrlJ0)   [![Watch the video](https://img.youtube.com/vi/9-ejlKQsHCU/default.jpg)](https://youtu.be/9-ejlKQsHCU?si=UxKRw67cFJ3u_JM1)  [![Watch the video](https://img.youtube.com/vi/J5YTBfy14Os/default.jpg)](https://youtu.be/J5YTBfy14Os?si=BgRFxdT8Cd-MVrEc) [![Watch the video](https://img.youtube.com/vi/Mqbp0RmMAc8/default.jpg)](https://youtu.be/Mqbp0RmMAc8)  [![Watch the video](https://img.youtube.com/vi/0yttL0e1Pak/default.jpg)](https://youtu.be/0yttL0e1Pak?si=wWohdlAs07M8VJ78) [![Watch the video](https://img.youtube.com/vi/Mqbp0RmMAc8/default.jpg)](https://youtu.be/Mqbp0RmMAc8)  [![Watch the video](https://img.youtube.com/vi/slqu9qm5yw4/default.jpg)](https://youtu.be/slqu9qm5yw4?si=wWohdlAs07M8VJ78)
 
 
 # How Google Recruiter ? 
