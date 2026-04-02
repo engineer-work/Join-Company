@@ -34,8 +34,6 @@ If you want next, I can **convert this into a professional resume version** (wit
 
 # How Google Recruiter ? 
 
-[![Watch the video](https://img.youtube.com/vi/T__1QViXUxk/mqdefault.jpg)](https://youtu.be/T__1QViXUxk?si=wHaivinfOhah26qq)
-
-
+[![Watch the video](https://img.youtube.com/vi/T__1QViXUxk/mqdefault.jpg)](https://youtu.be/T__1QViXUxk?si=wHaivinfOhah26qq)  [![Watch the video](https://img.youtube.com/vi/WompUzXiHZE/mqdefault.jpg)](https://youtu.be/WompUzXiHZE?si=y3NrLfAEKHA5Zxek)
 
 
