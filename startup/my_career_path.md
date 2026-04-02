@@ -29,7 +29,13 @@ If you want next, I can **convert this into a professional resume version** (wit
 - Now that work AI itself do. Then why human for that job paying lot of money. but big organization, giving more money to them ??
 - In below video, I so lot of reference from Youtube.
 
-[![Watch the video](https://img.youtube.com/vi/FLNCDsbrlJ0/maxresdefault.jpg)](https://youtu.be/FLNCDsbrlJ0)
+[![Watch the video](https://img.youtube.com/vi/FLNCDsbrlJ0/mqdefault.jpg)](https://youtu.be/FLNCDsbrlJ0)
+
+
+# How Google Recruiter ? 
+
+[![Watch the video](https://img.youtube.com/vi/T__1QViXUxk/mqdefault.jpg)](https://youtu.be/T__1QViXUxk?si=wHaivinfOhah26qq)
+
 
 
 
