@@ -23,13 +23,18 @@
 
 If you want next, I can **convert this into a professional resume version** (without removing your story, but making it safe for interviews).
 
-# Just see for Bug Fixing they Earn.
+# Just see for Bug Fixing and SaaS based Development they Earn. 
+
+> If Saying AI, many not know the core of it, but Earn more money than the person who know the core knowledge of it. 
 
 - For just bug fixing they earn 65 LPA. from my childhood big organization cheated me. but for some person, giving more money, why not giving for me.
 - Now that work AI itself do. Then why human for that job paying lot of money. but big organization, giving more money to them ??
 - In below video, I so lot of reference from Youtube.
 
-[![Watch the video](https://img.youtube.com/vi/FLNCDsbrlJ0/mqdefault.jpg)](https://youtu.be/FLNCDsbrlJ0)
+[![Watch the video](https://img.youtube.com/vi/FLNCDsbrlJ0/mqdefault.jpg)](https://youtu.be/FLNCDsbrlJ0)   [![Watch the video](https://img.youtube.com/vi/9-ejlKQsHCU/mqdefault.jpg)](https://youtu.be/9-ejlKQsHCU?si=UxKRw67cFJ3u_JM1) 
+
+
+
 
 
 # How Google Recruiter ? 
