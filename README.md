@@ -9,6 +9,8 @@
 
 > **Plagiarism—copying others’ work and claiming it as one’s own—occurs globally, including in India; ethical teachings from traditions such as  ([Rishis, Siddhars](https://engineer-work.github.io/Join-Company/free-learning/not_copy/nc2.html), [Religion](https://engineer-work.github.io/Join-Company/free-learning/not_copy/nc1.html)) emphasize honesty, while modern organizations like  ([IEEE](https://engineer-work.github.io/Join-Company/free-learning/not_copy/ieee_nc.html)) and  ([Springer Nature](https://engineer-work.github.io/Join-Company/free-learning/not_copy/springer_nc.html)) strictly prohibit it and take action when detected.**
 
+> **From my birth, the location,I staying is Chennai, Tamil Nadu,India, In Indian Election, I always put 'NOTA' only, “I choose NOTA because I believe the world is controlled by money. People value only the talented or the beautiful; those who are neither often try to control others through money. Some untalented individuals join groups to gain power, while some talented individuals try to rule like dictators. In my view, both democracy and dictatorship are flawed, and unknown individuals benefit from this system while many people, including me, suffer. Many have also forgotten why this system was created.”**
+
 
 # Application
     
