@@ -1,3 +1,8 @@
+> "Which family secretly controls governments across the world? Why do the people not hold power, when a select few dominate through wealth and possess detailed data on every individual? Innocent people remain unaware of them, yet someone could validate this truth—like a person who holds the complete data of all. If the world is truly controlled by money, how can anyone genuinely trust another?"
+
+> **The group of people, which collect PAN, Aadhar card or any other document from common people, have data of each individuals, they have the power to control other and direct other unknown person life, did you all know ? All the person in that group is good, or they just using unknown people like me for their family or group profit ?  If anyone said God, Demon, Love, Marriage don't believe. Which all saying only for their profit.**
+
+> I also saying like this from my profit only. Since, I don't like other controlling me. **Did I born in this world to work for other for money or any kind of material** ? *No.*    
 
 | ⚖️ Disclaimer | 💭 My Personal Thought [War, Natural Disaster, Money, Any Events Prediction](https://engineer-work.github.io/Join-Company/war_prediction/war_prediction_reason.html) | 
 |---|---|   
