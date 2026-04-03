@@ -1,9 +1,3 @@
-> "Which family secretly controls governments across the world? Why do the people not hold power, when a select few dominate through wealth and possess detailed data on every individual? Innocent people remain unaware of them, yet someone could validate this truth—like a person who holds the complete data of all. If the world is truly controlled by money, how can anyone genuinely trust another?"
-
-> **The group of people, which collect PAN cards,  Aadhaar cards or any other document from common people, have data of each individuals, they have the power to control other and direct other unknown person life, did you all know ? All the person in that group is good, or they just using unknown people like me for their family or group profit ?  If anyone said God, Demon, Love, Marriage don't believe. Which all saying only for their profit.**
-
-> I also saying like this from my profit only. Since, I don't like other controlling me. **Did I born in this world to work for other for money or any kind of material** ? *No.*    
-
 | ⚖️ Disclaimer | 💭 My Personal Thought [War, Natural Disaster, Money, Any Events Prediction](https://engineer-work.github.io/Join-Company/war_prediction/war_prediction_reason.html) | 
 |---|---|   
 | [![Watch the video](https://img.youtube.com/vi/FadHDHAHoqI/default.jpg)](https://youtu.be/FadHDHAHoqI) [![Watch the video](https://img.youtube.com/vi/vC-KD7iM2ro/default.jpg)](https://youtu.be/vC-KD7iM2ro)  [![Watch the video](https://img.youtube.com/vi/QSQNucXNIE0/default.jpg)](https://youtu.be/QSQNucXNIE0) [![Watch the video](https://img.youtube.com/vi/9wIg9QwhEQQ/default.jpg)](https://youtu.be/9wIg9QwhEQQ) | [![Watch the video](https://img.youtube.com/vi/e3LiPNqsVEI/default.jpg)](https://youtu.be/e3LiPNqsVEI) [![Watch the video](https://img.youtube.com/vi/lqtdXVq5ecI/default.jpg)](https://youtu.be/lqtdXVq5ecI) [![Watch the video](https://img.youtube.com/vi/BUbV1OfRzZo/default.jpg)](https://youtu.be/BUbV1OfRzZo) [![Watch the video](https://img.youtube.com/vi/bgRTJniHzW8/default.jpg)](https://youtu.be/bgRTJniHzW8) [![Watch the video](https://img.youtube.com/vi/N_sASevJEvk/default.jpg)](https://youtu.be/N_sASevJEvk) [![Watch the video](https://img.youtube.com/vi/MC9fR49AyD4/default.jpg)](https://youtu.be/MC9fR49AyD4) [![Watch the video](https://img.youtube.com/vi/skhstpcWm0k/default.jpg)](https://youtu.be/skhstpcWm0k) <img src="https://raw.githubusercontent.com/engineer-work/Join-Company/refs/heads/main/images/3.png" width="50"/>  ![](https://raw.githubusercontent.com/engineer-work/Join-Company/refs/heads/main/images/text.png)   |
@@ -13,6 +7,22 @@
 | 👁️‍🗨️📌 Viewers are responsible for their own interpretations and actions. I am not liable for any consequences arising from the use or misunderstanding of this content. | ⚠️🚫👼😈 Becareful, **No God and No Demon**, It **just a binary classification** like Day and Night. Many cheating innocent one, just using this binary classification algorithm. |
 
 > **Plagiarism—copying others’ work and claiming it as one’s own—occurs globally, including in India; ethical teachings from traditions such as  ([Rishis, Siddhars](https://engineer-work.github.io/Join-Company/free-learning/not_copy/nc2.html), [Religion](https://engineer-work.github.io/Join-Company/free-learning/not_copy/nc1.html)) emphasize honesty, while modern organizations like  ([IEEE](https://engineer-work.github.io/Join-Company/free-learning/not_copy/ieee_nc.html)) and  ([Springer Nature](https://engineer-work.github.io/Join-Company/free-learning/not_copy/springer_nc.html)) strictly prohibit it and take action when detected.**
+
+> "Which family secretly controls governments across the world? Why do the people not hold power, when a select few dominate through wealth and possess detailed data on every individual? Innocent people remain unaware of them, yet someone could validate this truth—like a person who holds the complete data of all. If the world is truly controlled by money, how can anyone genuinely trust another?"
+
+> **The group of people, which collect PAN cards,  Aadhaar cards, Email from big MNC company or any other document from common people, have data of each individuals, they have the power to control other and direct other unknown person life, did you all know ? All the person in that group is good, or they just using unknown people like me for their family or group profit ?  If anyone said God, Demon, Love, Marriage don't believe. Which all saying only for their profit.**
+
+> I also saying like this from my profit only. Since, I don't like other controlling me. **Did I born in this world to work for other for money or any kind of material** ? *No.*    
+
+> My life pain story in Youtube only for money, subscribers, likes only. I not doing this for change anyone life. 
+
+| English | Tamil |
+| --- | --- |
+| [![Watch the video](https://img.youtube.com/vi/Bs5BEtS4c8c/default.jpg)](https://youtu.be/Bs5BEtS4c8c) | [![Watch the video](https://img.youtube.com/vi/mfwbS2I9vd4/default.jpg)](https://youtu.be/mfwbS2I9vd4) [![Watch the video](https://img.youtube.com/vi/xr8e8tdL2aA/default.jpg)](https://youtu.be/xr8e8tdL2aA) |
+
+
+
+---
 
 # I vote only for NOTA
 
