@@ -90,13 +90,13 @@ Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my f
 
 > I not interested in Marriage and Love, since it all fake for money, their no true love. **I too act to others as good for money.** 
 
-> What you learn in School, College is totally waste $\rightarrow$ if you forget ? but the education system, **force to do in [Memorization-Centric Education System](https://engineer-work.github.io/Join-Company/education_system/education_system.html) for that system collecting and spending the money from our parents hardwork**. *Please, In future don't need to go to school,college.* since lot of free material in **Youtube** and **Internet**.
+> What you learn in School, College is totally waste - if you forget ? but the education system, **force to do in [Memorization-Centric Education System](https://engineer-work.github.io/Join-Company/education_system/education_system.html) for that system collecting and spending the money from our parents hardwork**. *Please, In future don't need to go to school,college.* since lot of free material in **Youtube** and **Internet**.
 
 > Don't think why I not saying wrong about school. You itself know, how school doing, then why I said about school.
 
 > *I not believe others, since, In india, a dowry system for marriage, for that wealthiest girls and boys parents, put lot of gold, diamond, any other objects, lot foods for marriage. for just 1 days, but different states and district in india marriage is different. for that money ? How many of life they spoiled.? Did Government have the record for it. ? Government too support to them to collect money. Include me, I too support for them for money. otherwise they kill me. this the true situation. in this timeline only, I living.*
 
-> I join Engineering from **12th cut-off mark only in counselling in Anna University** *(during my 12th is total marks is 995/1200 marks)*, I studied Engineering in Education Loan. But, I don't know, why, I studied **Engineering** $\rightarrow$ only *Time, Health, Money wasted. We believe, that our life become great, but, if you don't have background, what you studing is totally waste.*
+> I join Engineering from **12th cut-off mark only in counselling in Anna University** *(during my 12th is total marks is 995/1200 marks)*, I studied Engineering in Education Loan. But, I don't know, why, I studied **Engineering** - only *Time, Health, Money wasted. We believe, that our life become great, but, if you don't have background, what you studing is totally waste.*
 
 >  I don't know why joined Engineering, then finding for **JOB**. Many cheating for their life. If forcing me, to cheating like them for my life. *What to do? Did, I start to cheat like other or not. for my life to collect money , If the of education system is good , Sport based System is , any System is good , giving fake word?* 
 
@@ -149,7 +149,7 @@ For me, (Math, Science, Engineering, Tech, Medical) good education in any field 
 
 ### “A species that destroys itself may also create its own destroyer.”
 
-> [1], [2] Now AI and Humanoid Robots helping humans, Who know $\rightarrow$ in future AI and Humanoid robot can kill human species.  Since, Now Same Human species are kill themself for money factor, lust of opposite sex, food, shelter, water, religion, caste, groups, politics, fame on each industrial, Growth related for individual or company. Many girls and boys acting like loving opposite sex for money and survival, they not true love. 
+> [1], [2] Now AI and Humanoid Robots helping humans, Who know - in future AI and Humanoid robot can kill human species.  Since, Now Same Human species are kill themself for money factor, lust of opposite sex, food, shelter, water, religion, caste, groups, politics, fame on each industrial, Growth related for individual or company. Many girls and boys acting like loving opposite sex for money and survival, they not true love. 
 
 ### “Institutions teach survival, not selflessness.”
 
