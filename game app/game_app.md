@@ -1,6 +1,9 @@
 # Note Taking
 1. [Note Taking Method - Cornell Univerity](https://canvas.cornell.edu/courses/1451)
 
+# Flash Card
+1. [Flashcards World](https://flashcards.world/)
+
 # Mindset Testing 
 1. [Mindset](https://mindsetonline.com/testyourmindset/)
 
