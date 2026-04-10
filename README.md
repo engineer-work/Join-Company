@@ -1,5 +1,5 @@
 
-| | ![](https://raw.githubusercontent.com/engineer-work/Join-Company/refs/heads/main/images/text.png) | | 
+| ![](https://avatars.githubusercontent.com/u/218388297?s=400&u=2a4be417ba0c3d5b999e163d80ac5ad8058f6184&v=4) | ![](https://raw.githubusercontent.com/engineer-work/Join-Company/refs/heads/main/images/text.png) | | 
 |---|---| --- |
 | Name | Gobal Krishnan V | 😔 I’m not getting a proper job 💼❌ and not getting proper food 🍽️❌, so I look fat outside ⚖️ but I don’t eat properly; some days I eat 2 meals, sometimes 1 🍚, and some days no food at all 😢, even water needs money 💧💸.| 
 | Email | gobalkrishnan.work@gmail.com, dr.bot.engineer@gmail.com | 💭 I don’t know the lifestyle of rich people 🏙️, but from my experience, many cheat others 🤥, spoil other lives 💔, and protect only their own family 🛡️👨‍👩‍👧‍👦. |
