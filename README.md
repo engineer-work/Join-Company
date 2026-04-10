@@ -1,12 +1,11 @@
- ![](https://raw.githubusercontent.com/engineer-work/Join-Company/refs/heads/main/images/text.png)
+
+| | ![](https://raw.githubusercontent.com/engineer-work/Join-Company/refs/heads/main/images/text.png) | | 
+|---|---| --- |
+| Name | Gobal Krishnan V | 😔 I’m not getting a proper job 💼❌ and not getting proper food 🍽️❌, so I look fat outside ⚖️ but I don’t eat properly; some days I eat 2 meals, sometimes 1 🍚, and some days no food at all 😢, even water needs money 💧💸.| 
+| Email | gobalkrishnan.work@gmail.com, dr.bot.engineer@gmail.com | 💭 I don’t know the lifestyle of rich people 🏙️, but from my experience, many cheat others 🤥, spoil other lives 💔, and protect only their own family 🛡️👨‍👩‍👧‍👦. |
+| Mobile | +91 8148729703 |💼 If I receive my full salary 💰 for the work I do from any organization—government 🏛️ or private 🏢 (school 🏫, college 🎓, office 🧑‍💻)—I can meet my needs 🛒✨; but when companies act selfishly 😐 and make layoff or firing decisions 📉🚪 without truly understanding the people behind the roles 🤷‍♂️—whether skilled or unskilled 🧠⚙️—it leads to struggle 😔💸, while they focus on stock growth 📈 and market trends or bubbles 🌊📊. |
+| [ORCID](https://orcid.org/0009-0001-3787-2860) |  0009-0001-3787-2860 | 😓 I struggle to grasp knowledge from lectures 📚 and materials, and I learn slowly 🐢, but I try to achieve perfect and accurate results 🎯 by relying on high probability and statistics 📊.|
  
-> 😔 I’m not getting a proper job 💼❌ and not getting proper food 🍽️❌, so I look fat outside ⚖️ but I don’t eat properly; some days I eat 2 meals, sometimes 1 🍚, and some days no food at all 😢, even water needs money 💧💸.
-
-> 💭 I don’t know the lifestyle of rich people 🏙️, but from my experience, many cheat others 🤥, spoil other lives 💔, and protect only their own family 🛡️👨‍👩‍👧‍👦.
-
-> 💼 If I receive my full salary 💰 for the work I do from any organization—government 🏛️ or private 🏢 (school 🏫, college 🎓, office 🧑‍💻)—I can meet my needs 🛒✨; but when companies act selfishly 😐 and make layoff or firing decisions 📉🚪 without truly understanding the people behind the roles 🤷‍♂️—whether skilled or unskilled 🧠⚙️—it leads to struggle 😔💸, while they focus on stock growth 📈 and market trends or bubbles 🌊📊.
-
-> 😓 I struggle to grasp knowledge from lectures 📚 and materials, and I learn slowly 🐢, but I try to achieve perfect and accurate results 🎯 by relying on high probability and statistics 📊.
 
 | ⚖️ Disclaimer | 💭 My Personal Thought [War, Natural Disaster, Money, Any Events Prediction](https://engineer-work.github.io/Join-Company/war_prediction/war_prediction_reason.html) | 
 |---|---|   
