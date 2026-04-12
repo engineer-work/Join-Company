@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Quest – Corrected Report (Demo-Wise Reality)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', 'Courier New', monospace;
+            background: white;
+            color: #1e2a3a;
+            line-height: 1.5;
+            padding: 40px 20px;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        body.dark {
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+
+        body.dark th {
+            background: #1e293b;
+            color: #f1f5f9;
+        }
+
+        body.dark td {
+            border-color: #334155;
+        }
+
+        body.dark .legend {
+            background: #1e293b;
+        }
+
+        body.dark .footer {
+            border-top-color: #334155;
+            color: #94a3b8;
+        }
+
+        body.dark .executive-summary {
+            background: #1e293b !important;
+        }
+
+        body.dark .references {
+            background: #1e293b !important;
+        }
+
+        body.dark .correction-note {
+            background: #7f1d1d !important;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            background: inherit;
+        }
+
+        .cover {
+            text-align: center;
+            padding: 60px 20px;
+            border-bottom: 3px solid #ef4444;
+            margin-bottom: 40px;
+        }
+
+        .cover h1 {
+            font-size: 2.5rem;
+            border-left: none;
+            padding-left: 0;
+            margin-bottom: 20px;
+        }
+
+        .cover .date {
+            font-size: 1.1rem;
+            color: #475569;
+            margin-top: 20px;
+        }
+
+        body.dark .cover .date {
+            color: #94a3b8;
+        }
+
+        .cover .version {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-top: 40px;
+        }
+
+        .correction-note {
+            background: #fee2e2;
+            border-left: 6px solid #ef4444;
+            padding: 16px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        body.dark .correction-note {
+            background: #7f1d1d;
+            border-left-color: #f87171;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            border-left: 8px solid #ef4444;
+            padding-left: 20px;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 5px;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #475569;
+            margin-bottom: 30px;
+            padding-left: 28px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.82rem;
+        }
+
+        th, td {
+            border: 1px solid #cbd5e1;
+            padding: 10px 6px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .grade-Splusplus { background: #1e3a8a; color: white; font-weight: bold; text-align: center; }
+        .grade-Splus { background: #2563eb; color: white; text-align: center; }
+        .grade-S { background: #3b82f6; color: white; text-align: center; }
+        .grade-Aplus { background: #10b981; color: white; text-align: center; }
+        .grade-A { background: #34d399; color: #064e3b; text-align: center; }
+        .grade-B { background: #fbbf24; color: #78350f; text-align: center; }
+        .grade-C { background: #f97316; color: white; text-align: center; }
+        .grade-D { background: #ef4444; color: white; text-align: center; }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 20px 0;
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+        }
+
+        .box {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+        }
+
+        .executive-summary {
+            background: #f0fdf4;
+            padding: 20px;
+            border-radius: 16px;
+            margin-top: 30px;
+        }
+
+        .references {
+            margin-top: 40px;
+            font-size: 0.75rem;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .references ul {
+            margin-left: 20px;
+        }
+
+        .references li {
+            margin: 6px 0;
+        }
+
+        .footer {
+            margin-top: 40px;
+            font-size: 0.7rem;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 20px;
+        }
+
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            z-index: 1000;
+            font-size: 0.8rem;
+        }
+
+        @media print {
+            .dark-mode-toggle {
+                display: none;
+            }
+            body, body.dark {
+                background: white;
+                color: black;
+            }
+            .correction-note {
+                background: #fee2e2 !important;
+                color: black !important;
+                border-left-color: #ef4444 !important;
+            }
+            .references, .executive-summary {
+                background: #f8fafc !important;
+                color: black !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<button class="dark-mode-toggle" onclick="toggleDarkMode()">🌓 Dark / Light</button>
+
+<div class="container">
+    <!-- COVER PAGE -->
+    <div class="cover">
+        <h1>⚛️ Quantum Quest</h1>
+        <h2>Performance Engineering Report (Corrected)</h2>
+        <div class="date">April 12, 2026</div>
+        <div class="version">Version 3.0 – Demo-Wise Reality | Asymptotic Proof (A+) ≠ Experimental Demo (C)</div>
+    </div>
+
+    <!-- CORRECTION NOTE -->
+    <div class="correction-note">
+        <strong>⚠️ CORRECTION NOTICE (April 12, 2026)</strong><br>
+        Previous versions incorrectly graded <strong>space complexity</strong> as A or B based on asymptotic proofs.<br>
+        <strong>Corrected approach:</strong> Asymptotic proof (math/physics) = <strong>A+</strong>. Experimental demonstration (hardware) = <strong>C</strong> for almost all applications.<br>
+        Only <strong>Random Circuit Sampling</strong> reaches B for space demo (53–70 qubits). All others are C (≤20 qubits demonstrated).
+    </div>
+
+    <!-- LEGEND -->
+    <div class="legend">
+        <div class="legend-item"><div class="box" style="background:#1e3a8a;"></div> S+++</div>
+        <div class="legend-item"><div class="box" style="background:#2563eb;"></div> S++ / S+</div>
+        <div class="legend-item"><div class="box" style="background:#3b82f6;"></div> S</div>
+        <div class="legend-item"><div class="box" style="background:#10b981;"></div> A+ (asymptotic proof, no demo)</div>
+        <div class="legend-item"><div class="box" style="background:#34d399;"></div> A</div>
+        <div class="legend-item"><div class="box" style="background:#fbbf24;"></div> B</div>
+        <div class="legend-item"><div class="box" style="background:#f97316;"></div> C (demo exists but small scale)</div>
+        <div class="legend-item"><div class="box" style="background:#ef4444;"></div> D / F</div>
+    </div>
+
+    <!-- ============================================= -->
+    <!-- 1. SPACE COMPLEXITY – CORRECTED               -->
+    <!-- ============================================= -->
+    <h2>📐 Space Complexity – Corrected (Asymptotic vs Demo)</h2>
+    <table>
+        <thead>
+            <tr><th>Application</th><th>Asymptotic Proof (Math)</th><th>Experimental Demo (NISQ)</th><th>Practical Deployment</th><th>Corrected Grade</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>Integer Factorization (Shor)</td><td class="grade-Aplus">A+ ($O((\log n)^2)$)</td><td class="grade-C">C (≤5 qubits)</td><td class="grade-D">D (None)</td><td class="grade-C">C</td></tr>
+            <tr><td>Unstructured Search (Grover)</td><td class="grade-Aplus">A+ ($O(\log N)$)</td><td class="grade-C">C (≤4 qubits)</td><td class="grade-D">D (None)</td><td class="grade-C">C</td></tr>
+            <tr><td>Random Circuit Sampling</td><td class="grade-A">A ($O(n)$)</td><td class="grade-B">B (53–70 qubits)</td><td class="grade-D">D (Useless problem)</td><td class="grade-B">B</td></tr>
+            <tr><td>Quantum Chemistry (VQE)</td><td class="grade-Aplus">A+ ($O(\text{orbitals})$)</td><td class="grade-C">C (≤2 qubits)</td><td class="grade-D">D (None)</td><td class="grade-C">C</td></tr>
+            <tr><td>TSP (exact)</td><td class="grade-Aplus">A+ ($O(n^2)$)</td><td class="grade-C">C (≤9 cities)</td><td class="grade-D">D (None)</td><td class="grade-C">C</td></tr>
+            <tr><td>Graph Max-Cut (QAOA)</td><td class="grade-A">A ($O(n)$)</td><td class="grade-C">C (≤20 qubits)</td><td class="grade-D">D (None)</td><td class="grade-C">C</td></tr>
+        </tbody>
+    </table>
+
+    <!-- ============================================= -->
+    <!-- 2. OVERALL QUANTUM GRADE (ALL METRICS)        -->
+    <!-- ============================================= -->
+    <h2>📊 Overall quantum grade by problem (demo-wise, 2026)</h2>
+    <table>
+        <thead>
+            <tr><th>Problem</th><th>Quantum Overall (Corrected)</th><th>Previous (Wrong)</th><th>Reason for Correction</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>Random Circuit Sampling</td><td class="grade-B">B+</td><td class="grade-Aplus">A+</td><td>Space demo is B, not A+; problem has no practical utility</td></tr>
+            <tr><td>Integer Factorization</td><td class="grade-C">C+</td><td class="grade-A">A–</td><td>Space demo only 5 qubits; cost/frequency D</td></tr>
+            <tr><td>Unstructured Search</td><td class="grade-C">C+</td><td class="grade-B">B+</td><td>Space demo only 4 qubits; quadratic speedup not enough</td></tr>
+            <tr><td>Quantum Chemistry (VQE)</td><td class="grade-C">C</td><td class="grade-C">C+</td><td>Space demo only 2 qubits; classical still wins</td></tr>
+            <tr><td>TSP</td><td class="grade-C">C</td><td class="grade-C">C+</td><td>Space demo only ≤9 cities; no heuristic advantage</td></tr>
+            <tr><td>Graph Max-Cut</td><td class="grade-C">C</td><td class="grade-C">C</td><td>Unchanged (already correct)</td></tr>
+        </tbody>
+    </table>
+
+    <!-- ============================================= -->
+    <!-- 3. NEUTRAL ATOM PLATFORM METRICS              -->
+    <!-- ============================================= -->
+    <h2>🧪 Neutral atom platforms – comparative metrics (2026)</h2>
+    <table>
+        <thead><tr><th>Metric</th><th>Pasqal</th><th>QuEra</th><th>Atom Computing</th><th>Demo Grade</th></tr></thead>
+        <tbody>
+            <tr><td>Max physical qubits</td><td>~200</td><td>256</td><td>1180+</td><td class="grade-B">B</td></tr>
+            <tr><td>Qubit type</td><td>Rb</td><td>Rb</td><td>Sr (nuclear)</td><td class="grade-A">A</td></tr>
+            <tr><td>Gate fidelity (2-qubit)</td><td>97–98%</td><td>98–99%</td><td>~99%</td><td class="grade-C">C</td></tr>
+            <tr><td>Coherence time (T2)</td><td>1–10 s</td><td>1–10 s</td><td>~40 s</td><td class="grade-Aplus">A+</td></tr>
+            <tr><td>Analog / Digital</td><td>Both</td><td>Both</td><td>Digital focus</td><td class="grade-B">B</td></tr>
+            <tr><td>Cloud access</td><td>AWS Braket</td><td>AWS, Google</td><td>Limited</td><td class="grade-C">C</td></tr>
+        </tbody>
+    </table>
+
+    <!-- ============================================= -->
+    <!-- 4. COST & FREQUENCY (unchanged, all D)        -->
+    <!-- ============================================= -->
+    <h2>💰 Cost & frequency – quantum vs classical</h2>
+    <table>
+        <thead><tr><th>Metric</th><th>Classical</th><th>Quantum (2026)</th><th>Quantum Grade</th></tr></thead>
+        <tbody>
+            <tr><td>Dollar cost per solve</td><td>&lt;$0.01</td><td>$1–$50</td><td class="grade-D">D</td></tr>
+            <tr><td>Energy per solve</td><td>0.01–1000 J</td><td>kWh range</td><td class="grade-D">D</td></tr>
+            <tr><td>Run frequency (jobs/day)</td><td>Millions</td><td>10–100</td><td class="grade-D">D</td></tr>
+            <tr><td>Queue wait time</td><td>Seconds</td><td>Minutes to hours</td><td class="grade-D">D</td></tr>
+        </tbody>
+    </table>
+
+    <!-- ============================================= -->
+    <!-- 5. FINAL VERDICT – NEUTRAL ATOM               -->
+    <!-- ============================================= -->
+    <h2>⚖️ Final verdict: Neutral atom quantum computing (2026)</h2>
+    <table>
+        <thead><tr><th>Aspect</th><th>Grade</th><th>Explanation</th></tr></thead>
+        <tbody>
+            <tr><td>Qubit scalability</td><td class="grade-A">A</td><td>1000+ qubits; clear path to 10,000+</td></tr>
+            <tr><td>Coherence time</td><td class="grade-Aplus">A+</td><td>Sr nuclear spin up to 40s – best in industry</td></tr>
+            <tr><td>Gate fidelity</td><td class="grade-C">C</td><td>Still behind superconducting (99.9% vs 97–99%)</td></tr>
+            <tr><td>Analog quantum advantage</td><td class="grade-D">D</td><td>No proven speedup for real-world optimization</td></tr>
+            <tr><td>Digital quantum advantage</td><td class="grade-D">D</td><td>No advantage for TSP, Max-Cut, or chemistry</td></tr>
+            <tr><td>Overall maturity (2026)</td><td class="grade-C">C+</td><td>Promising hardware, no killer app yet</td></tr>
+        </tbody>
+    </table>
+
+    <!-- ============================================= -->
+    <!-- 6. EXECUTIVE SUMMARY (CORRECTED)              -->
+    <!-- ============================================= -->
+    <div class="executive-summary">
+        <h3>📌 Corrected executive summary</h3>
+        <ul style="margin-left: 20px;">
+            <li>✅ <strong>Asymptotic proofs</strong> exist for many algorithms (A+ for space/time complexity).</li>
+            <li>❌ <strong>Experimental demonstrations</strong> are small scale (C for almost all applications).</li>
+            <li>⚠️ <strong>Space complexity is NOT mature</strong> – theory is 10–20 years ahead of hardware.</li>
+            <li>🔬 <strong>Only Random Circuit Sampling</strong> reaches B for space demo (53–70 qubits).</li>
+            <li>💰 <strong>Cost and frequency</strong> are D for all quantum platforms.</li>
+            <li>🏆 <strong>Highest demo-grade achieved</strong>: B+ (Random Circuit Sampling) – but problem is useless.</li>
+            <li>📉 <strong>All practical problems</strong> (TSP, Max-Cut, chemistry, factoring) score C or D on demo-wise grading.</li>
+        </ul>
+    </div>
+
+    <!-- ============================================= -->
+    <!-- 7. REFERENCES                                 -->
+    <!-- ============================================= -->
+    <div class="references">
+        <h3>📚 References</h3>
+        <ul>
+            <li>Shor, P. W. (1994). Algorithms for quantum computation. <em>FOCS</em>.</li>
+            <li>Grover, L. K. (1996). A fast quantum mechanical algorithm for database search. <em>STOC</em>.</li>
+            <li>Arute, F. et al. (2019). Quantum supremacy using a programmable superconducting processor. <em>Nature</em>.</li>
+            <li>Peruzzo, A. et al. (2014). A variational eigenvalue solver. <em>Nature Communications</em>.</li>
+            <li>Farhi, E. et al. (2014). A quantum approximate optimization algorithm. <em>arXiv:1411.4028</em>.</li>
+            <li>Graham, T. M. et al. (2022). Rydberg-mediated entanglement. <em>PRX</em>.</li>
+            <li>Pasqal, QuEra, Atom Computing – product specifications (2026).</li>
+        </ul>
+    </div>
+
+    <div class="footer">
+        Quantum Quest – Corrected Report v3.0 (2026) | Demo-wise reality: Asymptotic proof (A+) ≠ Experimental demo (C)<br>
+        Space complexity is NOT mature for any practical application. Only Random Circuit Sampling reaches B.
+    </div>
+</div>
+
+<script>
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark');
+    }
+</script>
+
+</body>
+</html>
