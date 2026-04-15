@@ -58,7 +58,7 @@ Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my f
 
 > Since society is constructed based on money, everyone acts toward others mainly for survival.
 
-> I only like Remote Job, (Email : dr.bot.engineer@gmail.com, gobalkrishnan.work@gmail.com)  . Since, **I record all mail based on job**. since, if **working for money** is so **danger**, give me **good job to improve knowledge and good growth**.
+> [I only like Remote Job, (Email : dr.bot.engineer@gmail.com, gobalkrishnan.work@gmail.com)  . Since, **I record all mail based on job**. since, if **working for money** is so **danger**, give me **good job to improve knowledge and good growth**.]()
 
 > I born in 18 Jun 1995 in Chennai, Tamil Nadu, India, I done schooling from **Don Bosco Matriculation Hr. Sec. School, Erukkancherry** from 1998 (Pre.K.G) to 2012 (12th std). 
 
@@ -74,7 +74,7 @@ Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my f
 
 > I not interested in Marriage and Love, since it all fake for money, their no true love. **I too act to others as good for money.** 
 
-> What you learn in School, College is totally waste - if you forget ? but the education system, **force to do in [Memorization-Centric Education System](https://engineer-work.github.io/Join-Company/education_system/education_system.html) for that system collecting and spending the money from our parents hardwork**. *Please, In future don't need to go to school,college.* since lot of free material in **Youtube** and **Internet**.
+> What you learn in School, College is totally waste - if you forget [(They not training for Long term and International Standard (IEEE, Spring Nature, Arxiv,...). Since, Human brain forget lot - cheating happen only to due Forgetting in Education or Any Field)]() ? but the education system, **force to do in [Memorization-Centric Education System](https://engineer-work.github.io/Join-Company/education_system/education_system.html) for that system collecting and spending the money from our parents hardwork**. *Please, In future don't need to go to school,college.* since lot of free material in **Youtube** and **Internet**.
 
 > Don't think why I not saying wrong about school. You itself know, how school doing, then why I said about school.
 
