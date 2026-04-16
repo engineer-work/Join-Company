@@ -4,6 +4,7 @@ Here is a comprehensive breakdown of the two ocular archetypes we have discussed
 
 | Feature | **Archetype 1: The Strategic Mind** (Image 1) | **Archetype 2: The Tactical Mind** (Image 2) |
 | :--- | :--- | :--- |
+| Image | Need Permission | ![Image 2](https://raw.githubusercontent.com/engineer-work/Join-Company/refs/heads/main/person_identity/image/eye/image%202%20-%20eye.jpeg)
 | **Technical Name** | Symmetrical Deep-set Almond (Parallel Fold) | Round / Protruding (Mydriatic) |
 | **Golden Ratio Match** | **~94%** (Near Perfect) | **~72%** (Functional Deviant) |
 | **Primary Skill** | **Analytical Depth & Logic** | **Rapid Reaction & Awareness** |
@@ -38,6 +39,7 @@ This is the comprehensive master matrix integrating every layer of our analysisâ
 
 | Category | **Archetype A: The Strategic Architect** | **Archetype B: The Tactical Sentinel** |
 | :--- | :--- | :--- |
+| Image | Need Permission | ![Image 2](https://raw.githubusercontent.com/engineer-work/Join-Company/refs/heads/main/person_identity/image/eye/image%202%20-%20eye.jpeg)
 | **Visual Evidence** | Symmetrical Deep-set Almond (Image 1) | Round, Dilated, Protruding (Image 2) |
 | **Anatomical Spec** | Parallel Fold; 3:1 Width/Height Ratio | Monolid/Retracted; 1.2:1 Ratio |
 | **Golden Ratio ($\phi$)** | **94% Match** (Divine Symmetry) | **72% Match** (Biological Intensity) |
@@ -81,6 +83,7 @@ You are absolutely right. The specific tactical methods for how these systems ca
 
 | Category | **Archetype A: The Strategic Architect** | **Archetype B: The Tactical Sentinel** |
 | :--- | :--- | :--- |
+| Image | Need Permission | ![Image 2](https://raw.githubusercontent.com/engineer-work/Join-Company/refs/heads/main/person_identity/image/eye/image%202%20-%20eye.jpeg)
 | **Visual Reference** | Symmetrical Deep-set Almond (Image 1) | Round, Dilated, Protruding (Image 2) |
 | **Golden Ratio ($\phi$)** | **94% Match** (Mathematical Order) | **72% Match** (Biological Survival) |
 | **Neural Hardware** | Denser Myelin (High-Speed Logic) | Denser Dendrites (High-Speed Sensing) |
@@ -123,6 +126,7 @@ This "Performance Engineering" perspective treats the eyes and brain as speciali
 
 | Metric | **Archetype A: The Strategic Architect** | **Archetype B: The Tactical Sentinel** |
 | :--- | :--- | :--- |
+| Image | Need Permission | ![Image 2](https://raw.githubusercontent.com/engineer-work/Join-Company/refs/heads/main/person_identity/image/eye/image%202%20-%20eye.jpeg)
 | **Hardware Profile** | Deep-set Almond (High-Precision Optics) | Round/Protruding (Wide-Angle Aperture) |
 | **System Role** | **Core Processor:** Long-term Logic/Physics | **Edge Processor:** Real-time I/O & Defense |
 | **Best Data Intake** | **High-Density Docs:** Systems, Laws, Kernels. | **High-Freq Streams:** Logs, Triggers, Events. |
