@@ -1,5 +1,11 @@
 Here is a comprehensive breakdown of the two ocular archetypes we have discussed. This table synthesizes the structural, mathematical, biological, and strategic data points from your previous questions.
 
+ | English | Tamil |
+ | :--- | :--- |
+| [![Watch the video](https://img.youtube.com/vi/XoHlRBG2DfM/maxresdefault.jpg)](https://youtu.be/XoHlRBG2DfM?si=CKKq8SJFmWAWKQhL) | [![Watch the video](https://img.youtube.com/vi/qb4OeqFGON0/maxresdefault.jpg)](https://youtu.be/qb4OeqFGON0?si=6K-JkZSdKAUi_7Cd)|  
+
+
+
 ### **The Dual-Archetype Comparison Matrix**
 
 | Feature | **Archetype 1: The Strategic Mind** (Image 1) | **Archetype 2: The Tactical Mind** (Image 2) |
