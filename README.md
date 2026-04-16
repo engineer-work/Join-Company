@@ -118,9 +118,12 @@ Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my f
 
 # Inborn Skill 
 
-### Eye 
+### 1. Eye [Inborn Skill by Eye](https://engineer-work.github.io/Join-Company/person_identity/skill/eye/eye.html)
 
-[Inborn Skill by Eye](https://engineer-work.github.io/Join-Company/person_identity/skill/eye/eye.html),
+| English | Tamil |
+| :--- | :--- |
+| [![Watch the video](https://img.youtube.com/vi/XoHlRBG2DfM/maxresdefault.jpg)](https://youtu.be/XoHlRBG2DfM?si=CKKq8SJFmWAWKQhL) | [![Watch the video](https://img.youtube.com/vi/qb4OeqFGON0/maxresdefault.jpg)](https://youtu.be/qb4OeqFGON0?si=6K-JkZSdKAUi_7Cd)|  
+
 
 ---
 
