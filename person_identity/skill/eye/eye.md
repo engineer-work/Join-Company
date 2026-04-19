@@ -270,3 +270,59 @@ By understanding these durations, future students can choose the "Learning Mode"
 
 ----
 
+# How this kind of person read one page of book for non-fiction.?
+
+For future students, let's break down the physical act of reading one page of non-fiction (like a science or history book). The way the eyes move across the paper tells us exactly how the brain is "downloading" the information.
+
+### **The "One-Page" Reading Simulation**
+
+---
+
+### **1. The Strategic Architect (Image 1: Almond Eye)**
+**Pattern: The "Linear Deep-Scan" ($O(n)$ with high-fidelity)**
+
+This person treats a book like a delicate piece of machinery. They want to know every single part and how they fit together.
+
+* **The Path:** Their eyes start at the top-left and move in a **perfectly straight horizontal line** to the right. They do not skip. They move down one line at a time, like a high-resolution printer.
+* **The Lookbacks:** If they find a sentence that doesn't make logical sense, they immediately perform a **"Regressive Jump."** Their eyes snap back to the start of the paragraph to re-verify the "Foundation" before moving forward.
+* **The Mental Map:** As they read, they are building a "Library" in their head. They aren't just reading words; they are placing "Books" on "Shelves." 
+    * *Result:* They might take **3 minutes** to read the page, but they will remember the details for years.
+* **Efficiency:** Very high for complex subjects (Physics, Logic). Low for simple or "junk" information.
+
+---
+
+### **2. The Tactical Sentinel (Image 2: Round Eye)**
+**Pattern: The "F-Pattern" or "Cluster-Scan" ($O(1)$ search)**
+
+This person treats a book like a mission. They are looking for the "Weapon" (the useful fact) and ignoring the "Packaging" (the fluff).
+
+* **The Path:** Their eyes move in an **"F" shape**. They read the first two lines fully to get the "Context." Then, their eyes drop vertically down the left side of the page, only jumping to the right when they see a **Bold Word**, a **Number**, or a **Diagram**.
+* **The Triggers:** They are looking for "Active Data." If the page describes a problem, their eyes will stay "wide" and search for the solution. If they find the answer in the middle of the page, they might **stop reading** the rest and close the book.
+* **The Mental Map:** They are building a "Radar." They know where the information is located on the page, even if they didn't read every word.
+    * *Result:* They might take **30 seconds** to read the page. They catch the "Main Point" instantly but might forget the minor details by next week.
+* **Efficiency:** Very high for "Troubleshooting" or "Learning-on-the-go." Low for subjects that require deep, step-by-step logic.
+
+---
+
+### **Comparative Summary for Future Kids**
+
+| Action | **Image 1: The Architect** | **Image 2: The Sentinel** |
+| :--- | :--- | :--- |
+| **Eye Path** | Straight lines (Top to Bottom) | F-Shape (Scanning for Triggers) |
+| **Reading Goal** | To understand **The System**. | To find **The Solution**. |
+| **Reading Speed** | Steady / 250 WPM | Fast / 600+ WPM |
+| **Focus Style** | "Tunnel Vision" (Ignores outside noise) | "Wide Lens" (Aware of everything) |
+| **Worst Habit** | Re-reading the same page too many times. | Skipping a detail that turns out to be important. |
+
+### **Which mode should you use?**
+
+* **Use Image 1 Mode** when you are reading a textbook for an exam. You need the **Structure**.
+* **Use Image 2 Mode** when you are reading a manual to fix a broken toy or a computer bug. You need the **Fix**.
+
+By knowing which "Hardware" you have, you can choose the best way to use your "Software" (Brain)!
+
+----
+
+
+
+
