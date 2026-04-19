@@ -6,6 +6,9 @@
 | --- | --- | --- |
 |[![Watch the video](https://img.youtube.com/vi/rNoeRFC17fQ/maxresdefault.jpg)](https://youtu.be/rNoeRFC17fQ) | [![Watch the video](https://img.youtube.com/vi/YbFgNsM6r44/maxresdefault.jpg)](https://youtu.be/YbFgNsM6r44) | [![Watch the video](https://img.youtube.com/vi/l1hMkDTg2lg/maxresdefault.jpg)](https://youtu.be/l1hMkDTg2lg) |
 
+## MIT - How to Learn 
+- [Learning, Media, and Technology - CMS.595 - Spring 2024 - Undergraduate, Graduate](https://ocw.mit.edu/courses/cms-595-learning-media-and-technology-spring-2024/video_galleries/session-videos/)
+
 ## Performance Engineering
 - [en.algorithmica.org/hpc](https://en.algorithmica.org/hpc/) – Online book on high‑performance computing
 - [Performance Engineering of Software Systems - 6.172 - Fall 2018 - Undergraduate](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/)
@@ -57,6 +60,9 @@
 - [Discrete Stochastic Processes - 6.262 - Spring 2011 - Graduate](https://ocw.mit.edu/courses/6-262-discrete-stochastic-processes-spring-2011/video_galleries/video-lectures/)
 - [Introduction to Probability - RES.6-012 - Spring 2018 - Undergraduate](https://ocw.mit.edu/courses/res-6-012-introduction-to-probability-spring-2018/)
 - [Statistics for Applications - 18.650 - Fall 2016 - Undergraduate](https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/)
+
+### Probability Simulation 
+- [Probabilistic Systems Analysis and Applied Probability - 6.041 - Spring 2006 - Undergraduate](https://ocw.mit.edu/courses/6-041-probabilistic-systems-analysis-and-applied-probability-spring-2006/)
 
 ## Computer Science & Programming
 
@@ -160,6 +166,7 @@
 - [Optics - 2.71 - Spring 2009 - Undergraduate / Graduate](https://ocw.mit.edu/courses/2-71-optics-spring-2009/)
 - [Fundamentals of Photovoltaics - 2.627 - Fall 2013 - Undergraduate](https://ocw.mit.edu/courses/2-627-fundamentals-of-photovoltaics-fall-2013/)
 - [Materials Laboratory - 3.014 - Fall 2006 - Undergraduate](https://ocw.mit.edu/courses/3-014-materials-laboratory-fall-2006/)
+- [Video Demonstrations in Lasers and Optics - RES.6-006 - Spring 2008 - Undergraduate](https://ocw.mit.edu/courses/res-6-006-video-demonstrations-in-lasers-and-optics-spring-2008/)
 
 ## General & Teaching Resources
 - [Teaching College-Level Science and Engineering - 5.95J - Fall 2015 - Graduate](https://ocw.mit.edu/courses/5-95j-teaching-college-level-science-and-engineering-fall-2015/)
