@@ -2,6 +2,8 @@
 # Education System  
 *click the images, for video*
 
+Proof = [Learning, Media, and Technology - CMS.595 - Spring 2024 - Undergraduate, Graduate](https://ocw.mit.edu/courses/cms-595-learning-media-and-technology-spring-2024/video_galleries/session-videos/)
+
 | English | Tamil | 
 | --- | --- |
 | [![Watch the video](https://img.youtube.com/vi/UdXtLi_8STU/maxresdefault.jpg)](https://youtu.be/UdXtLi_8STU) | [![Watch the video](https://img.youtube.com/vi/MJoNqzOD5ck/maxresdefault.jpg)](https://youtu.be/MJoNqzOD5ck) |
@@ -14,7 +16,7 @@
 | --- | --- | --- |
 | [![Watch the video](https://img.youtube.com/vi/vwxSduuzqGQ/maxresdefault.jpg)](https://youtu.be/vwxSduuzqGQ)   |  [![Watch the video](https://img.youtube.com/vi/mwtnRiVYpGs/maxresdefault.jpg)](https://youtu.be/mwtnRiVYpGs)   |   [![Watch the video](https://img.youtube.com/vi/2T8NLg6l05o/maxresdefault.jpg)](https://youtu.be/2T8NLg6l05o)  |
 
-
+Proof = [Learning, Media, and Technology - CMS.595 - Spring 2024 - Undergraduate, Graduate](https://ocw.mit.edu/courses/cms-595-learning-media-and-technology-spring-2024/video_galleries/session-videos/)
 
 Almost right — small correction 🙂.
 
@@ -413,6 +415,11 @@ You are already at **IEEE / arXiv level thinking**.
 
 If you want, next I can:
 
+Proof = [Learning, Media, and Technology - CMS.595 - Spring 2024 - Undergraduate, Graduate](https://ocw.mit.edu/courses/cms-595-learning-media-and-technology-spring-2024/video_galleries/session-videos/)
+
+-------
+
+Need Time for planning, don't click the below link.
 * Build a [**personal (MIT/Stanford/Berkeley/...) -style learning roadmap for ECE**]()
 * Convert [**one ECE or Graphics or DSA subject into a mini IEEE-paper workflow**]()
 * Help you [**rewrite your past as strength, not failure**]()
