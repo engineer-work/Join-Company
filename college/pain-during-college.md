@@ -6,7 +6,7 @@
 
 > My batch in engineering is 2012-2016, due to this arrears, 1 year taken to completed (i.e) 2017, I have completed.
 
-> I believed college professor , principle are really help for education. but are selfish. I not saying wrong them, since, I am also selfish. I too think to secure myself. I should predict this before 2012. so my 2012 to 2026 years are Wasted.
+> I believed college professor , principle are really help for education. but are selfish. I not saying wrong them, since, I am also selfish. I too think to secure myself. I should predict this before 2012. so my 2012 to 2026 years are Wasted. 
 
  
 
@@ -15,7 +15,8 @@
 ### ANALYSIS AND EVALUATE THE GRADES
 
 - (important statement) But, Anna University Affiliated (T.J.S Engineering College) said to buy the Final year project only from outside 'Project Center'. I not done that.  Otherwise they said 'fail in exam'.  so given money to buy the Final year project
--  08 - EC2451 - PROJECT WORK - APR 2016 - is not my work - they forced to buy from project center.
+-  08 - EC2451 - PROJECT WORK - APR 2016 - is not my work - they forced to buy from project center. 
+-  **Hand Gesture Based Motor Control** – A final year project using a Raspberry Pi board, camera, and DC motor, with OpenCV’s Haar Cascade algorithm to detect the hand palm and control motor rotation (left, right, up, down) based on hand movement in a 2D coordinate system.
 -  Unwanted paid money for college, Books & Doc are Totally waste, Since - [No] Knowledge gain. - Money Wasted - Time Wasted - Even if you have talent, you fail due to some unknown people. or society poilitcal issue.
 ---
 
