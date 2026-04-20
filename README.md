@@ -133,6 +133,15 @@ Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my f
 | --- | --- | --- | --- |
 | [![Watch the video](https://img.youtube.com/vi/STxDFxxeX08/mqdefault.jpg)](https://youtu.be/STxDFxxeX08) | [![Watch the video](https://img.youtube.com/vi/7Mhyczjha1c/mqdefault.jpg)](https://youtu.be/7Mhyczjha1c) | [![Watch the video](https://img.youtube.com/vi/-swmWqU22gY/mqdefault.jpg)](https://youtu.be/-swmWqU22gY) |[![Watch the video](https://img.youtube.com/vi/AWzUls8sUJg/mqdefault.jpg)](https://youtu.be/AWzUls8sUJg)| 
 
+# Guruvayur Temple.
+> Here is a properly worded version of your complete statement, combining all your requests clearly:
+
+> [guruvayurdevaswom.in](https://guruvayurdevaswom.in/#/login), 
+
+**"If I get married, I would like the wedding to take place inside the Guruvayur Temple. If I die, I wish to be buried at any place within a 1 km range of the temple. However, if I become a VIP in the future, please help me to be buried inside the Guruvayur Temple itself."**
+
+![](https://media-cdn.tripadvisor.com/media/photo-o/15/44/38/13/guruvayur-temple.jpg)
+
 # Life Partner - If marriage happens - My expectation ?
 
 | Moon Knight | Avatar Kyoshi  | Ant and Wasp | 
