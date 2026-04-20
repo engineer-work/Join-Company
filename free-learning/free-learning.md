@@ -414,6 +414,95 @@ Take: 8.01, 18.01, 18.03, 6.100L, 18.085, 3.021J
 ### Path D: "I want to complete the entire list"
 **Time: Not realistic. Do not attempt.**
 
+
+I appreciate you pushing for the direct links. Here are the **official MIT OpenCourseWare links** for every course in Paths A, B, and C.
+
+---
+
+## Path A: "I want to be a physicist who can code"
+
+| Course | MIT Course # | Official Link |
+|--------|--------------|---------------|
+| Classical Mechanics | 8.01 | [https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/](https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/) |
+| Electricity & Magnetism | 8.02 | [https://ocw.mit.edu/courses/8-02sc-physics-ii-electricity-and-magnetism-fall-2010/](https://ocw.mit.edu/courses/8-02sc-physics-ii-electricity-and-magnetism-fall-2010/) |
+| Vibrations & Waves | 8.03 | [https://ocw.mit.edu/courses/8-03sc-physics-iii-vibrations-and-waves-fall-2016/](https://ocw.mit.edu/courses/8-03sc-physics-iii-vibrations-and-waves-fall-2016/) |
+| Quantum Physics I | 8.04 | [https://ocw.mit.edu/courses/8-04-quantum-physics-i-spring-2013/](https://ocw.mit.edu/courses/8-04-quantum-physics-i-spring-2013/) |
+| Single Variable Calculus | 18.01 | [https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/](https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/) |
+| Multivariable Calculus | 18.02 | [https://ocw.mit.edu/courses/18-02sc-multivariable-calculus-fall-2010/](https://ocw.mit.edu/courses/18-02sc-multivariable-calculus-fall-2010/) |
+| Differential Equations | 18.03 | [https://ocw.mit.edu/courses/18-03sc-differential-equations-fall-2011/](https://ocw.mit.edu/courses/18-03sc-differential-equations-fall-2011/) |
+| Linear Algebra | 18.06 | [https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/](https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/) |
+| Introduction to CS & Programming | 6.100L | [https://ocw.mit.edu/courses/6-100l-introduction-to-cs-and-programming-using-python-fall-2022/](https://ocw.mit.edu/courses/6-100l-introduction-to-cs-and-programming-using-python-fall-2022/) |
+| Probabilistic Systems Analysis | 6.041 | [https://ocw.mit.edu/courses/6-041sc-probabilistic-systems-analysis-and-applied-probability-fall-2013/](https://ocw.mit.edu/courses/6-041sc-probabilistic-systems-analysis-and-applied-probability-fall-2013/) |
+| Computational Science & Eng I | 18.085 | [https://ocw.mit.edu/courses/18-085-computational-science-and-engineering-i-fall-2008/](https://ocw.mit.edu/courses/18-085-computational-science-and-engineering-i-fall-2008/) |
+
+---
+
+## Path B: "I want to be a scientific computing expert"
+
+| Course | MIT Course # | Official Link |
+|--------|--------------|---------------|
+| Single Variable Calculus | 18.01 | [https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/](https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/) |
+| Multivariable Calculus | 18.02 | [https://ocw.mit.edu/courses/18-02sc-multivariable-calculus-fall-2010/](https://ocw.mit.edu/courses/18-02sc-multivariable-calculus-fall-2010/) |
+| Differential Equations | 18.03 | [https://ocw.mit.edu/courses/18-03sc-differential-equations-fall-2011/](https://ocw.mit.edu/courses/18-03sc-differential-equations-fall-2011/) |
+| Linear Algebra | 18.06 | [https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/](https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/) |
+| Math for CS | 6.042J | [https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-fall-2010/](https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-fall-2010/) |
+| Introduction to Algorithms | 6.006 | [https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/](https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/) |
+| Design & Analysis of Algorithms | 6.046J | [https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/](https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/) |
+| Performance Engineering | 6.172 | [https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/) |
+| Computational Science & Eng I | 18.085 | [https://ocw.mit.edu/courses/18-085-computational-science-and-engineering-i-fall-2008/](https://ocw.mit.edu/courses/18-085-computational-science-and-engineering-i-fall-2008/) |
+| Intro to Modeling & Simulation | 3.021J | [https://ocw.mit.edu/courses/3-021j-introduction-to-modeling-and-simulation-spring-2012/](https://ocw.mit.edu/courses/3-021j-introduction-to-modeling-and-simulation-spring-2012/) |
+
+---
+
+## Path C: "I want to build simulators for fun/portfolio"
+
+| Course | MIT Course # | Official Link |
+|--------|--------------|---------------|
+| Classical Mechanics | 8.01 | [https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/](https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/) |
+| Single Variable Calculus | 18.01 | [https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/](https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/) |
+| Differential Equations | 18.03 | [https://ocw.mit.edu/courses/18-03sc-differential-equations-fall-2011/](https://ocw.mit.edu/courses/18-03sc-differential-equations-fall-2011/) |
+| Introduction to CS & Programming | 6.100L | [https://ocw.mit.edu/courses/6-100l-introduction-to-cs-and-programming-using-python-fall-2022/](https://ocw.mit.edu/courses/6-100l-introduction-to-cs-and-programming-using-python-fall-2022/) |
+| Computational Science & Eng I | 18.085 | [https://ocw.mit.edu/courses/18-085-computational-science-and-engineering-i-fall-2008/](https://ocw.mit.edu/courses/18-085-computational-science-and-engineering-i-fall-2008/) |
+| Intro to Modeling & Simulation | 3.021J | [https://ocw.mit.edu/courses/3-021j-introduction-to-modeling-and-simulation-spring-2012/](https://ocw.mit.edu/courses/3-021j-introduction-to-modeling-and-simulation-spring-2012/) |
+
+---
+
+## Important Note About 8.04 (Quantum Physics I)
+
+The search results confirm the **prerequisites** for 8.04 :
+
+> *"Students must have completed 8.03 Physics III: Vibrations and Waves and 18.03 Differential Equations with grades of C or higher."*
+
+This is why Path A has 8.03 and 18.03 **before** 8.04. Do not skip the prerequisites — quantum mechanics will be incomprehensible without waves and differential equations.
+
+---
+
+## Walter Lewin Lecture Series (Alternative Format)
+
+If you prefer video lectures, MIT OpenCourseWare also hosts the **Walter Lewin** lecture series for the core physics courses :
+
+| Course | Link |
+|--------|------|
+| 8.01 Classical Mechanics (Fall 1999) | 35 video lectures on OCW |
+| 8.02 Electricity & Magnetism (Spring 2002) | 36 video lectures on OCW |
+| 8.03 Vibrations & Waves (Fall 2004) | 23 video lectures on OCW |
+
+These are the same courses, just an older format with full video lectures. The SC (Scholar) versions linked above include more complete problem sets and exams.
+
+---
+
+## Quick Reference Table
+
+| Path | Courses | Time | Primary Links |
+|------|---------|------|---------------|
+| **A** | 11 courses | 2-3 years full-time | 8.01, 8.02, 8.03, 8.04, 18.01, 18.02, 18.03, 18.06, 6.100L, 6.041, 18.085 |
+| **B** | 10 courses | 2-3 years full-time | 18.01, 18.02, 18.03, 18.06, 6.042J, 6.006, 6.046J, 6.172, 18.085, 3.021J |
+| **C** | 6 courses | 6-12 months full-time | 8.01, 18.01, 18.03, 6.100L, 18.085, 3.021J |
+
+All links go to **MIT OpenCourseWare** — completely free, no account required, includes lecture notes, assignments, and exams.
+
+Choose your path and start with **Week 1** of the first course.
+
 ---
 
 ## Final Answer to Your Question
