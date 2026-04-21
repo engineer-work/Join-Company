@@ -133,6 +133,21 @@ Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my f
 | --- | --- | --- | --- |
 | [![Watch the video](https://img.youtube.com/vi/STxDFxxeX08/mqdefault.jpg)](https://youtu.be/STxDFxxeX08) | [![Watch the video](https://img.youtube.com/vi/7Mhyczjha1c/mqdefault.jpg)](https://youtu.be/7Mhyczjha1c) | [![Watch the video](https://img.youtube.com/vi/-swmWqU22gY/mqdefault.jpg)](https://youtu.be/-swmWqU22gY) |[![Watch the video](https://img.youtube.com/vi/AWzUls8sUJg/mqdefault.jpg)](https://youtu.be/AWzUls8sUJg)| 
 
+# My Birth Chart 
+
+| Name | Gobal Krishnan V |
+| --- | --- |
+|Date of Birth | 18-06-1995|
+|Time of Birth | 3.30 PM|
+|Place of Birth | Chennai |
+| Rasi (Moon Sign)  | Kumbha (கும்பம்) (കുംഭം) |
+| Nakshatra | Shatabhisha (சதயம்)(ശതയം)| 
+| Lagna | Tula (துலா) (തുലാം) | 
+
+| Rasi | Navamsa | 
+| --- | --- |
+| ![](https://engineer-work.github.io/Join-Company/images/rasi_chart.webp) | ![](https://engineer-work.github.io/Join-Company/images/navamsa_chart.webp)
+
 # Guruvayur Temple.
 > Here is a properly worded version of your complete statement, combining all your requests clearly: [guruvayurdevaswom.in](https://guruvayurdevaswom.in/#/login), 
 
