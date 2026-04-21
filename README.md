@@ -135,14 +135,22 @@ Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my f
 
 # My Birth Chart 
 
-| Name | Gobal Krishnan V |
-| --- | --- |
-|Date of Birth | 18-06-1995|
-|Time of Birth | 3.30 PM|
-|Place of Birth | Chennai |
-| Rasi (Moon Sign)  | Kumbha (கும்பம்) (കുംഭം) |
-| Nakshatra | Shatabhisha (சதயம்)(ശതയം)| 
-| Lagna | Tula (துலா) (തുലാം) | 
+    
+| Field                   | Details                                                                                                                                                                                                                                                                                                                                                           |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Name**                | Gobal Krishnan V                                                                                                                                                                                                                                                                                                                                                  |
+| **Date of Birth**       | 18-06-1995                                                                                                                                                                                                                                                                                                                                                        |
+| **Time of Birth**       | 3:30 PM                                                                                                                                                                                                                                                                                                                                                           |
+| **Place of Birth**      | Chennai                                                                                                                                                                                                                                                                                                                                                           |
+| **Rasi (Moon Sign)**    | Kumbha (கும்பம் / കുംഭം)                                                                                                                                                                                                                                                                                                                                          |
+| **Nakshatra**           | Shatabhisha (சதயம் / ശതയം)                                                                                                                                                                                                                                                                                                                                        |
+| **Lagna**               | Tula (துலா / തുലാം)                                                                                                                                                                                                                                                                                                                                               |
+| **Marital Status**      | Single                                                                                                                                                                                                                                                                                                                                                            |
+| **Marriage Preference** | Not interested in marriage until I verify the girl's activities and character.                                                                                                                                                                                                                                                                                    |
+| **Personal Note**       | Many people have cheated me from childhood, including in school, college, and office. It may also happen in my life partner, so I need verification and validation. Otherwise, no marriage in my life. I have doubts about the girl I may marry, and she may also have the same doubts about me. So I created this profile. Please read my full details properly. |
+
+
+
 
 | Rasi | Navamsa | 
 | --- | --- |
