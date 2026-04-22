@@ -2,7 +2,31 @@ Good catch—that contrast actually strengthens your message. I’ve added **Ant
 
 ---
 
+# To Stop the Unwanted, Focus good Ambition.
+
 **🎤 “The Unseen Truth of Life” (final version with all examples)**
+
+
+
+> If such incidents happen to a student, whether they are labeled “good” or “bad,” who decides that? What factors define it?
+
+> Is trying to control every individual truly good or bad? Do we really understand the impact of that control?
+
+> Often, it feels like no one truly cares about others. The message I am sharing is meant for people with good intentions—those who want to grow without harming others. There are many possible situations, but I am focusing on this perspective.
+
+> This is based on my own experience. I have always had the intention not to harm others. However, sometimes actions can still hurt someone unintentionally. A genuinely good person does not aim to hurt others, but those who try to control people in the wrong way often cause harm.
+
+> Who gives anyone the right to control others unfairly? If you are educated, your responsibility should be to guide people properly. Otherwise, what is the purpose of collecting money through schools and colleges if it does not support people in real life or at work?
+
+> In many workplaces, some leaders or managers place heavy pressure on employees without clearly understanding the tasks, timelines, or the people involved. They may assign work without proper planning, leading to confusion and stress. Low salaries combined with high pressure can make employees feel exploited, as if their effort is not respected or fairly rewarded.
+
+---
+ 
+| English | Tamil |  English | Tamil |
+| --- | --- | --- | --- |
+| [![Watch the video](https://img.youtube.com/vi/DzmC_dI38Qs/maxresdefault.jpg)](https://youtu.be/DzmC_dI38Qs) | [![Watch the video](https://img.youtube.com/vi/_PflhVMnQE4/maxresdefault.jpg)](https://youtu.be/_PflhVMnQE4) | [![Watch the video](https://img.youtube.com/vi/yA3XvHUo1h0/maxresdefault.jpg)](https://youtu.be/yA3XvHUo1h0) | [![Watch the video](https://img.youtube.com/vi/-pNmReExqoE/maxresdefault.jpg)](https://youtu.be/-pNmReExqoE) |
+
+
 
 Some people promise us a better future.
 They speak about good education, good opportunities, good jobs—
