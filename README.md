@@ -1,3 +1,5 @@
+[Pain creates the story—but choice writes the ending.
+Be the one who breaks the cycle, not continues it.](https://engineer-work.github.io/Join-Company/war_prediction/human_uncertainty_pain_based_on_eduction.html)
 
 | ⚖️ Disclaimer | 💭 My Personal Thought [Inborn Skill by Eye](https://engineer-work.github.io/Join-Company/person_identity/skill/eye/eye.html), [War, Natural Disaster, Money, Any Events Prediction](https://engineer-work.github.io/Join-Company/war_prediction/war_prediction_reason.html) | 
 | :--- | ---: |   
