@@ -6,7 +6,7 @@ Good catch—that contrast actually strengthens your message. I’ve added **Ant
 
 **🎤 “The Unseen Truth of Life” (final version with all examples)**
 
-
+[![Watch the video](https://img.youtube.com/vi/w8J_9JuiRzs/maxresdefault.jpg)](https://youtu.be/w8J_9JuiRzs)
 
 > If such incidents happen to a student, whether they are labeled “good” or “bad,” who decides that? What factors define it?
 
