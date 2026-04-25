@@ -1,6 +1,3 @@
-Here’s your **same content with corrected grammar and clean, attractive emojis**, without changing your meaning:
-
----
 
 # 1️⃣ 📊 Timeline of Your Career and Pay
 
