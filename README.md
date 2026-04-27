@@ -1,5 +1,7 @@
-[Pain creates the story—but choice writes the ending.
-Be the one who breaks the cycle, not continues it.](https://engineer-work.github.io/Join-Company/war_prediction/human_uncertainty_pain_based_on_eduction.html)
+[💸🤑💰](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html) [Pain creates the story—but choice writes the ending.
+Be the one who breaks the cycle, not continues it.](https://engineer-work.github.io/Join-Company/war_prediction/human_uncertainty_pain_based_on_eduction.html) [💸🤑💰](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html)
+
+
 
 | ⚖️ Disclaimer | 💭 My Personal Thought [Inborn Skill by Eye](https://engineer-work.github.io/Join-Company/person_identity/skill/eye/eye.html), [War, Natural Disaster, Money, Any Events Prediction](https://engineer-work.github.io/Join-Company/war_prediction/war_prediction_reason.html) | 
 | :--- | ---: |   
@@ -20,6 +22,7 @@ Be the one who breaks the cycle, not continues it.](https://engineer-work.github
 # Application
     
 Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my future learning notes*
+[💸🤑💰 donate](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html)
 
 1. [MathSci Editor](https://engineer-work.github.io/MathSci-Simulation/)
 2. [Focus Reader](https://engineer-work.github.io/Focus-Reader/)
@@ -37,7 +40,9 @@ Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my f
 
 # About myself and School Life 
 
-*Profile* - [My Learning Habit](https://docs.google.com/spreadsheets/d/e/2PACX-1vTNRg4Puo7QCFcm4ZXVF1dnX4qL6ofzOsO__GwuHJr-yke0QUXZtI51cr9Mt8Ui7QSoKTzOlr_SuB-G/pubhtml?gid=1898283119&single=true) , [ORCID](https://orcid.org/0009-0001-3787-2860),   [Free Learning Courses to Make Simulator](https://engineer-work.github.io/Join-Company/free-learning/free-learning.html) , [Desktop computer for Scientific Computing & Simple Simulation](https://engineer-work.github.io/Join-Company/device/current_specification_device.html), [Career Path](https://engineer-work.github.io/Join-Company/startup/issue-happen-to-me-while-working-in-startup.html), [My Job Life](https://engineer-work.github.io/Join-Company/startup/my_career_path.html) , [My College Life](https://engineer-work.github.io/Join-Company/college/pain-during-college.html)
+
+
+[💸🤑💰  donate](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html) *Profile* - [My Learning Habit](https://docs.google.com/spreadsheets/d/e/2PACX-1vTNRg4Puo7QCFcm4ZXVF1dnX4qL6ofzOsO__GwuHJr-yke0QUXZtI51cr9Mt8Ui7QSoKTzOlr_SuB-G/pubhtml?gid=1898283119&single=true) , [ORCID](https://orcid.org/0009-0001-3787-2860),   [Free Learning Courses to Make Simulator](https://engineer-work.github.io/Join-Company/free-learning/free-learning.html) , [Desktop computer for Scientific Computing & Simple Simulation](https://engineer-work.github.io/Join-Company/device/current_specification_device.html), [Career Path](https://engineer-work.github.io/Join-Company/startup/issue-happen-to-me-while-working-in-startup.html), [My Job Life](https://engineer-work.github.io/Join-Company/startup/my_career_path.html) , [My College Life](https://engineer-work.github.io/Join-Company/college/pain-during-college.html)
 
 
 | ![](https://avatars.githubusercontent.com/u/218388297?s=400&u=2a4be417ba0c3d5b999e163d80ac5ad8058f6184&v=4) | ![](https://raw.githubusercontent.com/engineer-work/Join-Company/refs/heads/main/images/text.png) | [![GitHub](https://img.icons8.com/ios-glyphs/30/000000/github.png)](https://github.com/engineer-work/) [![Instagram](https://img.icons8.com/ios-filled/30/E4405F/instagram-new.png)](https://www.instagram.com/gobalkrishnan.engineer/) [![YouTube](https://img.icons8.com/ios-filled/30/FF0000/youtube-play.png)](https://www.youtube.com/@GobalKrishnanV-j2w) | 
@@ -48,7 +53,7 @@ Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my f
 | [ORCID](https://orcid.org/0009-0001-3787-2860) |  [![ORCID](https://img.shields.io/badge/ORCID-0009--0001--3787--2860-A6CE39?logo=orcid&logoColor=white)](https://orcid.org/0009-0001-3787-2860) | 😓 I struggle to grasp knowledge from lectures 📚 and materials, and I learn slowly 🐢, but I try to achieve perfect and accurate results 🎯 by relying on high probability and statistics 📊.|
  
 
-> Hello, My name is **Gobal Krishnan V**.
+> Hello, My name is **Gobal Krishnan V**. [💸🤑💰](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html)
 
 > Family Members – My father's name is Vajravel, my mother's name is Vasugi V, and my younger brother's name is Kishore Kumar V. My younger brother and I do not talk to each other due to money problems in our lives.
 
@@ -90,9 +95,9 @@ Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my f
 
 ---
 
-# I vote only for NOTA
+# I vote only for NOTA  [💸🤑💰](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html)
 
-> Two different statement for my point view, but,It look like same.
+> Two different statement for my point view, but,It look like same. [💸🤑💰 donate](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html)
 
 >  From my birth, the location I have been staying in is Chennai, Tamil Nadu, India. In Indian elections, I always put '**NOTA**' only. “I choose **NOTA** because I believe the world is controlled by money. People value only the talented or the beautiful; those who are neither often try to control others through money. Some untalented individuals join groups to gain power, while some talented individuals try to rule like dictators. In my view, both democracy and dictatorship are flawed, and unknown individuals benefit from this system while many people, including me, suffer. Many have also forgotten why this system was created.”
 
@@ -110,7 +115,8 @@ Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my f
 
 ---
 
-# View of World  
+# View of World  [💸🤑💰](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html)
+
 
 | Unknown Myself  | School | College | Company  |
 | --- |--- | --- | --- | 
@@ -129,7 +135,9 @@ Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my f
 
 ---
 
-# (Marriage and Love) are (fake & lie)
+# (Marriage and Love) are (fake & lie) due to [💸🤑💰  dowry System](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html)
+
+> Since, [💸🤑💰 Marriage and Love only money no true love. 💸🤑💰](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html)
 
 | Part 1 - English | Part 1 - Tamil | Part 2 - English | Part 2 - Tamil | 
 | --- | --- | --- | --- |
@@ -186,7 +194,7 @@ Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my f
 
 ---
 
-# ChatGPT, Gemini AI help me to find the truth
+# ChatGPT, Gemini AI help me to find the truth [💸🤑💰  donate](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html)
 
 > What I am doing is my interest. Do what you like. Don’t look at me. Even if I don’t get money, I do what I like.
 For me, (Math, Science, Engineering, Tech, Medical) good education in any field is enough. Each person should focus on their own field. Don’t watch other interest topics. Find your interest and work on it. These are free. This can be done without money.
@@ -221,7 +229,7 @@ Safe List - due to many company cheating
 [![Watch the video](https://img.youtube.com/vi/C7BEQEW_YCg/maxresdefault.jpg)](https://youtu.be/C7BEQEW_YCg)
 
 
-# My Wish For SpaceShip
+# My Wish For SpaceShip [💸🤑💰 donate ](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html)
 
 | Wish - 1  | Wish - 2 | Wish - 3 |
 | :---: | :---: | :---: |
@@ -230,9 +238,7 @@ Safe List - due to many company cheating
 
 
 
-# Reference   
-
-
+# Reference   [💸🤑💰](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html)
 
 | [1] Ultron Is Created – "see 1 min 25 sec"  - Avengers: Age of Ultron (2015) | [2] Ultron’s Awakening – Humanity Is the Problem (Avengers: Age of Ultron) | 
 | --- | --- |
