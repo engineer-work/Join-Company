@@ -160,6 +160,9 @@ Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my f
 | **Marital Status**      | Single                                                                                                                                                                                                                                                                                                                                                            |
 | **Marriage Preference** | Not interested in marriage until I verify the girl's activities and character.                                                                                                                                                                                                                                                                                    |
 | **Personal Note**       | Many people have cheated me from childhood, including in school, college, and office. It may also happen in my life partner, so I need verification and validation. Otherwise, no marriage in my life. I have doubts about the girl I may marry, and she may also have the same doubts about me. So I created this profile. Please read my full details properly. |
+| **Food Type**   | 🍽️ Non-Vegetarian (🐟 Fish, 🥚 Eggs, 🍗 Chicken; ❌ No Beef, ❌ No Pork)                                                                                                                                                              |
+| **Food Nature** | 🔥 Rajasic (Primary): 🐟 Fish, 🥚 Eggs, 🍗 Chicken - 🌑 Tamasic (Limited): 🍖 Mutton (Occasionally) -  🌿 Sattvic (Daily): 🍚 Sambar Rice, 🍛 Karakulambu Rice, 🍲 Rasam Rice, 🫓 Chapati, 🥞 Dosa, 🍎 Fruits, 🥦 Vegetables, 🌰 Nuts |
+
 
 
 
