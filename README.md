@@ -3,6 +3,18 @@ Be the one who breaks the cycle, not continues it.](https://engineer-work.github
 
 
 
+[💸🤑💰 **Donate**](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html)
+✨ *Profile* –
+📅 [Planner App](https://engineer-work.github.io/planner-app/) 📌,
+📊🔥 [My Learning Habit](https://docs.google.com/spreadsheets/d/e/2PACX-1vTNRg4Puo7QCFcm4ZXVF1dnX4qL6ofzOsO__GwuHJr-yke0QUXZtI51cr9Mt8Ui7QSoKTzOlr_SuB-G/pubhtml?gid=1898283119&single=true) 📈,
+🆔🌐 [ORCID](https://orcid.org/0009-0001-3787-2860)
+🎓📚 [Free Learning Courses to Make Simulator](https://engineer-work.github.io/Join-Company/free-learning/free-learning.html) 🚀
+💻⚙️ [Desktop Computer for Scientific Computing & Simple Simulation](https://engineer-work.github.io/Join-Company/device/current_specification_device.html) 🧠
+🧭🚀 [Career Path](https://engineer-work.github.io/Join-Company/startup/issue-happen-to-me-while-working-in-startup.html)
+💼📈 [My Job Life](https://engineer-work.github.io/Join-Company/startup/my_career_path.html)
+🎒🏫 [My College Life](https://engineer-work.github.io/Join-Company/college/pain-during-college.html)
+
+
 | ⚖️ Disclaimer | 💭 My Personal Thought [Inborn Skill by Eye](https://engineer-work.github.io/Join-Company/person_identity/skill/eye/eye.html), [War, Natural Disaster, Money, Any Events Prediction](https://engineer-work.github.io/Join-Company/war_prediction/war_prediction_reason.html) | 
 | :--- | ---: |   
 | [![Watch the video](https://img.youtube.com/vi/wdmSrEUhjwQ/default.jpg)](https://youtu.be/wdmSrEUhjwQ?si=gskq8jbOPP-essi_) , [![Watch the video](https://img.youtube.com/vi/1ock-NrM6_A/default.jpg)](https://youtu.be/1ock-NrM6_A?si=ATLOwvs6d8feSK56), [![Watch the video](https://img.youtube.com/vi/LZRbrdL0my0/default.jpg)](https://youtu.be/LZRbrdL0my0?si=SH30wumNysGdH1DE), [![Watch the video](https://img.youtube.com/vi/yL13CsvjeKI/default.jpg)](https://youtu.be/yL13CsvjeKI?si=T8Yfi9DBJssUGH5d), [![Watch the video](https://img.youtube.com/vi/y50prdvgBKY/default.jpg)](https://youtu.be/y50prdvgBKY?si=XoyTb9M_zvd6uYho) , [![Watch the video](https://img.youtube.com/vi/NlvPXDicw4U/default.jpg)](https://youtu.be/NlvPXDicw4U?si=R_1TMSW8JM5LTIc2) | [![Watch the video](https://img.youtube.com/vi/QSQNucXNIE0/default.jpg)](https://youtu.be/QSQNucXNIE0)  [![Watch the video](https://img.youtube.com/vi/FadHDHAHoqI/default.jpg)](https://youtu.be/FadHDHAHoqI)   [![Watch the video](https://img.youtube.com/vi/vC-KD7iM2ro/default.jpg)](https://youtu.be/vC-KD7iM2ro)    [![Watch the video](https://img.youtube.com/vi/e3LiPNqsVEI/default.jpg)](https://youtu.be/e3LiPNqsVEI) [![Watch the video](https://img.youtube.com/vi/lqtdXVq5ecI/default.jpg)](https://youtu.be/lqtdXVq5ecI) [![Watch the video](https://img.youtube.com/vi/BUbV1OfRzZo/default.jpg)](https://youtu.be/BUbV1OfRzZo) [![Watch the video](https://img.youtube.com/vi/bgRTJniHzW8/default.jpg)](https://youtu.be/bgRTJniHzW8) [![Watch the video](https://img.youtube.com/vi/N_sASevJEvk/default.jpg)](https://youtu.be/N_sASevJEvk) [![Watch the video](https://img.youtube.com/vi/MC9fR49AyD4/default.jpg)](https://youtu.be/MC9fR49AyD4) [![Watch the video](https://img.youtube.com/vi/skhstpcWm0k/default.jpg)](https://youtu.be/skhstpcWm0k) [![Watch the video](https://img.youtube.com/vi/9wIg9QwhEQQ/default.jpg)](https://youtu.be/9wIg9QwhEQQ)   [![Watch the video](https://img.youtube.com/vi/l4OlWYAXc6Y/default.jpg)](https://youtu.be/l4OlWYAXc6Y?si=xeXvZYiK-Npq76y9)  <img src="https://raw.githubusercontent.com/engineer-work/Join-Company/refs/heads/main/images/3.png" width="50"/>  |
