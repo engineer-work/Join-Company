@@ -227,13 +227,13 @@ Just tell me 👍
 
 **"If I get married, I would like the wedding to take place inside the Guruvayur Temple. If I die, I wish to be buried at any place within a 1 km range of the temple. However, if I become a VIP in the future, please help me to be buried inside the Guruvayur Temple itself."**
 
-![](https://media-cdn.tripadvisor.com/media/photo-o/15/44/38/13/guruvayur-temple.jpg)
+[![Watch the video](https://media-cdn.tripadvisor.com/media/photo-o/15/44/38/13/guruvayur-temple.jpg)](https://youtu.be/ysigQilHbV8?si=3BlO4KnJkwidPM-1)
 
 # Life Partner - If marriage happens - My expectation ?
 
-| Moon Knight | Avatar Kyoshi  | Ant and Wasp | Sky High |
-| --- | --- | --- | --- |
-| [![Watch the video](https://img.youtube.com/vi/dj7pVQ6jjNw/maxresdefault.jpg)](https://youtu.be/dj7pVQ6jjNw) | [![Watch the video](https://img.youtube.com/vi/g1-sKPk3hpI/maxresdefault.jpg)](https://youtu.be/g1-sKPk3hpI) | [![Watch the video](https://img.youtube.com/vi/KuDAdtJNKNw/mqdefault.jpg)](https://youtu.be/KuDAdtJNKNw), [![Watch the video](https://img.youtube.com/vi/7OZL8oX7OoE/mqdefault.jpg)](https://youtu.be/7OZL8oX7OoE) | [![Watch the video](https://img.youtube.com/vi/MPmFZKrZ-mU/mqdefault.jpg)](https://youtu.be/MPmFZKrZ-mU?si=cT7dJzNgsDIXmMOd) [![Watch the video](https://img.youtube.com/vi/qiotBSR79gM/mqdefault.jpg)](https://youtu.be/qiotBSR79gM?si=peX1fptsnhBWLDpp) |
+| Moon Knight | Avatar Kyoshi  | Ant and Wasp | Sky High | Lokah |
+| --- | --- | --- | --- | --- |
+| [![Watch the video](https://img.youtube.com/vi/dj7pVQ6jjNw/maxresdefault.jpg)](https://youtu.be/dj7pVQ6jjNw) | [![Watch the video](https://img.youtube.com/vi/g1-sKPk3hpI/maxresdefault.jpg)](https://youtu.be/g1-sKPk3hpI) | [![Watch the video](https://img.youtube.com/vi/KuDAdtJNKNw/mqdefault.jpg)](https://youtu.be/KuDAdtJNKNw), [![Watch the video](https://img.youtube.com/vi/7OZL8oX7OoE/mqdefault.jpg)](https://youtu.be/7OZL8oX7OoE) | [![Watch the video](https://img.youtube.com/vi/MPmFZKrZ-mU/mqdefault.jpg)](https://youtu.be/MPmFZKrZ-mU?si=cT7dJzNgsDIXmMOd) [![Watch the video](https://img.youtube.com/vi/qiotBSR79gM/mqdefault.jpg)](https://youtu.be/qiotBSR79gM?si=peX1fptsnhBWLDpp) | [![Watch the video](https://img.youtube.com/vi/bL1fxyAvPGc/maxresdefault.jpg)](https://youtu.be/bL1fxyAvPGc?si=tQubh7ml1V9lvbOz) | 
 
 ---
 
