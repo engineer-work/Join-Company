@@ -1,10 +1,38 @@
 
-# 1️⃣ 📊 Timeline of Your Career and Pay
+# 1️⃣ 📊 Timeline of my Job.
 
-### 💡 In the software field (or any field), if you do not maintain proper documentation, you may forget things within a week. This is also an issue in education—at school, college, and in the workplace.
 
-> ⚠️ **If you study something for a specific project in one week, you may forget it by the next week when working on a different task. This is a major problem in toxic work cultures.**
 
+### 💡 Learning, Memory, Work, and Life
+
+📚 In software development—and in almost any profession—proper documentation is essential. Without notes, records, or documentation, people can forget important details within days or weeks.
+
+⚠️ The same challenge exists in education. If you study a topic for one project this week and move to a different task next week, much of that knowledge can fade unless it is regularly practiced and documented.
+
+🏫 During my school and college years, I also worked to help support my family. My earnings were very small, and most of that money went toward food and daily expenses.
+
+👨‍👩‍👦 My father had a permanent job and worked hard to pay for school fees, housing loans, food expenses, and other family responsibilities. However, financial pressures remained high due to housing loans, education expenses, and other debts.
+
+👩 My mother worked as a teacher and conducted tuition classes, earning small amounts such as ₹100, ₹200, ₹300, and ₹500. Until 2016, my younger brother and I also helped with those tuition classes.
+
+🎓 During my college years, I stopped teaching tuition and focused on my studies, while my mother and younger brother continued the work.
+
+🤔 Looking back, I realized that I was never taught effective learning methods. The [ Memorization-Centric Education System](https://engineer-work.github.io/Join-Company/education_system/education_system.html) around me mainly emphasized memorizing answers for 2-mark, 5-mark, 10-mark, and 16-mark questions.
+
+📝 As a result, I focused on memorization to pass exams rather than deeply understanding concepts. 
+
+🚀 With the rise of AI tools, I finally gained access to explanations that helped me understand topics more clearly and connect ideas instead of simply memorizing them.
+
+🌱 Today, I believe true learning comes from understanding, curiosity, practice, documentation, and continuous revision—not just memorization for examinations.
+
+**Short version:**
+
+📚 Learn → 📝 Document → 🔄 Revise → 💡 Understand → 🚀 Grow
+
+- ❌ Memorize only for exams in [ Memorization-Centric Education System](https://engineer-work.github.io/Join-Company/education_system/education_system.html)
+- ✅ Understand concepts for life and work
+
+---
 
 <script type="module">
 import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
