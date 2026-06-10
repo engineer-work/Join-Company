@@ -77,6 +77,8 @@ I often wonder why there is such a large salary difference in the software indus
 
 🔍 I am interested in understanding the economic and professional reasons behind these salary differences in the technology industry.
 
+# One important point: high salaries are usually not paid for typing code or fixing a bug. They are often paid for the responsibility, scale, business impact, decision-making, and risk involved if something goes wrong. 💼📈⚠️
+
 
 
 
