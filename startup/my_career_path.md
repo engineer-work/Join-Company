@@ -5,6 +5,16 @@
 
 > ⚠️ **If you study something for a specific project in one week, you may forget it by the next week when working on a different task. This is a major problem in toxic work cultures.**
 
+```mermaid
+xychart-beta
+    title "Career Recovery and Growth Journey"
+    x-axis ["2016","2017","2018","Gap","2021","2022","2023","2024","2025","2026"]
+    y-axis "Monthly Salary (₹)" 0 --> 45000
+
+    line [5000,9000,6000,0,15000,25000,35000,40000,42000,0]
+```
+
+
 ---
 
 | 📅 Period                                    | 💼 Job             | 🧪 Interview Process                                                                                                                                                                                                                        | 🛠️ Framework / Task                       | 💰 Monthly Pay | ⚠️ Notes / Red Flags                                                                                                                       |
