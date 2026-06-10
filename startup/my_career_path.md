@@ -44,29 +44,7 @@ Using approximate exchange rates (June 2026):
 | 📈 2024–2025         |         ₹40,000 |     $471 |     €412 |   ¥3,390 |  ¥67,797 |
 | ⚠️ 2025–2026         |         ₹42,000 |     $494 |     €433 |   ¥3,559 |  ¥71,186 |
 
-### Salary Growth
-
-📈 ₹5,000 → ₹42,000
-
-| Currency |  Start |  Latest |
-| -------- | -----: | ------: |
-| 🇮🇳 INR | ₹5,000 | ₹42,000 |
-| 🇺🇸 USD |    $59 |    $494 |
-| 🇪🇺 EUR |    €52 |    €433 |
-| 🇨🇳 CNY |   ¥424 |  ¥3,559 |
-| 🇯🇵 JPY | ¥8,475 | ¥71,186 |
-
-Overall, your salary increased by **8.4× (740% growth)** from your first ₹5,000/month job to ₹42,000/month before leaving in June 2026. 📈
-
-
-✨ This keeps your **original structure**, improves grammar, and adds **clean visual appeal with emojis** without overloading it.
-
-If you want next, I can:
-
-* 🎨 Turn this into a **website UI section (cards/timeline design)**
-* 📉 Or create a **graph showing salary growth visually**
-
---
+---
 
 # Just see for Bug Fixing and SaaS based Development they Earn. 
 
