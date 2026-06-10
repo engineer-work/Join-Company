@@ -5,12 +5,24 @@
 
 > ⚠️ **If you study something for a specific project in one week, you may forget it by the next week when working on a different task. This is a major problem in toxic work cultures.**
 
+
 <script type="module">
-import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@latest/dist/mermaid.esm.min.mjs';
-mermaid.initialize({ startOnLoad: true });
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+
+mermaid.initialize({
+  startOnLoad: true
+});
 </script>
 
-<div style="width:1200px;">
+<style>
+.mermaid svg {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+}
+</style>
+
+<div style="width:1200px">
 <pre class="mermaid">
 xychart-beta
     title "Career Income Journey"
@@ -19,6 +31,7 @@ xychart-beta
     line [5000,9000,6000,0,15000,25000,35000,40000,42000,0]
 </pre>
 </div>
+
 
 ---
 
