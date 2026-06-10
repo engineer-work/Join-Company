@@ -5,14 +5,18 @@
 
 > ⚠️ **If you study something for a specific project in one week, you may forget it by the next week when working on a different task. This is a major problem in toxic work cultures.**
 
-```mermaid
-xychart-beta
-    title "Career Recovery and Growth Journey"
-    x-axis ["2016","2017","2018","Gap","2021","2022","2023","2024","2025","2026"]
-    y-axis "Monthly Salary (₹)" 0 --> 45000
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@latest/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true });
+</script>
 
+<pre class="mermaid">
+xychart-beta
+    title "Career Income Journey (2016-2026)"
+    x-axis ["2016","2017","2018","2019-21 Gap","2021-22","2022-23","2023-24","2024-25","2025-26","2026 No Job"]
+    y-axis "Monthly Salary (INR)" 0 --> 45000
     line [5000,9000,6000,0,15000,25000,35000,40000,42000,0]
-```
+</pre>
 
 
 ---
