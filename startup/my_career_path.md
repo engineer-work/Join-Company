@@ -10,14 +10,15 @@ import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@latest/dist/mermaid.es
 mermaid.initialize({ startOnLoad: true });
 </script>
 
+<div style="width:1200px;">
 <pre class="mermaid">
 xychart-beta
-    title "Career Income Journey (2016-2026)"
+    title "Career Income Journey"
     x-axis ["2016","2017","2018","2019-21 Gap","2021-22","2022-23","2023-24","2024-25","2025-26","2026 No Job"]
     y-axis "Monthly Salary (INR)" 0 --> 45000
     line [5000,9000,6000,0,15000,25000,35000,40000,42000,0]
 </pre>
-
+</div>
 
 ---
 
