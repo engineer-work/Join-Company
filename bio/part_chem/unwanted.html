@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🧠 Brain Neurochemical Simulator</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#0d1117;
+    color:white;
+}
+
+header{
+    text-align:center;
+    padding:20px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(400px,1fr));
+    gap:20px;
+    padding:20px;
+}
+
+.card{
+    background:#161b22;
+    border:1px solid #30363d;
+    border-radius:12px;
+    padding:15px;
+    position:relative;
+    transition:0.3s;
+}
+
+.card iframe{
+    width:100%;
+    height:300px;
+    border:none;
+    border-radius:10px;
+    background:white;
+}
+
+button{
+    position:absolute;
+    top:10px;
+    right:10px;
+    padding:8px 12px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.maximized{
+    position:fixed;
+    top:20px;
+    left:20px;
+    width:calc(100% - 40px);
+    height:calc(100% - 40px);
+    z-index:999;
+    overflow:auto;
+    background:#161b22;
+}
+
+.maximized iframe{
+    height:80vh;
+}
+
+a{
+    color:#58a6ff;
+}
+</style>
+</head>
+<body>
+
+<header>
+    <h1>🧠 Brain Neurochemical Advanced Simulator</h1>
+    <p>
+        Neural Research:
+        <a href="https://www.humanbrainproject.eu" target="_blank">
+            Human Brain Project
+        </a>
+        |
+        <a href="https://www.brainfacts.org" target="_blank">
+            BrainFacts
+        </a>
+    </p>
+</header>
+
+<div class="grid">
+
+    <!-- Adrenaline -->
+    <div class="card" id="card1">
+        <button onclick="toggleCard('card1')">⛶</button>
+        <h2>⚡ Adrenaline</h2>
+        <iframe src="https://3dmol.csb.pitt.edu/viewer.html?cid=5816&style=stick"></iframe>
+        <p><b>Formula:</b> C₉H₁₃NO₃</p>
+    </div>
+
+    <!-- Cortisol -->
+    <div class="card" id="card2">
+        <button onclick="toggleCard('card2')">⛶</button>
+        <h2>😰 Cortisol</h2>
+        <iframe src="https://3dmol.csb.pitt.edu/viewer.html?cid=5754&style=stick"></iframe>
+        <p><b>Formula:</b> C₂₁H₃₀O₅</p>
+    </div>
+
+    <!-- Dopamine -->
+    <div class="card" id="card3">
+        <button onclick="toggleCard('card3')">⛶</button>
+        <h2>💔 Dopamine</h2>
+        <iframe src="https://3dmol.csb.pitt.edu/viewer.html?cid=681&style=stick"></iframe>
+        <p><b>Formula:</b> C₈H₁₁NO₂</p>
+    </div>
+
+    <!-- Oxytocin -->
+    <div class="card" id="card4">
+        <button onclick="toggleCard('card4')">⛶</button>
+        <h2>🤝 Oxytocin</h2>
+        <iframe src="https://3dmol.csb.pitt.edu/viewer.html?cid=439302&style=stick"></iframe>
+        <p><b>Formula:</b> C₄₃H₆₆N₁₂O₁₂S₂</p>
+    </div>
+
+    <!-- Serotonin -->
+    <div class="card" id="card5">
+        <button onclick="toggleCard('card5')">⛶</button>
+        <h2>😊 Serotonin</h2>
+        <iframe src="https://3dmol.csb.pitt.edu/viewer.html?cid=5202&style=stick"></iframe>
+        <p><b>Formula:</b> C₁₀H₁₂N₂O</p>
+    </div>
+
+    <!-- Norepinephrine -->
+    <div class="card" id="card6">
+        <button onclick="toggleCard('card6')">⛶</button>
+        <h2>😵 Norepinephrine</h2>
+        <iframe src="https://3dmol.csb.pitt.edu/viewer.html?cid=439260&style=stick"></iframe>
+        <p><b>Formula:</b> C₈H₁₁NO₃</p>
+    </div>
+
+    <!-- Histamine -->
+    <div class="card" id="card7">
+        <button onclick="toggleCard('card7')">⛶</button>
+        <h2>🧪 Histamine</h2>
+        <iframe src="https://3dmol.csb.pitt.edu/viewer.html?cid=774&style=stick"></iframe>
+        <p><b>Formula:</b> C₅H₉N₃</p>
+    </div>
+
+    <!-- Melatonin -->
+    <div class="card" id="card8">
+        <button onclick="toggleCard('card8')">⛶</button>
+        <h2>😴 Melatonin</h2>
+        <iframe src="https://3dmol.csb.pitt.edu/viewer.html?cid=896&style=stick"></iframe>
+        <p><b>Formula:</b> C₁₃H₁₆N₂O₂</p>
+    </div>
+
+</div>
+
+<script>
+function toggleCard(id){
+    let card = document.getElementById(id);
+    card.classList.toggle("maximized");
+}
+</script>
+
+</body>
+</html>
