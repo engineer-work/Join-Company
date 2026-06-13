@@ -240,6 +240,28 @@ Just tell me 👍
 
 ---
 
+You can extend it like this:
+
+**🔄 I Rejected Others & I’ve Been Rejected by Others (in 💍 Marriage & 💼 Jobs, by Known and Unknown People)**
+
+Life decisions like marriage and jobs depend on many factors—❤️ attraction, 🧠 personality, 💬 communication, 💰 financial stability, 🤝 compatibility, 👨‍👩‍👧 values, skills, and ⏳ timing. Rejection often reflects fit, readiness, or priorities, not a person’s worth.
+
+During rejection, the brain reacts strongly: **🧠 Amygdala** triggers fear, pain, and stress; **🧠 Prefrontal Cortex** tries to reason; **🧠 Hippocampus** stores the emotional memory; and the **🧠 Anterior Cingulate Cortex** processes “social pain” similar to physical pain.
+
+This releases chemicals like **⚡ Adrenaline (C₉H₁₃NO₃)** for fight-or-flight, **😰 Cortisol (C₂₁H₃₀O₅)** for stress, **💔 Dopamine (C₈H₁₁NO₂)** drops causing sadness, **🤝 Oxytocin (C₄₃H₆₆N₁₂O₁₂S₂)** affects bonding/loss, and **😊 Serotonin (C₁₀H₁₂N₂O)** shifts affecting mood.
+
+That’s why rejection feels like a mix of **💔 pain, 😢 sadness, 😡 anger, 😰 anxiety, 🤔 self-doubt, and sometimes 🌱 growth**—it is both emotional and biological.
+
+[![](https://raw.githubusercontent.com/engineer-e/engineer-e/refs/heads/main/images/brain%20model%20enzymes.png)](https://engineer-work.github.io/Join-Company/bio/part_chem/unwanted.html)
+
+ <iframe
+       style="border: none;"
+        width="100%"
+        height="700px"
+        src="https://engineer-work.github.io/Join-Company/bio/part_chem/unwanted.html"
+        allowfullscreen>
+ </iframe>
+---
 # Change Reading Method
 
 > What you learn in School, College is totally waste - if you forget [(They not training for Long term and International Standard (IEEE, Spring Nature, Arxiv,...). Since, Human brain forget lot - cheating happen only to due Forgetting in Education or Any Field)]() ? but the education system, **force to do in [Memorization-Centric Education System](https://engineer-work.github.io/Join-Company/education_system/education_system.html) for that system collecting and spending the money from our parents hardwork**. *Please, In future don't need to go to school,college.* since lot of free material in **Youtube** and **Internet**.
