@@ -261,7 +261,9 @@ That’s why rejection feels like a mix of **💔 pain, 😢 sadness, 😡 anger
         src="https://engineer-work.github.io/Join-Company/bio/part_chem/unwanted.html"
         allowfullscreen>
  </iframe>
+
 ---
+
 # Change Reading Method
 
 > What you learn in School, College is totally waste - if you forget [(They not training for Long term and International Standard (IEEE, Spring Nature, Arxiv,...). Since, Human brain forget lot - cheating happen only to due Forgetting in Education or Any Field)]() ? but the education system, **force to do in [Memorization-Centric Education System](https://engineer-work.github.io/Join-Company/education_system/education_system.html) for that system collecting and spending the money from our parents hardwork**. *Please, In future don't need to go to school,college.* since lot of free material in **Youtube** and **Internet**.
