@@ -11,7 +11,7 @@ Here is a comprehensive breakdown of the two ocular archetypes we have discussed
 | Feature | **Archetype 1: The Strategic Mind** (Image 1) | **Archetype 2: The Tactical Mind** (Image 2) |
 | :--- | :--- | :--- |
 | Image | Need Permission | ![Image 2](https://raw.githubusercontent.com/engineer-work/Join-Company/refs/heads/main/person_identity/image/eye/image%202%20-%20eye.jpeg)
-| | | Which are all one time event for this Game? But life is mistery. we not able to tell what happen ? [Human benchmark Game](https://humanbenchmark.com/dashboard) |
+| | | Which are all one time event for this Game? But life is mistery. we not able to tell what happen ? [Human benchmark Game](https://humanbenchmark.com/dashboard) , [Chatgpt](https://chatgpt.com/share/6a2e7338-dea8-83ee-a07f-0cb22bcf19b1)|
 | | ![Image 2](https://raw.githubusercontent.com/engineer-work/Join-Company/refs/heads/main/person_identity/image/eye/tw.png) | ![Image 2](https://raw.githubusercontent.com/engineer-work/Join-Company/refs/heads/main/person_identity/image/eye/1.jpeg) |
 | **Technical Name** | Symmetrical Deep-set Almond (Parallel Fold) | Round / Protruding (Mydriatic) |
 | **Golden Ratio Match** | **~94%** (Near Perfect) | **~72%** (Functional Deviant) |
