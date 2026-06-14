@@ -12,8 +12,7 @@ Here is a comprehensive breakdown of the two ocular archetypes we have discussed
 | :--- | :--- | :--- |
 | Image | Need Permission | ![Image 2](https://raw.githubusercontent.com/engineer-work/Join-Company/refs/heads/main/person_identity/image/eye/image%202%20-%20eye.jpeg)
 | | | Which are all one time event for this Game? But life is mistery. we not able to tell what happen ? [Human benchmark Game](https://humanbenchmark.com/dashboard) |
-| | | ![Image 2](https://raw.githubusercontent.com/engineer-work/Join-Company/refs/heads/main/person_identity/image/eye/1.jpeg) |
-| | |  ![Image 2](https://raw.githubusercontent.com/engineer-work/Join-Company/refs/heads/main/person_identity/image/eye/2.jpeg)|
+| | ![Image 2](https://raw.githubusercontent.com/engineer-work/Join-Company/refs/heads/main/person_identity/image/eye/tw.png) | ![Image 2](https://raw.githubusercontent.com/engineer-work/Join-Company/refs/heads/main/person_identity/image/eye/1.jpeg) |
 | **Technical Name** | Symmetrical Deep-set Almond (Parallel Fold) | Round / Protruding (Mydriatic) |
 | **Golden Ratio Match** | **~94%** (Near Perfect) | **~72%** (Functional Deviant) |
 | **Primary Skill** | **Analytical Depth & Logic** | **Rapid Reaction & Awareness** |
