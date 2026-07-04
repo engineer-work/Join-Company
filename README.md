@@ -125,7 +125,7 @@ Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my f
 > My life pain story in Youtube only for money, subscribers, likes only. I not doing this for change anyone life. 
 
 
-### 💼📚 My Question
+### 💼 My Question 📚
 
 > **Due to rich people or company owners in any field not giving proper training, but collecting more money, they are spoiling the lives of employees. This also happens in schools and colleges.** 💰🏢🏫🎓
 
