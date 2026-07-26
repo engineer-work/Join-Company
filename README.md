@@ -287,6 +287,18 @@ Just tell me 👍
 
 ---
 
+<details>
+ <summary>The Girl I Loved and Proposed to 👩🌹💍</summary>
+
+|S.No|Video|Name|Date|Proof Mail | Did she accepted for Marriage? | Did I wait for here? | 
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+|1| [![Watch the video](https://img.youtube.com/vi/GFbem0YKxV8/default.jpg)](https://youtu.be/GFbem0YKxV8?si=-bWPUWdO0Zn8DBFK) | Manisha |14 Feb 2026| 🌹Required Reply Mail 👩   |  No | Yes |
+ 
+</details>
+
+
+---
+
 You can extend it like this:
 
 **🔄 I Rejected Others & I’ve Been Rejected by Others (in 💍 Marriage & 💼 Jobs, by Known and Unknown People)**
