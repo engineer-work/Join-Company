@@ -18,7 +18,7 @@
 
 - But for my **7th Semester Semi-Final Project** year (2015-2016), I planned to build a **Cow Robot**. However, due to financial constraints at that time, I couldn't complete the project as planned. Unfortunately, it did not work during the final demonstration, and I lost credit for the project.
 
-- I made the robot's outer body using paper fold sheets. The project was intended to look like the robot shown in the video below. If you click the video, it will take you to the YouTube video. However, I was not able to complete the robot shown below.
+- I made the robot's outer body using paper fold sheets. The project was intended to look like the robot shown in the video below. If you click the video, it will take you to the YouTube video. However, I was not done this robot below.
 
 
 [![Watch the video](https://img.youtube.com/vi/ZX17mcpGfp8/maxresdefault.jpg)](https://youtu.be/ZX17mcpGfp8?si=Rzwv23TWMAn6AVM7)
