@@ -15,6 +15,10 @@
 ### ANALYSIS AND EVALUATE THE GRADES
 
 - (important statement) But, Anna University Affiliated (T.J.S Engineering College) said to buy the Final year project only from outside 'Project Center'. I not done that.  Otherwise they said 'fail in exam'.  so given money to buy the Final year project
+-  But for 7th Sem - Semi Final Project - I planned to make Cow Robot - But, Is not work at final Demo. I lose my credit during Semi Final Project.
+
+[![Watch the video](https://img.youtube.com/vi/ZX17mcpGfp8/maxresdefault.jpg)](https://youtu.be/ZX17mcpGfp8?si=Rzwv23TWMAn6AVM7)
+
 -  08 - EC2451 - PROJECT WORK - APR 2016 - is not my work - they forced to buy from project center. 
 -  **Hand Gesture Based Motor Control** – A final year project using a Raspberry Pi board, camera, and DC motor, with OpenCV’s Haar Cascade algorithm to detect the hand palm and control motor rotation (left, right, up, down) based on hand movement in a 2D coordinate system.
 -  Unwanted paid money for college, Books & Doc are Totally waste, Since - [No] Knowledge gain. - Money Wasted - Time Wasted - Even if you have talent, you fail due to some unknown people. or society poilitcal issue.
