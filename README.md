@@ -298,14 +298,13 @@ Just tell me 👍
 
 ---
 
-<details>
- <summary>The Girl I Loved and Proposed to 👩🌹💍</summary>
+## The Girl I Loved and Proposed to 👩🌹💍
 
-|S.No|Video|Name|Date|Proof Mail | Did she accepted for Marriage? | Did I wait for here? | 
-| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-|1| [![Watch the video](https://img.youtube.com/vi/GFbem0YKxV8/default.jpg)](https://youtu.be/GFbem0YKxV8?si=-bWPUWdO0Zn8DBFK) | Manisha |14 Feb 2026| 🌹Required Reply Mail 👩   |  No | Yes |
+|S.No|Video|Name|Date|Proof Mail | Did she accepted for Marriage? | Did I wait for her? | 
+| :---: | :---: | :---: | :---: | :---: | :---: | ---: |
+|1| [![Watch the video](https://img.youtube.com/vi/GFbem0YKxV8/default.jpg)](https://youtu.be/GFbem0YKxV8?si=-bWPUWdO0Zn8DBFK) | Manisha |14 Feb 2026| 🌹Required Reply Mail 👩   |  No |No, I’m not interested in marriage anymore without love. 💔 The world is controlled by money; everyone is acting for money, including me. 💰 So maybe even my love was fake. I don’t love her anymore. 😔 |
  
-</details>
+
 
 
 ---
