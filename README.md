@@ -110,6 +110,8 @@ Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my f
 
 ---
 
+[![Watch the video](https://img.youtube.com/vi/UYXE-cY67ro/maxresdefault.jpg)](https://youtu.be/UYXE-cY67ro?si=sj0PDS5e4baJFlf3)
+
 # I vote only for NOTA  [💸🤑💰](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html)
 
 > Two different statement for my point view, but,It look like same. [💸🤑💰 donate](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html)
