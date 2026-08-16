@@ -173,6 +173,11 @@ Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my f
 
 ---
 
+[![Watch the video](https://img.youtube.com/vi/SZP2UICYSUg/maxresdefault.jpg)](https://youtu.be/SZP2UICYSUg?si=Or0itPvvmGJyvVQB)
+
+
+---
+
 # View of World  [💸🤑💰](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html)
 
 
