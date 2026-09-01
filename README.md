@@ -277,17 +277,13 @@ Be the one who breaks the cycle, not continues it.](https://engineer-work.github
 
 ### **Final Principle**
 
-$$
-\boxed{\text{Wealth, Power, Status, Talent, Skill, Ambition, or Weakness} \neq \text{Good or Bad}}
-$$
 
-$$
-\boxed{\text{Moral Character} \rightarrow \text{Judged by Conduct and Intent}}
-$$
+1. **Wealth, power, status, talent, skill, ambition, or weakness do not determine whether a person is good or bad.**
 
-$$
-\boxed{\text{Criminal Responsibility} \rightarrow \text{Law + Legal Elements + Evidence}}
-$$
+2. **Moral character should be judged by a person's conduct and intentions.**
+
+3. **Criminal responsibility should be determined by the applicable law, the legal elements of the offence, and the available evidence.**
+
 
 **Therefore: Don't judge the person by their position. Examine the person's actions.**
 
@@ -372,17 +368,15 @@ The answer cannot be:
 **“Trust the judge.”**
 **“Trust the ordinary person.”**
 
-Instead:
+#### Instead:
 
-$$
-\boxed{\text{Look at Actions + Intentions + Consequences + Evidence}}
-$$
+- Look at Actions + Intentions + Consequences + Evidence
 
-And for criminal responsibility:
+#### And for criminal responsibility:
 
-$$
-\boxed{\text{Law + Legal Elements + Evidence + Individual Responsibility}}
-$$
+- Law + Legal Elements + Evidence + Individual Responsibility
+
+
 
 ### The Principle
 
