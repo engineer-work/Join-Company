@@ -211,6 +211,12 @@ Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my f
 | --- | --- | --- | --- |
 | [![Watch the video](https://img.youtube.com/vi/STxDFxxeX08/mqdefault.jpg)](https://youtu.be/STxDFxxeX08) | [![Watch the video](https://img.youtube.com/vi/7Mhyczjha1c/mqdefault.jpg)](https://youtu.be/7Mhyczjha1c) | [![Watch the video](https://img.youtube.com/vi/-swmWqU22gY/mqdefault.jpg)](https://youtu.be/-swmWqU22gY) |[![Watch the video](https://img.youtube.com/vi/AWzUls8sUJg/mqdefault.jpg)](https://youtu.be/AWzUls8sUJg)| 
 
+# Did you Know, Rich, Leader, Elite | Poor, Weak, Ambition People Spoiling others Life for their Selfish Needs? Really Who is the Criminals?
+
+| | | | | | |
+| --- | --- | --- | --- | --- | --- | 
+| | | | | | |
+
 
 # My Childhood memory before 2012
 
@@ -345,7 +351,7 @@ In education, losing usually means setbacks — time, money, confidence, opportu
 
 [![Watch the video](https://media-cdn.tripadvisor.com/media/photo-o/15/44/38/13/guruvayur-temple.jpg)](https://youtu.be/ysigQilHbV8?si=3BlO4KnJkwidPM-1)
 
-# Life Partner - If marriage happens - My expectation ?
+# Life Partner - If  happens - My expectation ?
 
 #### 10% Dark Side of my internal thought Character like Joker. But, I not like to kill human species and I not cause harm to others. But, many unknown people for money and fame try to spoil my life. 
 > For me Internal Trigger to kill them. But, I not kill them for my family, my loveable ambition. **Each human have rights to live in the world.**
