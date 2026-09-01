@@ -299,7 +299,38 @@ Be the one who breaks the cycle, not continues it.](https://engineer-work.github
 | --- | --- | --- | --- | --- | --- |  --- |
 | <img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/795e704d-5fa6-436f-a322-a370b866b612" /> |  <img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/73e8d2bc-4eae-420a-9f33-db2eea28ec06" />| <img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/60eb25ad-9f07-400e-9f04-5872c1c603e5" />| <img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/e601744a-2ef5-472a-a627-370c525a0a77" /> | <img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/8d6e6a4c-03f1-4e0d-a664-35b6246c701c" /> | <img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/ae0716d4-f596-44b4-9d96-d1b25bb9d9ad" />| <img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/d6086355-27d3-4723-9d13-429d97345366" /> |
 | [![Watch the video](https://img.youtube.com/vi/aucrIPzokSc/default.jpg)](https://youtu.be/aucrIPzokSc?si=4_YPK8zUViNrNYFJ) | [![Watch the video](https://img.youtube.com/vi/clvoE0iOQtk/default.jpg)](https://youtu.be/clvoE0iOQtk?si=x7cSJRdMzRvz6Wt1) | [![Watch the video](https://img.youtube.com/vi/ykM3p3DbG0A/default.jpg)](https://youtu.be/ykM3p3DbG0A?si=OmP0LN01wulgpa6H) | [![Watch the video](https://img.youtube.com/vi/N48dgssYhqQ/default.jpg)](https://youtu.be/N48dgssYhqQ?si=qTihqhtuGAO73sMD) | [![Watch the video](https://img.youtube.com/vi/51Ab0OFZBU4/default.jpg)](https://youtu.be/51Ab0OFZBU4?si=ujcvDWm3yFWYmZ2u) | [![Watch the video](https://img.youtube.com/vi/oDpLOnZZO8c/default.jpg)](https://youtu.be/oDpLOnZZO8c?si=KsBulon1dv_XlD2v) |  [![Watch the video](https://img.youtube.com/vi/G3mJZ9qXC70/default.jpg)](https://youtu.be/G3mJZ9qXC70?si=m5a4N0hqxXzkUpNY) | 
-| [![Watch the video](https://img.youtube.com/vi/mhPb6wxXAfM/default.jpg)](https://youtu.be/mhPb6wxXAfM?si=uoVuUNZ3VmaMNnKD) | | | | | [![Watch the video](https://img.youtube.com/vi/Xbizke4zftY/default.jpg)](https://youtu.be/Xbizke4zftY?si=bHNdO-qrcOsRvEEH) | [![Watch the video](https://img.youtube.com/vi/QcRoGeu1WKg/default.jpg)](https://youtu.be/QcRoGeu1WKg?si=Lyrh7YQHJLvPblZq) |
+| [![Watch the video](https://img.youtube.com/vi/mhPb6wxXAfM/default.jpg)](https://youtu.be/mhPb6wxXAfM?si=uoVuUNZ3VmaMNnKD) | [![Watch the video](https://img.youtube.com/vi/X2G8YEYKI38/default.jpg)](https://youtu.be/X2G8YEYKI38?si=bCS8nbHcUb2TV7Ne) | [![Watch the video](https://img.youtube.com/vi/VHAK-gU9gi0/default.jpg)](https://youtu.be/VHAK-gU9gi0?si=Hk-1mtFp4bxUa4YO) | [![Watch the video](https://img.youtube.com/vi/YpyygeMWV9o/default.jpg)](https://youtu.be/YpyygeMWV9o?si=rOhIkllMwDDemG1u)| [![Watch the video](https://img.youtube.com/vi/-75YCAifaVM/default.jpg)](https://youtu.be/-75YCAifaVM?si=1dW-fcs4VCDYUB0C) | [![Watch the video](https://img.youtube.com/vi/Xbizke4zftY/default.jpg)](https://youtu.be/Xbizke4zftY?si=bHNdO-qrcOsRvEEH) | [![Watch the video](https://img.youtube.com/vi/QcRoGeu1WKg/default.jpg)](https://youtu.be/QcRoGeu1WKg?si=Lyrh7YQHJLvPblZq) |
+
+---
+
+### Going to School, College, and Office is Unsafe. The person kill each other for competition. Working for money is more dangerous.
+
+🏫 **Going to school, college, and the office can be unsafe** because people may compete with each other, and in extreme situations, that competition can lead to serious harm. ⚠️
+
+💰 **Working for money can also become more dangerous** when people are placed under excessive competition, pressure, or unclear working conditions.
+
+🏠 **I asked for Work From Home, but it was not allowed**, and proper documentation for the work was not provided. 📄
+
+💻 For example, requirements should be clearly documented using practices such as **BDD (Behavior-Driven Development)**. Without clear requirements, acceptance criteria, and documentation, the percentage of mistakes and things going wrong can increase significantly. 📈⚠️
+
+### See the above videos, Which movie are published in our region and doing wrong for money. then were is safety and secure
+
+🎬 **Please look at the items/videos above and consider the actors and actresses being presented or nominated in connection with schools, colleges, and workplaces.**
+
+🎓 **If such content is being promoted in educational or professional environments, we should seriously consider its influence on students and employees. How can education and professional development be maintained properly if entertainment, popularity, or money becomes more important than safety, responsibility, discipline, and appropriate standards?**
+
+🛡️ **Education should provide a safe and secure environment where students can learn, develop skills, and build good character—not simply follow popularity or commercial competition.**
+
+⚠️ **The same principle should apply to workplaces: clear standards, proper documentation, safety, fairness, and professional conduct should come before money or competition.**
+
+🎬 **If actors or actresses who have appeared in sexually explicit or highly suggestive songs and films are nominated or presented as role models in schools and colleges, then we should seriously question the standards being used.**
+
+🎓 **What kind of message does this send to students, and how will education maintain its focus on knowledge, discipline, character, skills, safety, and responsible behavior?**
+
+⚠️ **Popularity and commercial success should not automatically be treated as qualifications for representing or influencing educational institutions.**
+
+🛡️ **Schools and colleges should prioritize education, student safety, professional standards, and positive role models rather than allowing money, fame, or entertainment popularity to determine who is nominated or promoted.**
+
 
 ---
 
