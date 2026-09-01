@@ -294,9 +294,13 @@ $$
 
 ---
 
-| | | | | | |
-| --- | --- | --- | --- | --- | --- | 
-| | | | | | |
+[12 Notable alumni of Anna University, Updated: March 15, 2026, EduRank](https://edurank.org/uni/anna-university/alumni/)
+
+
+
+| [![Watch the video](https://img.youtube.com/vi/Qiq9t7ic6j4/default.jpg)](https://youtu.be/Qiq9t7ic6j4?si=67EWSTpxiHH90x8E)  | [![Watch the video](https://img.youtube.com/vi/-gX-ZEBGEe8/default.jpg)](https://youtu.be/-gX-ZEBGEe8?si=m9qgEpVEkldblGCh) | [![Watch the video](https://img.youtube.com/vi/TGgi5K4twoY/default.jpg)](https://youtu.be/TGgi5K4twoY?si=NncHFZy3mKtxj2F7) | [![Watch the video](https://img.youtube.com/vi/NrIL9EXAB34/default.jpg)](https://youtu.be/NrIL9EXAB34?si=J8AXVOs6y282At_7) | [![Watch the video](https://img.youtube.com/vi/ZUF7hUjGrSY/default.jpg)](https://youtu.be/ZUF7hUjGrSY?si=eMTfK7k3vGeD5vRm) | [![Watch the video](https://img.youtube.com/vi/6oBvMxax93A/default.jpg)](https://youtu.be/6oBvMxax93A?si=njibGKPYtyxFoBcV) | [![Watch the video](https://img.youtube.com/vi/x64Eid_FxdM/default.jpg)](https://youtu.be/x64Eid_FxdM?si=F8-glWCiCVmGFp-w) |
+| --- | --- | --- | --- | --- | --- |  --- |
+| <img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/795e704d-5fa6-436f-a322-a370b866b612" /> |  <img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/73e8d2bc-4eae-420a-9f33-db2eea28ec06" />| <img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/60eb25ad-9f07-400e-9f04-5872c1c603e5" />| <img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/e601744a-2ef5-472a-a627-370c525a0a77" /> | <img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/8d6e6a4c-03f1-4e0d-a664-35b6246c701c" /> | <img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/ae0716d4-f596-44b4-9d96-d1b25bb9d9ad" />| <img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/d6086355-27d3-4723-9d13-429d97345366" /> |
 
 ---
 
