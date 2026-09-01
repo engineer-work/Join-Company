@@ -211,12 +211,33 @@ Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my f
 | --- | --- | --- | --- |
 | [![Watch the video](https://img.youtube.com/vi/STxDFxxeX08/mqdefault.jpg)](https://youtu.be/STxDFxxeX08) | [![Watch the video](https://img.youtube.com/vi/7Mhyczjha1c/mqdefault.jpg)](https://youtu.be/7Mhyczjha1c) | [![Watch the video](https://img.youtube.com/vi/-swmWqU22gY/mqdefault.jpg)](https://youtu.be/-swmWqU22gY) |[![Watch the video](https://img.youtube.com/vi/AWzUls8sUJg/mqdefault.jpg)](https://youtu.be/AWzUls8sUJg)| 
 
-# Did you Know, Rich, Leader, Elite | Poor, Weak, Ambition People Spoiling others Life for their Selfish Needs? Really Who is the Criminals?
+# Did You Know?
+
+[💸🤑💰](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html) [Pain creates the story—but choice writes the ending.
+Be the one who breaks the cycle, not continues it.](https://engineer-work.github.io/Join-Company/war_prediction/human_uncertainty_pain_based_on_eduction.html) [💸🤑💰](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html)
+
+
+| **Rich, Powerful, Elite & Ambitious**                               | **Poor, Weak, Ambitionless & Vulnerable**           |
+| ------------------------------------------------------------------- | --------------------------------------------------- |
+| Talented and highly skilled                                         | Less talented and less skilled                      |
+| Successful and influential                                          | Soldiers and ordinary people                        |
+| Not necessarily kind-hearted                                        | Kind-hearted and compassionate                      |
+| May use their power, wealth, talent, or influence for selfish needs | May suffer because of the selfish actions of others |
+
+### **When People Spoil or Destroy Other People’s Lives for Their Own Selfish Needs, Who Is Really the Criminal?**
+
+[💸🤑💰](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html) [Pain creates the story—but choice writes the ending.
+Be the one who breaks the cycle, not continues it.](https://engineer-work.github.io/Join-Company/war_prediction/human_uncertainty_pain_based_on_eduction.html) [💸🤑💰](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html)
+
+
 
 | | | | | | |
 | --- | --- | --- | --- | --- | --- | 
 | | | | | | |
 
+
+
+[💸🤑💰  donate](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html) *Profile* - [My Learning Habit](https://docs.google.com/spreadsheets/d/e/2PACX-1vTNRg4Puo7QCFcm4ZXVF1dnX4qL6ofzOsO__GwuHJr-yke0QUXZtI51cr9Mt8Ui7QSoKTzOlr_SuB-G/pubhtml?gid=1898283119&single=true) , [ORCID](https://orcid.org/0009-0001-3787-2860),   [Free Learning Courses to Make Simulator](https://engineer-work.github.io/Join-Company/free-learning/free-learning.html) , [Desktop computer for Scientific Computing & Simple Simulation](https://engineer-work.github.io/Join-Company/device/current_specification_device.html), [Career Path](https://engineer-work.github.io/Join-Company/startup/issue-happen-to-me-while-working-in-startup.html), [My Job Life](https://engineer-work.github.io/Join-Company/startup/my_career_path.html) , [My College Life](https://engineer-work.github.io/Join-Company/college/pain-during-college.html)
 
 # My Childhood memory before 2012
 
