@@ -319,6 +319,8 @@ Be the one who breaks the cycle, not continues it.](https://engineer-work.github
 
 💻 For example, requirements should be clearly documented using practices such as **BDD (Behavior-Driven Development)**. Without clear requirements, acceptance criteria, and documentation, the percentage of mistakes and things going wrong can increase significantly. 📈⚠️
 
+[![Watch the video](https://img.youtube.com/vi/Xc7pz-Bj2N4/maxresdefault.jpg)](https://youtu.be/Xc7pz-Bj2N4?si=aPagcElLcsEfqMK4)
+
 ### See the above videos, Which movie are published in our region and doing wrong for money. then were is safety and secure
 
 🎬 **Please look at the items/videos above and consider the actors and actresses being presented or nominated in connection with schools, colleges, and workplaces.**
