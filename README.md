@@ -308,6 +308,31 @@ Be the one who breaks the cycle, not continues it.](https://engineer-work.github
 [![Watch the video](https://img.youtube.com/vi/7r8L20PWvQw/maxresdefault.jpg)](https://youtu.be/7r8L20PWvQw?si=8dw_WokfSGxNVVE-)
 
 ---
+# My Question: [Chatgpt](https://chatgpt.com/share/6a9bec6c-c95c-83ee-a4e8-b35bd78a8c9c)
+
+🏫 **If a school or college selects only 1, or a maximum of 10–15 students, for placement opportunities with different companies, what happens to the remaining students?**
+
+For example, if there are **60 students in a class**, or even **40 students**, and a company selects only 10–15 students, what happens to the rest? 🤔
+
+Does the school, college, or company have any responsibility toward the remaining students and their families? 👨‍👩‍👧‍👦
+
+Are the remaining students simply left behind? Or do the selected students and the college become the main beneficiaries of the system? 🏫💼
+
+Because of this situation, many students may become frustrated, lose hope, or go in the wrong direction. 😔➡️❌
+
+Even the students who are selected may not have permanent jobs. Some may work in a company for only **2 or 3 years**, while others may stay for **5–10 years**. Eventually, they may still be removed from the company or lose their jobs. 💼⏳
+
+If employment is not permanent, then why do schools and colleges place so much importance on making students extremely disciplined, obedient, and "good"? 📚🤔
+
+If the education system itself cannot guarantee opportunities or long-term employment for everyone, is it fair to make students believe that following all the rules and being a good student will guarantee a secure future? ⚖️
+
+Are schools, colleges, and companies unintentionally **gambling with students' futures** and potentially harming innocent students and their families? 🎲💔👨‍👩‍👧‍👦
+
+And if some opportunities are given mainly for the benefit of wealthy or powerful people rather than based on genuine merit, isn't that an even bigger problem? 💰⚖️
+
+**Education should develop every student's ability, confidence, skills, and independence—not make only a small number of students successful while leaving the rest without meaningful opportunities.** 📚🧠🌱
+
+---
 
 ### Going to School, College, and Office is Unsafe. The person kill each other for competition. Working for money is more dangerous.
 
