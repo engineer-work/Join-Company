@@ -1,3 +1,11 @@
+# 🏫🎓💼 Going to School, College, and the Office Is Unsafe ⚠️
+
+> These problems have happened to me personally. People may harm or kill each other because of competition, sometimes silently separating or spreading diseases 🦠—such as emotional triggers that provoke fights 😡⚡, energy draining 🔋⬇️, creating wrong names or identities 🏷️❌, viruses 🦠, bacteria 🧫, and gambling 🎰—in a room 🚪.
+
+> 💰 Working for money can be even more dangerous ⚠️.
+
+---
+
 [💸🤑💰](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html) [Pain creates the story—but choice writes the ending.
 Be the one who breaks the cycle, not continues it.](https://engineer-work.github.io/Join-Company/war_prediction/human_uncertainty_pain_based_on_eduction.html) [💸🤑💰](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html)
 
