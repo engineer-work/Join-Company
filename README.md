@@ -755,6 +755,29 @@ Safe List - due to many company cheating
 | --- |
 | [![Watch the video](https://img.youtube.com/vi/F4Tu90jTZ-s/maxresdefault.jpg)](https://youtu.be/F4Tu90jTZ-s) |
 
+----
+
+
+# 🏫🎓💼 Going to School, College, and the Office Can Feel Unsafe ⚠️
+
+These problems have happened to me personally. I have experienced or worried about people hurting each other because of competition ⚔️, while also facing concerns about illness and germs 🦠, emotional triggers that can lead to fights 😡⚡, feeling drained 🔋⬇️, false names or identities 🏷️❌, and gambling 🎰.
+
+❤️🎭 In school, college, and the office, I have also felt that some people may **pretend to show love, friendship, or affection** in order to get money or other personal benefits 💰. To me, this can feel like **gambling with people's emotions** 🎲❤️.
+
+🏠 I have also felt doubtful about my neighbors because I worry that they may try to **pressure or influence me to buy products for their own benefit** 🛍️💰.
+
+💼💰 Because of these experiences and concerns, I feel that **working for money and competing with others can sometimes become more dangerous when people's emotions, health, trust, and safety are involved** ⚠️🛡️.
+
+🤝 I believe schools, colleges, workplaces, and communities should promote **honesty, fairness, safety, respect, and genuine relationships** ❤️🌍.
+
+
+---
+
+[💸🤑💰](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html) [Pain creates the story—but choice writes the ending.
+Be the one who breaks the cycle, not continues it.](https://engineer-work.github.io/Join-Company/war_prediction/human_uncertainty_pain_based_on_eduction.html) [💸🤑💰](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html)
+
+---
+
 
 
 
