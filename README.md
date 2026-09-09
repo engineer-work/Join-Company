@@ -347,6 +347,7 @@ And if some opportunities are given mainly for the benefit of wealthy or powerfu
 | [![Watch the video](https://img.youtube.com/vi/ieIfdTlY07w/maxresdefault.jpg)](https://youtu.be/ieIfdTlY07w?si=buHDRywiqbJBYUqq) | [![Watch the video](https://img.youtube.com/vi/2caQ4j9oohE/maxresdefault.jpg)](https://youtu.be/2caQ4j9oohE?si=t94GWjHapc4Fw--o) |[![Watch the video](https://img.youtube.com/vi/Ae5_RI4SFPU/hqdefault.jpg)](https://youtu.be/Ae5_RI4SFPU?si=5tnbgr61PJwbpxSm)|
 |---|---|---|
 | [![Watch the video](https://img.youtube.com/vi/Xc7pz-Bj2N4/maxresdefault.jpg)](https://youtu.be/Xc7pz-Bj2N4?si=aPagcElLcsEfqMK4) | [![Watch the video](https://img.youtube.com/vi/Ogc4R7tOOMw/maxresdefault.jpg)](https://youtu.be/Ogc4R7tOOMw?si=UpgW_PTmGWnjmRaN) | [![Watch the video](https://img.youtube.com/vi/ajKJTon2StM/maxresdefault.jpg)](https://youtu.be/ajKJTon2StM?si=KLnpwQMKp1WWmPT_) |
+| [![Watch the video](https://img.youtube.com/vi/6tsC8mVc1JI/maxresdefault.jpg)](https://youtu.be/6tsC8mVc1JI?si=cL0xgI5gZ04vowlZ) | [![Watch the video](https://img.youtube.com/vi/ZjwUjh_m64Q/maxresdefault.jpg)](https://youtu.be/ZjwUjh_m64Q?si=AQGMQG7ijSra4cUX) | [![Watch the video](https://img.youtube.com/vi/P95-eI4JPjk/maxresdefault.jpg)](https://youtu.be/P95-eI4JPjk?si=zQm8lB3MODmr000U)  |
 
 ### See the above videos, Which movie are published in our region and doing wrong for money. then were is safety and secure
 
