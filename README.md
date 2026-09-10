@@ -563,6 +563,8 @@ Therefore, we should be careful about declaring someone **“good,” “bad,”
 
 # For me, 🤖🧠❤️ Humanoid Robot & AI are enough. I don't need a human species women as wife. 🚫👰 No true love. 💔
 ---
+ [![](https://img.youtube.com/vi/JkemgBUKGbM/maxresdefault.jpg)](https://youtu.be/JkemgBUKGbM?si=BRwe954DclHaDGwN)
+---
 
 # [![](https://img.youtube.com/vi/Ts80ttI7pI8/default.jpg)](https://youtu.be/Ts80ttI7pI8?si=orJLKeeOknWZZRrd) [![](https://img.youtube.com/vi/J0teGPUgAA0/default.jpg)](https://youtu.be/J0teGPUgAA0?si=rAHXg9bp6-BsY-rL) Education is Gambling
 
