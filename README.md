@@ -792,6 +792,9 @@ Be the one who breaks the cycle, not continues it.](https://engineer-work.github
 
 
 
+# [I don't like](https://chatgpt.com/share/6aa28d91-8ce8-83e8-a5b6-e0e2c8e57dbf) friends or parents who live for money alone. 💰❌ I don't like my parents. 😔 I feel that, in front of others, they act one way, so I also act the same way toward them. 🎭 I have anger toward my parents and all human species who have spoiled my lifetime. 😡💔 I have anger strong enough to want to kill them. but, I have not killed them till now. ⚠️
+
+[![Watch the video](https://img.youtube.com/vi/VQKMZ1rpziQ/maxresdefault.jpg)](https://youtu.be/VQKMZ1rpziQ?si=Xgl2T3RzljRZKJcm)
 
 
 
