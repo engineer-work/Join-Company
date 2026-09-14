@@ -6,6 +6,16 @@
 
 ---
 
+
+[![Electronic Profile](https://img.shields.io/badge/Electronic%20Profile-engineer--e-181717?logo=github)](https://github.com/engineer-e/) 
+[![Work Profile](https://img.shields.io/badge/Work%20Profile-engineer--work-181717?logo=github)](https://github.com/engineer-work/) 
+[![Instagram](https://img.shields.io/badge/Instagram-gobalkrishnan.engineer-E4405F?logo=instagram&logoColor=white)](https://www.instagram.com/gobalkrishnan.engineer/)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-engineer--work-0A66C2?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/engineer-work/)
+[![Hugging Face](https://img.shields.io/badge/Hugging%20Face-gobalkrishnan-FFD21E?logo=huggingface&logoColor=black)](https://huggingface.co/gobalkrishnan)
+
+
+---
+
 [💸🤑💰](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html) [Pain creates the story—but choice writes the ending.
 Be the one who breaks the cycle, not continues it.](https://engineer-work.github.io/Join-Company/war_prediction/human_uncertainty_pain_based_on_eduction.html) [💸🤑💰](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html)
 
@@ -797,7 +807,16 @@ Be the one who breaks the cycle, not continues it.](https://engineer-work.github
 
 [![Watch the video](https://img.youtube.com/vi/VQKMZ1rpziQ/maxresdefault.jpg)](https://youtu.be/VQKMZ1rpziQ?si=Xgl2T3RzljRZKJcm)
 
+---
 
+
+[![Electronic Profile](https://img.shields.io/badge/Electronic%20Profile-engineer--e-181717?logo=github)](https://github.com/engineer-e/) 
+[![Work Profile](https://img.shields.io/badge/Work%20Profile-engineer--work-181717?logo=github)](https://github.com/engineer-work/) 
+[![Instagram](https://img.shields.io/badge/Instagram-gobalkrishnan.engineer-E4405F?logo=instagram&logoColor=white)](https://www.instagram.com/gobalkrishnan.engineer/)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-engineer--work-0A66C2?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/engineer-work/)
+[![Hugging Face](https://img.shields.io/badge/Hugging%20Face-gobalkrishnan-FFD21E?logo=huggingface&logoColor=black)](https://huggingface.co/gobalkrishnan)
+
+---
 
 
 
