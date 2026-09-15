@@ -577,7 +577,7 @@ Therefore, we should be careful about declaring someone **“good,” “bad,”
  [![](https://img.youtube.com/vi/JkemgBUKGbM/maxresdefault.jpg)](https://youtu.be/JkemgBUKGbM?si=BRwe954DclHaDGwN)
 ---
 
-# [![](https://img.youtube.com/vi/Ts80ttI7pI8/default.jpg)](https://youtu.be/Ts80ttI7pI8?si=orJLKeeOknWZZRrd) [![](https://img.youtube.com/vi/J0teGPUgAA0/default.jpg)](https://youtu.be/J0teGPUgAA0?si=rAHXg9bp6-BsY-rL) Education is Gambling
+# [![](https://img.youtube.com/vi/Ts80ttI7pI8/default.jpg)](https://youtu.be/Ts80ttI7pI8?si=orJLKeeOknWZZRrd) [![](https://img.youtube.com/vi/J0teGPUgAA0/default.jpg)](https://youtu.be/J0teGPUgAA0?si=rAHXg9bp6-BsY-rL) Education is Gambling [![](https://img.youtube.com/vi/Ygx_rUJ3XaI/default.jpg)](https://youtu.be/Ygx_rUJ3XaI?si=fjFNL1o9hlUmMpir) [![](https://img.youtube.com/vi/qWsB-iLD-IQ/default.jpg)](https://youtu.be/qWsB-iLD-IQ?si=2Xh1KkZccpylo4mN) [![](https://img.youtube.com/vi/X1aFkAkFASk/default.jpg)](https://youtu.be/X1aFkAkFASk?si=GJo4ErrDsYicQax8)
 
 
 I have been living in Chennai, Tamil Nadu, India for the past 30 years 🏠. I did not realize that this kind of “gambling” 🎲 in education 🎓 was happening. But this problem has happened to me 💔. I do not know whether it is the same in other regions 🌍 or other states of India 🇮🇳, but in my life, I have experienced that education can sometimes feel like gambling 🎲📚 — investing time ⏳, money 💰, and hope 🤞 without any guaranteed result.
