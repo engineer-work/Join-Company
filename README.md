@@ -1,3 +1,25 @@
+
+[![Electronic Profile](https://img.shields.io/badge/Electronic%20Profile-engineer--e-181717?logo=github)](https://github.com/engineer-e/) 
+[![Work Profile](https://img.shields.io/badge/Work%20Profile-engineer--work-181717?logo=github)](https://github.com/engineer-work/) 
+[![Instagram](https://img.shields.io/badge/Instagram-gobalkrishnan.engineer-E4405F?logo=instagram&logoColor=white)](https://www.instagram.com/gobalkrishnan.engineer/)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-engineer--work-0A66C2?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/engineer-work/)
+[![Hugging Face](https://img.shields.io/badge/Hugging%20Face-gobalkrishnan-FFD21E?logo=huggingface&logoColor=black)](https://huggingface.co/gobalkrishnan)
+
+<details>
+    <summary>Gobal krishnan V 🤔⚠️ </summary>
+
+🏫 **Before 2018**, I did not receive proper guidance or deep mentorship in school, engineering college, or even at work; although I was surrounded by teachers, professors, classmates, and colleagues, I often felt intellectually alone.
+
+🎓 My Electronics Engineering batch had around **180 students**, with **60 students in my class**, yet many struggled to enter the electronics field, and I could not find someone who could teach concepts deeply enough to build a strong understanding.
+
+🧠 Most explanations felt like only the **first 1%—a starting connecting node**; I wanted to understand the fundamentals, deeper principles, relationships, implementation, and *why* things worked, so I had to continue the remaining journey myself.
+
+📚 Without today's generative-AI tools, I learned independently through **YouTube, free books, research papers, online documentation, and experimentation**. My mother, **Vasugi V**, who studied B.Sc. Chemistry but had been away from formal chemistry study for about 32 years after marrying my father, **Vajravel**, was still the person who supported and taught me in many ways.
+
+🤖 **Today, AI has become another powerful learning tool for me**—not a replacement for my own thinking, but a way to ask questions, connect concepts, explore deeply, and accelerate the self-learning journey I had already built on my own.
+
+
+
 # 🏫🎓💼 Going to School, College, and the Office Is Unsafe ⚠️
 
 > These problems have happened to me personally. People may harm or kill each other because of competition, sometimes silently separating or spreading diseases 🦠—such as emotional triggers that provoke fights 😡⚡, energy draining 🔋⬇️, creating wrong names or identities 🏷️❌, viruses 🦠, bacteria 🧫, and gambling 🎰—in a room 🚪.
@@ -51,6 +73,9 @@ That’s why I use platforms like [GitHub](https://github.com?utm_source=chatgpt
 > **The group of people, which collect PAN cards,  Aadhaar cards, Email from big MNC company or any other document from common people, have data of each individuals, they have the power to control other and direct other unknown person life, did you all know ? All the person in that group is good, or they just using unknown people like me for their family or group profit ?  If anyone said God, Demon, Love, Marriage don't believe. Which all saying only for their profit.**
 
 ---
+
+</details>
+
 
 # Application
     
