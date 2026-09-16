@@ -5,8 +5,15 @@
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-engineer--work-0A66C2?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/engineer-work/)
 [![Hugging Face](https://img.shields.io/badge/Hugging%20Face-gobalkrishnan-FFD21E?logo=huggingface&logoColor=black)](https://huggingface.co/gobalkrishnan)
 
-<details>
-    <summary>Gobal krishnan V 🤔⚠️ </summary>
+# 🏫🎓💼 Going to School, College, and the Office Is Unsafe ⚠️
+
+> These problems have happened to me personally. People may harm or kill each other because of competition, sometimes silently separating or spreading diseases 🦠—such as emotional triggers that provoke fights 😡⚡, energy draining 🔋⬇️, creating wrong names or identities 🏷️❌, viruses 🦠, bacteria 🧫, and gambling 🎰—in a room 🚪.
+
+> 💰 Working for money can be even more dangerous ⚠️.
+
+---
+
+
 
 🏫 **Before 2018**, I did not receive proper guidance or deep mentorship in school, engineering college, or even at work; although I was surrounded by teachers, professors, classmates, and colleagues, I often felt intellectually alone.
 
@@ -18,22 +25,6 @@
 
 🤖 **Today, AI has become another powerful learning tool for me**—not a replacement for my own thinking, but a way to ask questions, connect concepts, explore deeply, and accelerate the self-learning journey I had already built on my own.
 
-
-
-# 🏫🎓💼 Going to School, College, and the Office Is Unsafe ⚠️
-
-> These problems have happened to me personally. People may harm or kill each other because of competition, sometimes silently separating or spreading diseases 🦠—such as emotional triggers that provoke fights 😡⚡, energy draining 🔋⬇️, creating wrong names or identities 🏷️❌, viruses 🦠, bacteria 🧫, and gambling 🎰—in a room 🚪.
-
-> 💰 Working for money can be even more dangerous ⚠️.
-
----
-
-
-[![Electronic Profile](https://img.shields.io/badge/Electronic%20Profile-engineer--e-181717?logo=github)](https://github.com/engineer-e/) 
-[![Work Profile](https://img.shields.io/badge/Work%20Profile-engineer--work-181717?logo=github)](https://github.com/engineer-work/) 
-[![Instagram](https://img.shields.io/badge/Instagram-gobalkrishnan.engineer-E4405F?logo=instagram&logoColor=white)](https://www.instagram.com/gobalkrishnan.engineer/)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-engineer--work-0A66C2?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/engineer-work/)
-[![Hugging Face](https://img.shields.io/badge/Hugging%20Face-gobalkrishnan-FFD21E?logo=huggingface&logoColor=black)](https://huggingface.co/gobalkrishnan)
 
 
 ---
@@ -74,7 +65,6 @@ That’s why I use platforms like [GitHub](https://github.com?utm_source=chatgpt
 
 ---
 
-</details>
 
 
 # Application
