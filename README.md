@@ -13,8 +13,6 @@
 
 ---
 
-
-
 🏫 **Before 2018**, I did not receive proper guidance or deep mentorship in school, engineering college, or even at work; although I was surrounded by teachers, professors, classmates, and colleagues, I often felt intellectually alone.
 
 🎓 My Electronics Engineering batch had around **180 students**, with **60 students in my class**, yet many struggled to enter the electronics field, and I could not find someone who could teach concepts deeply enough to build a strong understanding.
@@ -25,6 +23,14 @@
 
 🤖 **Today, AI has become another powerful learning tool for me**—not a replacement for my own thinking, but a way to ask questions, connect concepts, explore deeply, and accelerate the self-learning journey I had already built on my own.
 
+
+
+---
+
+
+| English | Tamil |
+| :---: | :---: |
+|  [![Watch the video](https://img.youtube.com/vi/tYhmxxBNf5g/maxresdefault.jpg)](https://youtu.be/tYhmxxBNf5g) | [![Watch the video](https://img.youtube.com/vi/JSsD2m7rz9Q/maxresdefault.jpg)](https://youtu.be/JSsD2m7rz9Q?si=phSsy8yGUjA-dv-l) |
 
 
 ---
@@ -232,7 +238,6 @@ Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my f
 | English | Tamil |
 | :--- | :--- |
 | [![Watch the video](https://img.youtube.com/vi/XoHlRBG2DfM/maxresdefault.jpg)](https://youtu.be/XoHlRBG2DfM?si=CKKq8SJFmWAWKQhL) | [![Watch the video](https://img.youtube.com/vi/qb4OeqFGON0/maxresdefault.jpg)](https://youtu.be/qb4OeqFGON0?si=6K-JkZSdKAUi_7Cd)|  
-|  [![Watch the video](https://img.youtube.com/vi/tYhmxxBNf5g/maxresdefault.jpg)](https://youtu.be/tYhmxxBNf5g) | [![Watch the video](https://img.youtube.com/vi/JSsD2m7rz9Q/maxresdefault.jpg)](https://youtu.be/JSsD2m7rz9Q?si=phSsy8yGUjA-dv-l) |
 
 [![Watch the video](https://img.youtube.com/vi/0kfLTq57_Y0/maxresdefault.jpg)](https://youtu.be/0kfLTq57_Y0?si=nyztpqIVENhrLNBb)
 
