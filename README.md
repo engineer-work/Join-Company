@@ -31,7 +31,7 @@
 | English | Tamil |
 | :---: | :---: |
 |  [![Watch the video](https://img.youtube.com/vi/tYhmxxBNf5g/maxresdefault.jpg)](https://youtu.be/tYhmxxBNf5g) | [![Watch the video](https://img.youtube.com/vi/JSsD2m7rz9Q/maxresdefault.jpg)](https://youtu.be/JSsD2m7rz9Q?si=phSsy8yGUjA-dv-l) |
-
+| [![Watch the video](https://img.youtube.com/vi/g7428sgivqI/maxresdefault.jpg)](https://youtu.be/g7428sgivqI?si=rt1lvnszbkrjnjre) | [![Watch the video](https://img.youtube.com/vi/B0dSGx1FzyE/maxresdefault.jpg)](https://youtu.be/B0dSGx1FzyE?si=SAg3UMbqsvdbbwXd) | 
 
 ---
 
