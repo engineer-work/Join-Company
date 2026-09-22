@@ -793,6 +793,12 @@ Safe List - due to many company cheating
 | --- | --- | --- | 
 | [![Watch the video](https://img.youtube.com/vi/reQs3g5LO8E/mqdefault.jpg)](https://youtu.be/reQs3g5LO8E) | [![Watch the video](https://img.youtube.com/vi/nPcb05I0anY/mqdefault.jpg)](https://youtu.be/nPcb05I0anY) | [![Watch the video](https://img.youtube.com/vi/y0brSA1cyzw/mqdefault.jpg)](https://youtu.be/y0brSA1cyzw) |
 | [![Watch the video](https://img.youtube.com/vi/j9rRgslYZKA/mqdefault.jpg)](https://youtu.be/j9rRgslYZKA) | [![Watch the video](https://img.youtube.com/vi/eqtg_2ePb7o/mqdefault.jpg)](https://youtu.be/eqtg_2ePb7o) | [![Watch the video](https://img.youtube.com/vi/1luiu27NCRU/mqdefault.jpg)](https://youtu.be/1luiu27NCRU)  |
+|  [![Watch the video](https://img.youtube.com/vi/h6lHUn20J5g/maxresdefault.jpg)](https://youtu.be/h6lHUn20J5g?si=17AE7LLZpYwvUmf8) | [![Watch the video](https://img.youtube.com/vi/jPxbfNr13v0/maxresdefault.jpg)](https://youtu.be/jPxbfNr13v0?si=JO5jmBZqdkxSPghU)  |  [![Watch the video](https://img.youtube.com/vi/Zjgq6-5uDtY/maxresdefault.jpg)](https://youtu.be/Zjgq6-5uDtY?si=ArJgtYPiJNTVnPIn) |
+
+🌍💔 The lives of good and innocent girls 👧, boys 👦, women 👩, and men 👨 are being spoiled in the name of 👑 kingship, 🏛️ leadership, ⭐ fame, 😤 pride, 💰 money, 🏁 winning the race, and 🏆 success — while innocent families 👨‍👩‍👧‍👦 suffer in silence. 🥀💔🕊️
+
+# Let people live with dignity, freedom, peace, and respect. ❤️🕊️🤝🌱 War Happens due to this reason. Before, It happen for food & water. But, It happen for different think & things.
+
 
 | $10^{-35}$ to $10^{22}$ Range of Object - Minimal & Narrow Level Object Simulation |
 | --- |
