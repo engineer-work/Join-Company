@@ -597,7 +597,29 @@ Therefore, we should be careful about declaring someone **“good,” “bad,”
  [![](https://img.youtube.com/vi/JkemgBUKGbM/maxresdefault.jpg)](https://youtu.be/JkemgBUKGbM?si=BRwe954DclHaDGwN)
 ---
 
+
+
+
+###  🎓 They may genuinely be interested in providing education and doing something good for society. ❤️
+
+ 🌍 But have they checked and validated whether the way they are running the education trust is actually correct according to world-level education standards?
+
+ 📚 In education itself, there can be issues such as:
+
+ - 💰 Not providing proper salaries for the work being done.
+- 📄 Not maintaining proper documentation.
+- ⚖️ Not following the correct rules and regulations.
+- 🏫 Not understanding the proper systems and practices required to run an educational institution.
+- 👥 Not having people with sufficient knowledge of education administration and management.
+
+[![](https://img.youtube.com/vi/jNU_jrPxs-0/maxresdefault.jpg)](https://youtu.be/jNU_jrPxs-0?si=T89scf5kYVNQi1X1)
+
+ 🤝 The intention to provide education may be genuine, but proper knowledge, professional management, compliance, and good governance are also needed to support the family and make the education trust sustainable in the long term.
+
+[![](https://img.youtube.com/vi/pjHD9vBetb8/maxresdefault.jpg)](https://youtu.be/pjHD9vBetb8?si=DefeGQyaeMbx7Way)
+
 # [![](https://img.youtube.com/vi/Ts80ttI7pI8/default.jpg)](https://youtu.be/Ts80ttI7pI8?si=orJLKeeOknWZZRrd) [![](https://img.youtube.com/vi/J0teGPUgAA0/default.jpg)](https://youtu.be/J0teGPUgAA0?si=rAHXg9bp6-BsY-rL) Education is Gambling [![](https://img.youtube.com/vi/Ygx_rUJ3XaI/default.jpg)](https://youtu.be/Ygx_rUJ3XaI?si=fjFNL1o9hlUmMpir) [![](https://img.youtube.com/vi/qWsB-iLD-IQ/default.jpg)](https://youtu.be/qWsB-iLD-IQ?si=2Xh1KkZccpylo4mN) [![](https://img.youtube.com/vi/X1aFkAkFASk/default.jpg)](https://youtu.be/X1aFkAkFASk?si=GJo4ErrDsYicQax8)
+
 
 
 I have been living in Chennai, Tamil Nadu, India for the past 30 years 🏠. I did not realize that this kind of “gambling” 🎲 in education 🎓 was happening. But this problem has happened to me 💔. I do not know whether it is the same in other regions 🌍 or other states of India 🇮🇳, but in my life, I have experienced that education can sometimes feel like gambling 🎲📚 — investing time ⏳, money 💰, and hope 🤞 without any guaranteed result.
@@ -619,6 +641,9 @@ A direct comparison between **DD Returns** and the education/competition system 
 | Hidden traps in the game                        | Hidden system issues: outdated curriculum, unequal access     |
 | Survival depends on understanding the game      | Success depends on understanding the system + building skills |
 | [![](https://img.youtube.com/vi/5Qet4r_a3ak/default.jpg)](https://youtu.be/5Qet4r_a3ak)  [![](https://img.youtube.com/vi/WELaTP6ErBg/default.jpg)](https://youtu.be/WELaTP6ErBg) [![](https://img.youtube.com/vi/MC5nObVSYJY/default.jpg)](https://youtu.be/MC5nObVSYJY?si=9Kb0a0ydzL50OMCZ)| [![](https://img.youtube.com/vi/NSHlKY63yiU/default.jpg)](https://youtu.be/NSHlKY63yiU?si=PUlRIbbow6NrZIa6) [![](https://img.youtube.com/vi/op36HPrhCt0/default.jpg)](https://youtu.be/op36HPrhCt0?si=7LhkaTQHEidVqDKG) [![](https://img.youtube.com/vi/0TYGHGRjHNc/default.jpg)](https://youtu.be/0TYGHGRjHNc?si=om9G_iFJusGR86Oi)|
+| [![](https://img.youtube.com/vi/XY_VajurvLE/default.jpg)](https://youtu.be/XY_VajurvLE?si=-7HHShpyzWDs5bl9) [![](https://img.youtube.com/vi/ktuPsWAQgww/default.jpg)](https://youtu.be/ktuPsWAQgww?si=M1dc7uUw8fisqGN-) [![](https://img.youtube.com/vi/CrJFexx5b3o/default.jpg)](https://youtu.be/CrJFexx5b3o?si=uSs6Oe_7Qau4E_jE) | [![](https://img.youtube.com/vi/_qlKFVW2UZc/default.jpg)](https://youtu.be/_qlKFVW2UZc?si=RKFmaIZNVmvbFOgn) [![](https://img.youtube.com/vi/489ahBPK1nU/default.jpg)](https://youtu.be/489ahBPK1nU?si=-S76EK3l3eA_1Ms8) [![](https://img.youtube.com/vi/_ecKPUqvhWk/default.jpg)](https://youtu.be/_ecKPUqvhWk?si=aEOcAuqh9sM5XhmS) |
+
+[![](https://img.youtube.com/vi/tCsw72Mx28Y/maxresdefault.jpg)](https://youtu.be/tCsw72Mx28Y?si=zt2PwVy1jn_uToPh)
 
 ### Core similarity
 
