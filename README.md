@@ -235,6 +235,10 @@ Which I **created for my (ambition|passion|hobby|career|growth)** . *It for my f
 
 ---
 
+[![Watch the video](https://img.youtube.com/vi/X2d-o96hpZ8/maxresdefault.jpg)](https://youtu.be/X2d-o96hpZ8?si=h9KsO_aXgKNPenzy)
+
+---
+
 # Inborn Skill 
 
 ### 1. Eye [Inborn Skill by Eye](https://engineer-work.github.io/Join-Company/person_identity/skill/eye/eye.html)
