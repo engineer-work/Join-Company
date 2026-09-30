@@ -11,6 +11,10 @@
 
 > 💰 Working for money can be even more dangerous ⚠️.
 
+> If you are a good boy or a good girl, and someone tries to make you believe that they love you, do not blindly trust them. ❤️ Sometimes, people may pretend to love or care about you as part of a plan to spoil your life. ⚠️ They may have hidden intentions, such as trying to steal your family’s wealth 💰, involve you in illegal activities such as smuggling 🚨, or become involved in serious crimes such as human trafficking or organ trafficking. 🛑
+
+> In my case, I experienced a situation where a girl acted as though she loved me and behaved in front of others as if she genuinely loved me. This caused anger and misunderstandings among many professors, which contributed to problems in my college life and was one of the reasons my college life was affected. 😔
+
 ---
 
 🏫 **Before 2018**, I did not receive proper guidance or deep mentorship in school, engineering college, or even at work; although I was surrounded by teachers, professors, classmates, and colleagues, I often felt intellectually alone.
