@@ -1,12 +1,30 @@
 # Free Learning Resource to Make Simulator
 
-## 🧠💻 “This step-by-step approach to learning and building scientific simulators was never taught to me in school, engineering college, or any of the workplaces where I have worked before. Now, with the help of AI tools such as *ChatGPT, Gemini, DeepSeek, IBM Granite, Qwen, and Grok*, I am exploring new possibilities for learning, designing, simulating, and validating scientific concepts across multiple engineering and research domains.” 🚀🔬📚🤖
+## 🎓🧠 Learning from MIT — Massachusetts Institute of Technology
+
+### 🧠💻 “This step-by-step approach to learning and building scientific simulators was never taught to me in school, engineering college, or any of the workplaces where I have worked before. Now, through learning resources from **MIT (Massachusetts Institute of Technology)** and with the help of AI tools such as *ChatGPT, Gemini, DeepSeek, IBM Granite, Qwen, and Grok*, I am exploring new possibilities for understanding concepts, designing and building scientific simulators, and validating scientific results across multiple engineering and research domains.” 🚀🔬📚🤖
+
+🌐 MIT Official Website: https://www.mit.edu/
 
 > I using this resource for make simulator, *I am not expertise in making simulation*, but I know how to use formula to do an console based calculation, but if supercomputing level scientific computing also, I required help expert in those fields. Since I not used or not even seen the Supercomputer, Server Rack, AI Data Center. I just using normal  [Desktop Computer for Scientific Computing and Simple Simulation](https://engineer-work.github.io/Join-Company/device/current_specification_device.html)
 
 | Math Lab | Physics Lab | Chemisty Lab | 
 | --- | --- | --- |
 |[![Watch the video](https://img.youtube.com/vi/rNoeRFC17fQ/maxresdefault.jpg)](https://youtu.be/rNoeRFC17fQ) | [![Watch the video](https://img.youtube.com/vi/YbFgNsM6r44/maxresdefault.jpg)](https://youtu.be/YbFgNsM6r44) | [![Watch the video](https://img.youtube.com/vi/l1hMkDTg2lg/maxresdefault.jpg)](https://youtu.be/l1hMkDTg2lg) |
+
+> In the school, college, & work not trained any one for individual growth or company growth. Just give memorize the formula without understand it. try to solve it, without no understand the question need. If office not proper documentation step by step guidance.
+ 
+
+🎓 **MIT** — Massachusetts Institute of Technology
+
+![MIT Logo](https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/MIT_Logo_and_Wordmark.svg/960px-MIT_Logo_and_Wordmark.svg.png)
+
+
+📚🏫🎓💼 **A Gap in Education and Workplace Training**
+
+In school, college, and the workplace, I was never properly trained to focus on individual growth or organizational growth. Much of the learning focused on memorizing formulas and solving problems without fully understanding the underlying concepts or what the questions actually required. In the workplace, proper documentation and step-by-step guidance were often lacking, making it difficult to learn systematically, develop practical skills, and grow independently.
+
+🤖💻 Now, with AI tools such as ChatGPT, Gemini, DeepSeek, IBM Granite, Qwen, and Grok, I am exploring new ways to understand concepts, follow structured learning paths, build scientific simulators, and develop the skills needed for independent growth and meaningful research. 🚀🔬
 
 ## MIT - How to Learn 
 - [Learning, Media, and Technology - CMS.595 - Spring 2024 - Undergraduate, Graduate](https://ocw.mit.edu/courses/cms-595-learning-media-and-technology-spring-2024/video_galleries/session-videos/)
