@@ -1,6 +1,8 @@
 # Free Learning Resource to Make Simulator
 
-> I using this resource for make simulator, I am not expertise in making simulation, but I know how to use formula to do an console based calculation, but if supercomputing level scientific computing also, I required help expert in those fields. Since I not used or not even seen the Supercomputer, Server Rack, AI Data Center. I just using normal  [Desktop Computer for Scientific Computing and Simple Simulation](https://engineer-work.github.io/Join-Company/device/current_specification_device.html)
+## 🧠💻 “This step-by-step approach to learning and building scientific simulators was never taught to me in school, engineering college, or any of the workplaces where I have worked before. Now, with the help of AI tools such as *ChatGPT, Gemini, DeepSeek, IBM Granite, Qwen, and Grok*, I am exploring new possibilities for learning, designing, simulating, and validating scientific concepts across multiple engineering and research domains.” 🚀🔬📚🤖
+
+> I using this resource for make simulator, *I am not expertise in making simulation*, but I know how to use formula to do an console based calculation, but if supercomputing level scientific computing also, I required help expert in those fields. Since I not used or not even seen the Supercomputer, Server Rack, AI Data Center. I just using normal  [Desktop Computer for Scientific Computing and Simple Simulation](https://engineer-work.github.io/Join-Company/device/current_specification_device.html)
 
 | Math Lab | Physics Lab | Chemisty Lab | 
 | --- | --- | --- |
