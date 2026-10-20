@@ -9,9 +9,9 @@
 
 🏫 During my school and college years, I also worked to help support my family. My earnings were very small, and most of that money went toward food and daily expenses.
 
-👨‍👩‍👦 My father had a permanent job in [**TAFE**](https://www.tafe.com/) and worked hard to pay for school fees, housing loans, food expenses, and other family responsibilities. However, financial pressures remained high due to housing loans, education expenses, and other debts. But, Problem for that big company at 2026 due to the problem in TVS group - [Short video from **MAAYAM STUDIOS**](https://www.youtube.com/watch?v=Ez-3oJ3kGdA)
+👨‍👩‍👦 My father **Vajravel** had a permanent job in [**TAFE**](https://www.tafe.com/) and worked hard to pay for school fees, housing loans, food expenses, and other family responsibilities. However, financial pressures remained high due to housing loans, education expenses, and other debts. But, Problem for that big company at 2026 due to the problem in TVS group - [Short video from **MAAYAM STUDIOS**](https://www.youtube.com/watch?v=Ez-3oJ3kGdA)
 
-👩 My mother worked as a teacher and conducted tuition classes, earning small amounts such as ₹100, ₹200, ₹300, and ₹500. Until 2016, my younger brother and I also helped with those tuition classes.
+👩 My mother **Vasugi V** worked as a teacher and conducted tuition classes, earning small amounts such as ₹100, ₹200, ₹300, and ₹500. Until 2016, my younger brother and I also helped with those tuition classes.
 
 🎓 During my college years, I stopped teaching tuition and focused on my studies, while my mother and younger brother continued the work.
 
