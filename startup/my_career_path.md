@@ -195,6 +195,12 @@ However, AI is not yet capable of reliably completing every task without supervi
 
 [![Watch the video](https://img.youtube.com/vi/K_6AYVJj5FM/maxresdefault.jpg)](https://youtu.be/K_6AYVJj5FM?si=2H0B6z4frcEb-t-l)
 
+| [![Watch the video](https://img.youtube.com/vi/1ayq6oS16jw/maxresdefault.jpg)](https://youtu.be/1ayq6oS16jw?si=AntmxUQNqZ_82Oal)| [![Watch the video](https://img.youtube.com/vi/K0qzyq6aZ5E/maxresdefault.jpg)](https://youtu.be/K0qzyq6aZ5E?si=S20v7PsExOgohFnR) | [![Watch the video](https://img.youtube.com/vi/MX-05v24jUE/maxresdefault.jpg)](https://youtu.be/MX-05v24jUE?si=McsS1IGYSS9wy7pB) |
+| --- | --- | --- |
+| [![Watch the video](https://img.youtube.com/vi/AIPraIlSmIk/maxresdefault.jpg)](https://youtu.be/AIPraIlSmIk?si=3o6Ae2uh7JDfr0kB) | [![Watch the video](https://img.youtube.com/vi/yylboTEeAy8/maxresdefault.jpg)](https://youtu.be/yylboTEeAy8?si=4nrf2-vTSUUhLnGb)  | [![Watch the video](https://img.youtube.com/vi/I36vIoK17Cg/maxresdefault.jpg)](https://youtu.be/I36vIoK17Cg?si=xcK0k_8EjoiR7-NX) |
 
+[![Watch the video](https://img.youtube.com/vi/D8qjv42ZWJw/maxresdefault.jpg)](https://youtu.be/D8qjv42ZWJw?si=dNxpVQjgZ4kSCV55)
+
+[![Watch the video](https://img.youtube.com/vi/6Op3Ti1ayBQ/maxresdefault.jpg)](https://youtu.be/6Op3Ti1ayBQ?si=WBPb7tpFbv5KiaSm)
 
 
