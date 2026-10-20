@@ -1,3 +1,10 @@
+[![Watch the video](https://img.youtube.com/vi/5O2KDzq1rks/maxresdefault.jpg)](https://youtu.be/5O2KDzq1rks?si=X8lhgIUF6shC7w8D)
+
+| [![Watch the video](https://img.youtube.com/vi/PGwXZqviGyg/hqdefault.jpg)](https://youtu.be/PGwXZqviGyg?si=ok1icYkv0tU28jN9) | [![Watch the video](https://img.youtube.com/vi/OtzVvMiDSes/hqdefault.jpg)](https://youtu.be/OtzVvMiDSes?si=shtabp9EYcVwowbe) | [![Watch the video](https://img.youtube.com/vi/KQ6ZijcOfUw/hqdefault.jpg)](https://youtu.be/KQ6ZijcOfUw?si=GorBFhopYUlzJ8Aj) |
+| --- | --- | --- |
+| [![Watch the video](https://img.youtube.com/vi/m4pQHfKMuU4/hqdefault.jpg)](https://youtu.be/m4pQHfKMuU4?si=Tl-gUBlZxUVr_So7)  | [![Watch the video](https://img.youtube.com/vi/B6Mxd4Bd-MM/hqdefault.jpg)](https://youtu.be/B6Mxd4Bd-MM?si=NUSRzIIc8byUHc9J)  | [![Watch the video](https://img.youtube.com/vi/BeqKkGYCWPk/hqdefault.jpg)](https://youtu.be/BeqKkGYCWPk?si=iAYgld6JWWge7IrQ) | 
+
+[![Watch the video](https://img.youtube.com/vi/aKoteEMNaKw/maxresdefault.jpg)](https://youtu.be/aKoteEMNaKw?si=zItZbFIR9VI9oXUy)
 
 # 1️⃣ 📊 Timeline of my Job.
 
