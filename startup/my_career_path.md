@@ -178,7 +178,7 @@ However, AI is not yet capable of reliably completing every task without supervi
 
    - Assist with CAD modelling, component design, computational analysis, and engineering documentation.
    - Applications: [FreeCAD](https://www.freecad.org/?utm_source=chatgpt.com), [Onshape](https://www.onshape.com/?utm_source=chatgpt.com), and [OpenFOAM](https://www.openfoam.com/?utm_source=chatgpt.com).
-   - [AI Voice Clone -- Your Voice, Infinite Takes | FairStack](https://images.openai.com/static-rsc-4/N3QOgU6eNcJjJ_s-dLUJ6rbIiWsEy3ODxnHvFAgAu2KBSF4aSfoDgfDc_XTOnsvAS880Jg6KH_v3BNPSxiZSkuBIgfGGVRA1lQVbaS9tqBdCjDrD8HpjDSsx5pZdNGaVmIJyFZqcFi-9oIDKWPHJ2_7XZ9Xl2HVNpmVQtDWto2s?purpose=inline)
+   - [AI Voice Clone - Your Voice, Infinite Takes - FairStack](https://images.openai.com/static-rsc-4/N3QOgU6eNcJjJ_s-dLUJ6rbIiWsEy3ODxnHvFAgAu2KBSF4aSfoDgfDc_XTOnsvAS880Jg6KH_v3BNPSxiZSkuBIgfGGVRA1lQVbaS9tqBdCjDrD8HpjDSsx5pZdNGaVmIJyFZqcFi-9oIDKWPHJ2_7XZ9Xl2HVNpmVQtDWto2s?purpose=inline)
 
 5. Audio, speech, and multimodal AI
    - Create speech, transcribe audio, generate sound, analyze recordings, and combine text, images, audio, and video in AI workflows.
