@@ -193,7 +193,7 @@ However, AI is not yet capable of reliably completing every task without supervi
 | --- | --- | --- | --- |
 | [![Watch the video](https://img.youtube.com/vi/EErvPIUfkHw/maxresdefault.jpg)](https://youtu.be/EErvPIUfkHw?si=0kBD6ulaph28mL76) | [![Watch the video](https://img.youtube.com/vi/1oGF3kbMBJg/maxresdefault.jpg)](https://youtu.be/1oGF3kbMBJg?si=MpYzE1tJgRN5wVln)  | [![Watch the video](https://img.youtube.com/vi/SDlYgloKv80/maxresdefault.jpg)](https://youtu.be/SDlYgloKv80?si=kReEJB9FnyszeZR-)  |  [![Watch the video](https://img.youtube.com/vi/l8QEOuGS338/maxresdefault.jpg)](https://youtu.be/l8QEOuGS338?si=Kce-LwYSSl_HXuho) |
 
-
+[![Watch the video](https://img.youtube.com/vi/K_6AYVJj5FM/maxresdefault.jpg)](https://youtu.be/K_6AYVJj5FM?si=2H0B6z4frcEb-t-l)
 
 
 
