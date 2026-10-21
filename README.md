@@ -600,9 +600,9 @@ Therefore, we should be careful about declaring someone **“good,” “bad,”
 
 ---
 
-| [![Watch the video](https://img.youtube.com/vi/VuOLFV4HnQE/hqdefault.jpg)](https://youtu.be/VuOLFV4HnQE?si=iLMfe5R0Lae80Nux) |  [![Watch the video](https://img.youtube.com/vi/QNbTxcA5dUU/hqdefault.jpg)](https://youtu.be/QNbTxcA5dUU?si=mqZH-HtDk9XEYkb9) | [![Watch the video](https://img.youtube.com/vi/SsFcjKFepJA/hqdefault.jpg)](https://youtu.be/SsFcjKFepJA?si=nXeZTNBfwMzF0dV8)  |
-| --- | --- | --- |
-| [![Watch the video](https://img.youtube.com/vi/PP5lKbOXuEw/hqdefault.jpg)](https://youtu.be/PP5lKbOXuEw?si=7VnlwBMlosYecpcj)| [![Watch the video](https://img.youtube.com/vi/_gut16RbqFo/hqdefault.jpg)](https://youtu.be/_gut16RbqFo?si=RKZpHCVLsKmNd94r) | [![Watch the video](https://img.youtube.com/vi/HMjaBRIcbIk/hqdefault.jpg)](https://youtu.be/HMjaBRIcbIk?si=Mkgwoe4yAoSWmXxi)  |
+| [![Watch the video](https://img.youtube.com/vi/VuOLFV4HnQE/hqdefault.jpg)](https://youtu.be/VuOLFV4HnQE?si=iLMfe5R0Lae80Nux) |  [![Watch the video](https://img.youtube.com/vi/QNbTxcA5dUU/hqdefault.jpg)](https://youtu.be/QNbTxcA5dUU?si=mqZH-HtDk9XEYkb9) | [![Watch the video](https://img.youtube.com/vi/SsFcjKFepJA/hqdefault.jpg)](https://youtu.be/SsFcjKFepJA?si=nXeZTNBfwMzF0dV8)  |  [![Watch the video](https://img.youtube.com/vi/lOIIpbImav8/hqdefault.jpg)](https://youtu.be/lOIIpbImav8?si=pwbyvL8ox3aQ6h6w) | 
+| --- | --- | --- | --- | 
+| [![Watch the video](https://img.youtube.com/vi/PP5lKbOXuEw/hqdefault.jpg)](https://youtu.be/PP5lKbOXuEw?si=7VnlwBMlosYecpcj)| [![Watch the video](https://img.youtube.com/vi/_gut16RbqFo/hqdefault.jpg)](https://youtu.be/_gut16RbqFo?si=RKZpHCVLsKmNd94r) | [![Watch the video](https://img.youtube.com/vi/HMjaBRIcbIk/hqdefault.jpg)](https://youtu.be/HMjaBRIcbIk?si=Mkgwoe4yAoSWmXxi)  |  [![Watch the video](https://img.youtube.com/vi/QfzO-AuAhsM/hqdefault.jpg)](https://youtu.be/QfzO-AuAhsM?si=Vi76vf7NG7KBdN1S) |
 
 ---
 
