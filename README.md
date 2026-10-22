@@ -898,6 +898,8 @@ Be the one who breaks the cycle, not continues it.](https://engineer-work.github
 
 ---
 
+[![Watch the video](https://img.youtube.com/vi/lei5bqds-xQ/maxresdefault.jpg)](https://youtu.be/lei5bqds-xQ?si=M3hbQGBShJ6lhrbq)
+
 
 # Imaginary Numbers are real
 
@@ -923,3 +925,7 @@ Be the one who breaks the cycle, not continues it.](https://engineer-work.github
 | 15 | What is the i really doing   in Schrödinger's equation? |  1 years ago |           [![Watch the video](https://img.youtube.com/vi/uVKMY-WTrVo/hqdefault.jpg)](https://youtu.be/uVKMY-WTrVo?si=KYTnR_L8dL_7tFiI) |
 
 ---
+
+
+[![Watch the video](https://img.youtube.com/vi/Qu76qtAwThc/maxresdefault.jpg)](https://youtu.be/Qu76qtAwThc?si=i6upXflzstM4a50E)
+
