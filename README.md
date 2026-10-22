@@ -36,7 +36,7 @@
 | :---: | :---: |
 |  [![Watch the video](https://img.youtube.com/vi/tYhmxxBNf5g/maxresdefault.jpg)](https://youtu.be/tYhmxxBNf5g) | [![Watch the video](https://img.youtube.com/vi/JSsD2m7rz9Q/maxresdefault.jpg)](https://youtu.be/JSsD2m7rz9Q?si=phSsy8yGUjA-dv-l) |
 | [![Watch the video](https://img.youtube.com/vi/g7428sgivqI/maxresdefault.jpg)](https://youtu.be/g7428sgivqI?si=rt1lvnszbkrjnjre) | [![Watch the video](https://img.youtube.com/vi/B0dSGx1FzyE/maxresdefault.jpg)](https://youtu.be/B0dSGx1FzyE?si=SAg3UMbqsvdbbwXd) | 
-
+| [![Watch the video](https://img.youtube.com/vi/vL5FQILumx8/maxresdefault.jpg)](https://youtu.be/vL5FQILumx8) | [![Watch the video](https://img.youtube.com/vi/hpaEWN4wz2E/maxresdefault.jpg)](https://youtu.be/hpaEWN4wz2E?si=BtmlqprBs2gLu3xi) |
 ---
 
 [💸🤑💰](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html) [Pain creates the story—but choice writes the ending.
@@ -897,7 +897,27 @@ Be the one who breaks the cycle, not continues it.](https://engineer-work.github
 ---
 
 
+# Imaginary Numbers are real
+
+[![](https://images.squarespace-cdn.com/content/v1/54b90461e4b0ad6fb5e05581/fcd18ffb-07fc-43ae-bfeb-3f18fac674a8/IMG_0501+copy.JPG)](https://www.welchlabs.com/store/imaginary-numbers-book)
 
 
+| S.No | Title | Duration | Video |
+| --- | ---- | --- | --- |
+| 1  |  Introduction                 | 11 years ago |                                     [![Watch the video](https://img.youtube.com/vi/T647CGsuOVU/hqdefault.jpg)](https://youtu.be/T647CGsuOVUsi=RrAM-E3voALMVMzl)  | 
+| 2  |  A Little History             | 11 years ago |                                     [![Watch the video](https://img.youtube.com/vi/2HrSG0fdxLY/hqdefault.jpg)](https://youtu.be/2HrSG0fdxLY?si=6WoOKdSNxHKdkRaT)  |
+| 3  |  Cardan's Problem             | 11 years ago |                                     [![Watch the video](https://img.youtube.com/vi/N9QOLrfcKNc/hqdefault.jpg)](https://youtu.be/N9QOLrfcKNc?si=U18rAkgkDppLZNlL)  | 
+| 4  |  Bombelli's Solution          | 11 years ago |                                     [![Watch the video](https://img.youtube.com/vi/DThAoT3q2V4/hqdefault.jpg)](https://youtu.be/DThAoT3q2V4?si=bGVMWxcj1BqwpO-t)  |
+| 5  |  Numbers are Two Dimensional  | 11 years ago |                                     [![Watch the video](https://img.youtube.com/vi/65wYmy8Pf-Y/hqdefault.jpg)](https://youtu.be/65wYmy8Pf-Y?si=sRFksalLo6cWySTJ)  |
+| 6  |  The Complex Plane            | 11 years ago |                                     [![Watch the video](https://img.youtube.com/vi/z5IG_6_zPDo/hqdefault.jpg)](https://youtu.be/z5IG_6_zPDo?si=Y3DOHVwmPgesAyv2)  |
+| 7  |  Complex Multiplication       | 11 years ago |                                     [![Watch the video](https://img.youtube.com/vi/YHvR8siIiD0/hqdefault.jpg)](https://youtu.be/YHvR8siIiD0?si=yeOutMjmeuxlCWiK)  |
+| 8  |  Math Wizardry                | 10 years ago |                                     [![Watch the video](https://img.youtube.com/vi/iecUL8_OxrU/hqdefault.jpg)](https://youtu.be/iecUL8_OxrU?si=Xw0i18grHx5DQarl)  |
+| 9  |  Closure                      | 10 years ago |                                     [![Watch the video](https://img.youtube.com/vi/dLn5H69lS0w/hqdefault.jpg)](https://youtu.be/dLn5H69lS0w?si=_PZ_rVvNzFxFvuSh)  |
+| 10 | Complex Functions             | 10 years ago |                                     [![Watch the video](https://img.youtube.com/vi/pNp8Qf20-sA/hqdefault.jpg)](https://youtu.be/pNp8Qf20-sA?si=LEuCHnKLWrTBL3ym)  |
+| 11 | Wandering in 4 Dimensions     | 10 years ago |                                     [![Watch the video](https://img.youtube.com/vi/0hiWbdc8QEk/hqdefault.jpg)](https://youtu.be/0hiWbdc8QEk?si=bh60gB6zzak9k0Jv)  |
+| 12 | Riemann's Solution            | 10 years ago |                                     [![Watch the video](https://img.youtube.com/vi/DpUmrKOQhAM/hqdefault.jpg)](https://youtu.be/DpUmrKOQhAM?si=EQOVtwFE-AAea2NT)  |
+| 13 | Riemann Surfaces              | 10 years ago |                                     [![Watch the video](https://img.youtube.com/vi/4MmSZrAlqKc/hqdefault.jpg)](https://youtu.be/4MmSZrAlqKc?si=h7kLjAZM3DePS0N2)  | 
+| 14 | The most beautiful equation, explained visually [Euler's Formula] |  2 years ago | [![Watch the video](https://img.youtube.com/vi/f8CXG7dS-D0/hqdefault.jpg)](https://youtu.be/f8CXG7dS-D0?si=j0fmzzR5v9tVsrRH) |
+| 15 | What is the i really doing   in Schrödinger's equation? |  1 years ago |           [![Watch the video](https://img.youtube.com/vi/uVKMY-WTrVo/hqdefault.jpg)](https://youtu.be/uVKMY-WTrVo?si=KYTnR_L8dL_7tFiI) |
 
-
+---
