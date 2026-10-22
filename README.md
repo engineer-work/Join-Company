@@ -31,6 +31,7 @@
 
 ---
 
+[![Watch the video](https://img.youtube.com/vi/9DnnxvS6BBQ/maxresdefault.jpg)](https://youtu.be/9DnnxvS6BBQ?si=ZWtOVZxPN1tptvjU)
 
 | English | Tamil |
 | :---: | :---: |
@@ -40,6 +41,9 @@
 
 ---
 
+[![Watch the video](https://img.youtube.com/vi/88bMVbx1dzM/maxresdefault.jpg)](https://youtu.be/88bMVbx1dzM?si=7JKtbD9QmGGCxQAi)
+
+---
 
 [💸🤑💰](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html) [Pain creates the story—but choice writes the ending.
 Be the one who breaks the cycle, not continues it.](https://engineer-work.github.io/Join-Company/war_prediction/human_uncertainty_pain_based_on_eduction.html) [💸🤑💰](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html)
