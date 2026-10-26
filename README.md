@@ -7,6 +7,8 @@
 
 # 🏫🎓💼 Going to School, College, and the Office Is Unsafe ⚠️
 
+[![Watch the video](https://img.youtube.com/vi/k7CTmaeNwfQ/maxresdefault.jpg)](https://youtu.be/k7CTmaeNwfQ?si=4JA6nucbfTwRnKmD)
+
 > These problems have happened to me personally. People may harm or kill each other because of competition, sometimes silently separating or spreading diseases 🦠—such as emotional triggers that provoke fights 😡⚡, energy draining 🔋⬇️, creating wrong names or identities 🏷️❌, viruses 🦠, bacteria 🧫, and gambling 🎰—in a room 🚪.
 
 > 💰 Working for money can be even more dangerous ⚠️.
