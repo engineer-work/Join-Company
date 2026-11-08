@@ -1,0 +1,620 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Three.js - Shadow Map Performance</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:,">
+
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #59472b;
+            font-family: Arial, sans-serif;
+        }
+
+        #info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            font-size: 13px;
+            z-index: 10;
+            line-height: 1.6;
+        }
+
+        #info a {
+            color: #fff;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.183.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+
+<body>
+
+<div id="info">
+    <a href="https://threejs.org" target="_blank" rel="noopener">three.js</a>
+    - shadow map performance
+    - models by <a href="https://mirada.com/" target="_blank" rel="noopener">mirada</a>
+    <br>
+    Left mouse: Rotate | Right mouse: Pan | Wheel: Zoom
+</div>
+
+<script type="module">
+
+import * as THREE from 'three';
+
+import Stats from 'three/addons/libs/stats.module.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
+
+// --------------------------------------------------
+// SETTINGS
+// --------------------------------------------------
+
+const SHADOW_MAP_WIDTH = 2048;
+const SHADOW_MAP_HEIGHT = 1024;
+
+const FLOOR = -250;
+const FAR = 3000;
+const NEAR = 5;
+
+const ANIMATION_GROUPS = 25;
+
+// Reduced for performance on lower-end graphics hardware.
+// Increase to 601 if your GPU can handle it.
+const HORSE_COUNT = 120;
+
+// --------------------------------------------------
+// GLOBAL VARIABLES
+// --------------------------------------------------
+
+let camera;
+let controls;
+let scene;
+let renderer;
+let stats;
+let mixer;
+
+const morphs = [];
+const animGroups = [];
+
+const timer = new THREE.Timer();
+
+// --------------------------------------------------
+// INITIALIZATION
+// --------------------------------------------------
+
+init();
+
+function init() {
+
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+
+    // CAMERA
+
+    camera = new THREE.PerspectiveCamera(
+        23,
+        window.innerWidth / window.innerHeight,
+        NEAR,
+        FAR
+    );
+
+    camera.position.set(700, 50, 1900);
+
+    // SCENE
+
+    scene = new THREE.Scene();
+
+    scene.background = new THREE.Color(0x59472b);
+    scene.fog = new THREE.Fog(0x59472b, 1000, FAR);
+
+    // LIGHTS
+
+    const ambient = new THREE.AmbientLight(0xffffff, 1);
+    scene.add(ambient);
+
+    const light = new THREE.DirectionalLight(0xffffff, 3);
+
+    light.position.set(0, 1500, 1000);
+    light.castShadow = true;
+
+    light.shadow.camera.top = 2000;
+    light.shadow.camera.bottom = -2000;
+    light.shadow.camera.left = -2000;
+    light.shadow.camera.right = 2000;
+
+    light.shadow.camera.near = 1200;
+    light.shadow.camera.far = 2500;
+
+    light.shadow.bias = 0.0001;
+
+    light.shadow.mapSize.width = SHADOW_MAP_WIDTH;
+    light.shadow.mapSize.height = SHADOW_MAP_HEIGHT;
+
+    scene.add(light);
+
+    // CREATE SCENE OBJECTS
+
+    createScene();
+
+    // RENDERER
+
+    renderer = new THREE.WebGLRenderer({
+        antialias: true
+    });
+
+    renderer.setPixelRatio(
+        Math.min(window.devicePixelRatio, 1.5)
+    );
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFShadowMap;
+
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+    renderer.autoClear = false;
+
+    container.appendChild(renderer.domElement);
+
+    // ORBIT CONTROLS
+
+    controls = new OrbitControls(
+        camera,
+        renderer.domElement
+    );
+
+    controls.target.set(0, FLOOR, 0);
+
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    controls.enableRotate = true;
+    controls.enableZoom = true;
+    controls.enablePan = true;
+
+    controls.minDistance = 100;
+    controls.maxDistance = 2500;
+
+    controls.maxPolarAngle = Math.PI * 0.495;
+
+    controls.update();
+
+    // STATS
+
+    stats = new Stats();
+    container.appendChild(stats.dom);
+
+    // TIMER
+
+    timer.connect(document);
+
+    // EVENTS
+
+    window.addEventListener('resize', onWindowResize);
+
+    // ANIMATION
+
+    renderer.setAnimationLoop(animate);
+
+}
+
+// --------------------------------------------------
+// RESIZE
+// --------------------------------------------------
+
+function onWindowResize() {
+
+    camera.aspect = window.innerWidth / window.innerHeight;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+
+}
+
+// --------------------------------------------------
+// CREATE SCENE
+// --------------------------------------------------
+
+function createScene() {
+
+    // GROUND
+
+    const geometry = new THREE.PlaneGeometry(100, 100);
+
+    const planeMaterial = new THREE.MeshPhongMaterial({
+        color: 0xffdd99
+    });
+
+    const ground = new THREE.Mesh(
+        geometry,
+        planeMaterial
+    );
+
+    ground.position.set(0, FLOOR, 0);
+    ground.rotation.x = -Math.PI / 2;
+    ground.scale.set(100, 100, 100);
+
+    ground.castShadow = false;
+    ground.receiveShadow = true;
+
+    scene.add(ground);
+
+    // TEXT
+
+    const fontLoader = new FontLoader();
+
+    fontLoader.load(
+        'https://threejs.org/examples/fonts/helvetiker_bold.typeface.json',
+
+        function(font) {
+
+            const textGeo = new TextGeometry('THREE.JS', {
+
+                font: font,
+
+                size: 200,
+                depth: 50,
+                curveSegments: 12,
+
+                bevelThickness: 2,
+                bevelSize: 5,
+                bevelEnabled: true
+
+            });
+
+            textGeo.computeBoundingBox();
+
+            const centerOffset =
+                -0.5 * (
+                    textGeo.boundingBox.max.x -
+                    textGeo.boundingBox.min.x
+                );
+
+            const textMaterial = new THREE.MeshPhongMaterial({
+                color: 0xff0000,
+                specular: 0xffffff
+            });
+
+            const textMesh = new THREE.Mesh(
+                textGeo,
+                textMaterial
+            );
+
+            textMesh.position.x = centerOffset;
+            textMesh.position.y = FLOOR + 67;
+
+            textMesh.castShadow = true;
+            textMesh.receiveShadow = true;
+
+            scene.add(textMesh);
+
+        },
+
+        undefined,
+
+        function(error) {
+            console.error('Font loading error:', error);
+        }
+    );
+
+    // CUBES
+
+    const cubes1 = new THREE.Mesh(
+        new THREE.BoxGeometry(1500, 220, 150),
+        planeMaterial
+    );
+
+    cubes1.position.y = FLOOR - 50;
+    cubes1.position.z = 20;
+
+    cubes1.castShadow = true;
+    cubes1.receiveShadow = true;
+
+    scene.add(cubes1);
+
+    const cubes2 = new THREE.Mesh(
+        new THREE.BoxGeometry(1600, 170, 250),
+        planeMaterial
+    );
+
+    cubes2.position.y = FLOOR - 50;
+    cubes2.position.z = 20;
+
+    cubes2.castShadow = true;
+    cubes2.receiveShadow = true;
+
+    scene.add(cubes2);
+
+    // ANIMATION MIXER
+
+    mixer = new THREE.AnimationMixer(scene);
+
+    // ANIMATION GROUPS
+
+    for (let i = 0; i < ANIMATION_GROUPS; i++) {
+
+        const group = new THREE.AnimationObjectGroup();
+
+        animGroups.push(group);
+
+    }
+
+    // LOAD HORSE MODEL
+
+    const gltfLoader = new GLTFLoader();
+
+    gltfLoader.load(
+
+        'https://threejs.org/examples/models/gltf/Horse.glb',
+
+        function(gltf) {
+
+            const originalRoot = gltf.scene;
+            const clip = gltf.animations[0];
+
+            if (!clip) {
+                console.error('Horse animation not found.');
+                return;
+            }
+
+            for (let i = 0; i < HORSE_COUNT; i++) {
+
+                const x = 100 - Math.random() * 3000;
+
+                const z = -600 + i * 1200 / Math.max(1, HORSE_COUNT - 1);
+
+                addMorph(
+                    originalRoot,
+                    clip,
+                    550,
+                    1,
+                    x,
+                    FLOOR,
+                    z,
+                    true,
+                    true
+                );
+
+            }
+
+            console.log('Horse models loaded:', HORSE_COUNT);
+
+        },
+
+        function(xhr) {
+
+            if (xhr.total > 0) {
+                console.log(
+                    'Horse loading:',
+                    (xhr.loaded / xhr.total * 100).toFixed(1) + '%'
+                );
+            }
+
+        },
+
+        function(error) {
+
+            console.error('Horse model loading error:', error);
+
+        }
+
+    );
+
+}
+
+// --------------------------------------------------
+// ADD HORSE
+// --------------------------------------------------
+
+function addMorph(
+    originalRoot,
+    clip,
+    speed,
+    duration,
+    x,
+    y,
+    z,
+    fudgeColor,
+    massOptimization
+) {
+
+    // Skeleton-aware cloning is important for animated GLTF models.
+
+    const mesh = SkeletonUtils.clone(originalRoot);
+
+    // Clone materials so each horse can have its own color.
+
+    mesh.traverse(function(child) {
+
+        if (child.isMesh) {
+
+            if (Array.isArray(child.material)) {
+
+                child.material = child.material.map(
+                    material => material.clone()
+                );
+
+            } else if (child.material) {
+
+                child.material = child.material.clone();
+
+            }
+
+            child.castShadow = true;
+            child.receiveShadow = true;
+
+            if (fudgeColor && child.material) {
+
+                const materials = Array.isArray(child.material)
+                    ? child.material
+                    : [child.material];
+
+                for (const material of materials) {
+
+                    if (material.color) {
+
+                        material.color.offsetHSL(
+                            0,
+                            Math.random() * 0.5 - 0.25,
+                            Math.random() * 0.5 - 0.25
+                        );
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    });
+
+    mesh.speed = speed;
+
+    // MASS OPTIMIZATION
+
+    if (massOptimization) {
+
+        const index = Math.floor(
+            Math.random() * ANIMATION_GROUPS
+        );
+
+        const animGroup = animGroups[index];
+
+        animGroup.add(mesh);
+
+        if (!mixer.existingAction(clip, animGroup)) {
+
+            const randomness = 0.6 * Math.random() - 0.3;
+
+            const phase =
+                (index + randomness) / ANIMATION_GROUPS;
+
+            mixer.clipAction(clip, animGroup)
+                .setDuration(duration)
+                .startAt(-duration * phase)
+                .play();
+
+        }
+
+    } else {
+
+        mixer.clipAction(clip, mesh)
+            .setDuration(duration)
+            .startAt(-duration * Math.random())
+            .play();
+
+    }
+
+    mesh.position.set(x, y, z);
+
+    mesh.rotation.y = Math.PI / 2;
+
+    scene.add(mesh);
+
+    morphs.push(mesh);
+
+}
+
+// --------------------------------------------------
+// ANIMATION
+// --------------------------------------------------
+
+function animate() {
+
+    timer.update();
+
+    stats.begin();
+
+    render();
+
+    stats.end();
+
+}
+
+// --------------------------------------------------
+// RENDER
+// --------------------------------------------------
+
+function render() {
+
+    const delta = timer.getDelta();
+
+    if (mixer) {
+        mixer.update(delta);
+    }
+
+    // MOVE HORSES
+
+    for (let i = 0; i < morphs.length; i++) {
+
+        const morph = morphs[i];
+
+        morph.position.x += morph.speed * delta;
+
+        if (morph.position.x > 2000) {
+
+            morph.position.x = -1000 - Math.random() * 500;
+
+        }
+
+    }
+
+    // UPDATE ORBIT CONTROLS
+
+    controls.update();
+
+    // RENDER SCENE
+
+    renderer.clear();
+
+    renderer.render(scene, camera);
+
+}
+
+// --------------------------------------------------
+// CLEANUP
+// --------------------------------------------------
+
+window.addEventListener('pagehide', function() {
+
+    renderer.setAnimationLoop(null);
+
+    controls.dispose();
+
+    timer.dispose();
+
+});
+
+</script>
+
+</body>
+</html>

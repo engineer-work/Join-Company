@@ -1,0 +1,728 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Three.js - Multiple Scenes Comparison</title>
+
+    <link rel="icon" href="data:,">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #111;
+            font-family: Arial, sans-serif;
+        }
+
+        #info {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            z-index: 10;
+            color: white;
+            font-size: 14px;
+            line-height: 1.6;
+            text-shadow: 0 1px 4px #000;
+            pointer-events: none;
+        }
+
+        #info a {
+            color: #00aeef;
+            text-decoration: none;
+            pointer-events: auto;
+        }
+
+        .container {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+        }
+
+        .container canvas {
+            display: block;
+        }
+
+        .slider {
+            position: absolute;
+            z-index: 5;
+
+            width: 40px;
+            height: 40px;
+
+            top: 50%;
+            left: 50%;
+
+            transform: translate(-50%, -50%);
+
+            background: #F32196;
+            border: 3px solid white;
+            border-radius: 50%;
+
+            opacity: 0.9;
+            cursor: ew-resize;
+
+            touch-action: none;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        .slider::before {
+            content: "";
+            position: absolute;
+            width: 3px;
+            height: 100vh;
+            background: #F32196;
+            z-index: -1;
+        }
+
+        .scene-label {
+            position: absolute;
+            top: 70px;
+            z-index: 4;
+            padding: 7px 12px;
+            color: white;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 5px;
+            font-size: 13px;
+            pointer-events: none;
+        }
+
+        #leftLabel {
+            left: 15px;
+        }
+
+        #rightLabel {
+            right: 15px;
+        }
+    </style>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.183.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+
+<body>
+
+    <div id="info">
+        <a href="https://threejs.org" target="_blank" rel="noopener">
+            three.js
+        </a>
+        - Multiple Scenes Comparison
+    </div>
+
+    <div class="scene-label" id="leftLabel">
+        Solid Material
+    </div>
+
+    <div class="scene-label" id="rightLabel">
+        Wireframe Material
+    </div>
+
+    <div class="container">
+        <div class="slider" title="Drag to compare">
+            ↔
+        </div>
+    </div>
+
+    <script type="module">
+
+        import * as THREE from "three";
+
+        import { OrbitControls } from
+            "three/addons/controls/OrbitControls.js";
+
+
+        /* =====================================================
+           GLOBAL VARIABLES
+        ===================================================== */
+
+        let container;
+        let camera;
+        let renderer;
+        let controls;
+
+        let sceneL;
+        let sceneR;
+
+        let slider;
+        let sliderPos;
+
+        let isDragging = false;
+
+        let windowWidth = window.innerWidth;
+        let windowHeight = window.innerHeight;
+
+
+        /* =====================================================
+           INITIALIZATION
+        ===================================================== */
+
+        init();
+
+
+        function init() {
+
+            container = document.querySelector(".container");
+
+            slider = document.querySelector(".slider");
+
+            sliderPos = windowWidth / 2;
+
+
+            createScenes();
+
+            createCamera();
+
+            createLights();
+
+            createMeshes();
+
+            createRenderer();
+
+            createControls();
+
+            createSlider();
+
+            window.addEventListener(
+                "resize",
+                onWindowResize
+            );
+
+        }
+
+
+        /* =====================================================
+           SCENES
+        ===================================================== */
+
+        function createScenes() {
+
+            sceneL = new THREE.Scene();
+
+            sceneL.background = new THREE.Color(0xBCD48F);
+
+
+            sceneR = new THREE.Scene();
+
+            sceneR.background = new THREE.Color(0x8FBCD4);
+
+        }
+
+
+        /* =====================================================
+           CAMERA
+        ===================================================== */
+
+        function createCamera() {
+
+            camera = new THREE.PerspectiveCamera(
+
+                35,
+
+                windowWidth / windowHeight,
+
+                0.1,
+
+                100
+
+            );
+
+            camera.position.set(0, 0, 6);
+
+        }
+
+
+        /* =====================================================
+           LIGHTING
+        ===================================================== */
+
+        function createLights() {
+
+            const light = new THREE.HemisphereLight(
+
+                0xffffff,
+
+                0x444444,
+
+                3
+
+            );
+
+            light.position.set(-2, 2, 2);
+
+            sceneL.add(light.clone());
+
+            sceneR.add(light.clone());
+
+
+            const directionalLight = new THREE.DirectionalLight(
+
+                0xffffff,
+
+                2
+
+            );
+
+            directionalLight.position.set(3, 4, 5);
+
+            sceneL.add(directionalLight.clone());
+
+            sceneR.add(directionalLight.clone());
+
+        }
+
+
+        /* =====================================================
+           MESHES
+        ===================================================== */
+
+        function createMeshes() {
+
+            const geometry = new THREE.IcosahedronGeometry(
+
+                1,
+
+                3
+
+            );
+
+
+            // LEFT SCENE: Solid object
+
+            const materialL = new THREE.MeshStandardMaterial({
+
+                color: 0xffffff,
+
+                roughness: 0.65,
+
+                metalness: 0.1
+
+            });
+
+            const meshL = new THREE.Mesh(
+
+                geometry,
+
+                materialL
+
+            );
+
+            sceneL.add(meshL);
+
+
+            // RIGHT SCENE: Wireframe object
+
+            const materialR = new THREE.MeshStandardMaterial({
+
+                color: 0x222222,
+
+                wireframe: true,
+
+                roughness: 0.5
+
+            });
+
+            const meshR = new THREE.Mesh(
+
+                geometry,
+
+                materialR
+
+            );
+
+            sceneR.add(meshR);
+
+        }
+
+
+        /* =====================================================
+           RENDERER
+        ===================================================== */
+
+        function createRenderer() {
+
+            renderer = new THREE.WebGLRenderer({
+
+                antialias: true,
+
+                alpha: false
+
+            });
+
+            renderer.setPixelRatio(
+
+                Math.min(window.devicePixelRatio, 2)
+
+            );
+
+            renderer.setSize(
+
+                windowWidth,
+
+                windowHeight
+
+            );
+
+            renderer.setScissorTest(true);
+
+            container.appendChild(renderer.domElement);
+
+        }
+
+
+        /* =====================================================
+           ORBIT CONTROLS
+        ===================================================== */
+
+        function createControls() {
+
+            controls = new OrbitControls(
+
+                camera,
+
+                renderer.domElement
+
+            );
+
+            controls.enableDamping = true;
+
+            controls.dampingFactor = 0.05;
+
+            controls.enableZoom = true;
+
+            controls.enablePan = false;
+
+        }
+
+
+        /* =====================================================
+           SLIDER
+        ===================================================== */
+
+        function createSlider() {
+
+            updateSliderPosition();
+
+
+            slider.addEventListener(
+
+                "pointerdown",
+
+                onPointerDown
+
+            );
+
+
+            window.addEventListener(
+
+                "pointermove",
+
+                onPointerMove
+
+            );
+
+
+            window.addEventListener(
+
+                "pointerup",
+
+                onPointerUp
+
+            );
+
+
+            window.addEventListener(
+
+                "pointercancel",
+
+                onPointerUp
+
+            );
+
+
+            // Also allow clicking anywhere on the comparison area.
+
+            renderer.domElement.addEventListener(
+
+                "pointerdown",
+
+                (event) => {
+
+                    if (event.button !== 0) return;
+
+                    // Ignore clicks on the slider itself.
+
+                    const rect = slider.getBoundingClientRect();
+
+                    if (
+                        event.clientX >= rect.left &&
+                        event.clientX <= rect.right &&
+                        event.clientY >= rect.top &&
+                        event.clientY <= rect.bottom
+                    ) {
+                        return;
+                    }
+
+                    setSliderPosition(event.clientX);
+
+                }
+
+            );
+
+        }
+
+
+        function onPointerDown(event) {
+
+            if (event.isPrimary === false) return;
+
+            if (event.button !== 0) return;
+
+            isDragging = true;
+
+            controls.enabled = false;
+
+            slider.setPointerCapture?.(event.pointerId);
+
+            setSliderPosition(event.clientX);
+
+        }
+
+
+        function onPointerMove(event) {
+
+            if (!isDragging) return;
+
+            if (event.isPrimary === false) return;
+
+            setSliderPosition(event.clientX);
+
+        }
+
+
+        function onPointerUp() {
+
+            if (!isDragging) return;
+
+            isDragging = false;
+
+            controls.enabled = true;
+
+        }
+
+
+        function setSliderPosition(x) {
+
+            sliderPos = THREE.MathUtils.clamp(
+
+                x,
+
+                0,
+
+                windowWidth
+
+            );
+
+            updateSliderPosition();
+
+        }
+
+
+        function updateSliderPosition() {
+
+            slider.style.left = sliderPos + "px";
+
+        }
+
+
+        /* =====================================================
+           WINDOW RESIZE
+        ===================================================== */
+
+        function onWindowResize() {
+
+            windowWidth = window.innerWidth;
+
+            windowHeight = window.innerHeight;
+
+
+            camera.aspect = windowWidth / windowHeight;
+
+            camera.updateProjectionMatrix();
+
+
+            renderer.setSize(
+
+                windowWidth,
+
+                windowHeight
+
+            );
+
+
+            sliderPos = THREE.MathUtils.clamp(
+
+                sliderPos,
+
+                0,
+
+                windowWidth
+
+            );
+
+            updateSliderPosition();
+
+        }
+
+
+        /* =====================================================
+           ANIMATION
+        ===================================================== */
+
+        function animate() {
+
+            controls.update();
+
+            render();
+
+        }
+
+
+        /* =====================================================
+           RENDER COMPARISON
+        ===================================================== */
+
+        function render() {
+
+            const leftWidth = Math.floor(sliderPos);
+
+            const rightWidth = windowWidth - leftWidth;
+
+
+            // LEFT SCENE
+
+            if (leftWidth > 0) {
+
+                renderer.setScissor(
+
+                    0,
+
+                    0,
+
+                    leftWidth,
+
+                    windowHeight
+
+                );
+
+                renderer.setViewport(
+
+                    0,
+
+                    0,
+
+                    leftWidth,
+
+                    windowHeight
+
+                );
+
+                renderer.setClearColor(
+
+                    sceneL.background,
+
+                    1
+
+                );
+
+                renderer.render(
+
+                    sceneL,
+
+                    camera
+
+                );
+
+            }
+
+
+            // RIGHT SCENE
+
+            if (rightWidth > 0) {
+
+                renderer.setScissor(
+
+                    leftWidth,
+
+                    0,
+
+                    rightWidth,
+
+                    windowHeight
+
+                );
+
+                renderer.setViewport(
+
+                    leftWidth,
+
+                    0,
+
+                    rightWidth,
+
+                    windowHeight
+
+                );
+
+                renderer.setClearColor(
+
+                    sceneR.background,
+
+                    1
+
+                );
+
+                renderer.render(
+
+                    sceneR,
+
+                    camera
+
+                );
+
+            }
+
+        }
+
+
+        /* =====================================================
+           START ANIMATION
+        ===================================================== */
+
+        renderer.setAnimationLoop(animate);
+
+
+    </script>
+
+</body>
+</html>

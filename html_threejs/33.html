@@ -1,0 +1,421 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js WebGPU - Array Camera</title>
+    <link rel="icon" href="data:,">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+            font-family: Arial, sans-serif;
+        }
+
+        #info {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            z-index: 10;
+            color: white;
+            pointer-events: none;
+            line-height: 1.5;
+        }
+
+        #info a {
+            color: #08f;
+            text-decoration: none;
+            pointer-events: auto;
+        }
+
+        #info .title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        #info small {
+            display: block;
+            max-width: 450px;
+            margin-top: 5px;
+            color: #ccc;
+        }
+
+        #status {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            background: #222;
+            padding: 15px 20px;
+            border-radius: 6px;
+            z-index: 20;
+            max-width: 90%;
+            text-align: center;
+        }
+
+        #container {
+            width: 100%;
+            height: 100%;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.webgpu.js",
+            "three/webgpu": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.webgpu.js"
+        }
+    }
+    </script>
+</head>
+
+<body>
+
+    <div id="info">
+        <div class="title">
+            <a href="https://threejs.org/" target="_blank" rel="noopener">three.js</a>
+            - Array Camera
+        </div>
+        <small>
+            Array cameras render one scene through multiple sub-cameras
+            using a single render call.
+        </small>
+        <small>6 × 6 cameras — 36 individual views</small>
+    </div>
+
+    <div id="status">Initializing WebGPU...</div>
+    <div id="container"></div>
+
+    <script type="module">
+
+        import * as THREE from 'three/webgpu';
+
+        // --------------------------------------------------
+        // SETTINGS
+        // --------------------------------------------------
+
+        const AMOUNT = 6;
+
+        let camera;
+        let scene;
+        let renderer;
+        let mesh;
+
+        let isRunning = false;
+
+        const container = document.getElementById('container');
+        const status = document.getElementById('status');
+
+        // --------------------------------------------------
+        // INITIALIZATION
+        // --------------------------------------------------
+
+        async function init() {
+
+            if (!navigator.gpu) {
+                throw new Error(
+                    'WebGPU is not available in this browser or graphics device.'
+                );
+            }
+
+            // --------------------------------------------------
+            // CREATE SUB CAMERAS
+            // --------------------------------------------------
+
+            const subCameras = [];
+
+            for (let i = 0; i < AMOUNT * AMOUNT; i++) {
+
+                const subCamera = new THREE.PerspectiveCamera(
+                    40,
+                    1,
+                    0.1,
+                    10
+                );
+
+                subCamera.viewport = new THREE.Vector4();
+
+                subCameras.push(subCamera);
+            }
+
+            // --------------------------------------------------
+            // ARRAY CAMERA
+            // --------------------------------------------------
+
+            camera = new THREE.ArrayCamera(subCameras);
+
+            camera.position.z = 3;
+
+            updateCameras();
+
+            // --------------------------------------------------
+            // SCENE
+            // --------------------------------------------------
+
+            scene = new THREE.Scene();
+
+            // Ambient light
+            const ambientLight = new THREE.AmbientLight(
+                0x999999
+            );
+
+            scene.add(ambientLight);
+
+            // Directional light
+            const light = new THREE.DirectionalLight(
+                0xffffff,
+                3
+            );
+
+            light.position.set(0.5, 0.5, 1);
+
+            light.castShadow = true;
+
+            light.shadow.camera.zoom = 4;
+
+            light.shadow.mapSize.set(1024, 1024);
+
+            scene.add(light);
+
+            // --------------------------------------------------
+            // BACKGROUND PLANE
+            // --------------------------------------------------
+
+            const geometryBackground = new THREE.PlaneGeometry(
+                100,
+                100
+            );
+
+            const materialBackground = new THREE.MeshPhongMaterial({
+                color: 0x000066
+            });
+
+            const background = new THREE.Mesh(
+                geometryBackground,
+                materialBackground
+            );
+
+            background.receiveShadow = true;
+
+            background.position.set(0, 0, -1);
+
+            scene.add(background);
+
+            // --------------------------------------------------
+            // ROTATING CYLINDER
+            // --------------------------------------------------
+
+            const geometryCylinder = new THREE.CylinderGeometry(
+                0.5,
+                0.5,
+                1,
+                32
+            );
+
+            const materialCylinder = new THREE.MeshPhongMaterial({
+                color: 0xff0000
+            });
+
+            mesh = new THREE.Mesh(
+                geometryCylinder,
+                materialCylinder
+            );
+
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+
+            scene.add(mesh);
+
+            // --------------------------------------------------
+            // WEBGPU RENDERER
+            // --------------------------------------------------
+
+            renderer = new THREE.WebGPURenderer({
+                antialias: true
+            });
+
+            renderer.setPixelRatio(
+                Math.min(window.devicePixelRatio, 1.5)
+            );
+
+            renderer.setSize(
+                window.innerWidth,
+                window.innerHeight
+            );
+
+            renderer.shadowMap.enabled = true;
+
+            // WebGPU initialization must finish before rendering.
+            await renderer.init();
+
+            container.appendChild(renderer.domElement);
+
+            // --------------------------------------------------
+            // EVENTS
+            // --------------------------------------------------
+
+            window.addEventListener(
+                'resize',
+                onWindowResize
+            );
+
+            // Start animation after initialization.
+            isRunning = true;
+
+            renderer.setAnimationLoop(animate);
+
+            status.style.display = 'none';
+        }
+
+        // --------------------------------------------------
+        // UPDATE CAMERA ARRAY
+        // --------------------------------------------------
+
+        function updateCameras() {
+
+            if (!camera) return;
+
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+
+            const aspect = width / height;
+
+            camera.aspect = aspect;
+            camera.updateProjectionMatrix();
+
+            // Calculate viewport dimensions.
+            const cellWidth = width / AMOUNT;
+            const cellHeight = height / AMOUNT;
+
+            for (let y = 0; y < AMOUNT; y++) {
+
+                for (let x = 0; x < AMOUNT; x++) {
+
+                    const index = AMOUNT * y + x;
+
+                    const subCamera = camera.cameras[index];
+
+                    // Copy the main camera projection settings.
+                    subCamera.copy(camera);
+
+                    // Set each viewport using exact cell boundaries.
+                    const left = Math.floor(x * cellWidth);
+                    const bottom = Math.floor(y * cellHeight);
+
+                    const right = Math.floor((x + 1) * cellWidth);
+                    const top = Math.floor((y + 1) * cellHeight);
+
+                    subCamera.viewport.set(
+                        left,
+                        bottom,
+                        right - left,
+                        top - bottom
+                    );
+
+                    // Each sub-camera occupies a square viewport.
+                    subCamera.aspect = 1;
+                    subCamera.updateProjectionMatrix();
+
+                    // Camera positions.
+                    subCamera.position.set(
+                        (x / AMOUNT) - 0.5,
+                        0.5 - (y / AMOUNT),
+                        1.5 + ((x + y) * 0.5)
+                    );
+
+                    subCamera.position.multiplyScalar(2);
+
+                    subCamera.lookAt(0, 0, 0);
+
+                    subCamera.updateMatrixWorld(true);
+                }
+            }
+        }
+
+        // --------------------------------------------------
+        // WINDOW RESIZE
+        // --------------------------------------------------
+
+        function onWindowResize() {
+
+            if (!renderer) return;
+
+            renderer.setSize(
+                window.innerWidth,
+                window.innerHeight
+            );
+
+            updateCameras();
+        }
+
+        // --------------------------------------------------
+        // ANIMATION
+        // --------------------------------------------------
+
+        function animate() {
+
+            if (!isRunning) return;
+
+            mesh.rotation.x += 0.005;
+            mesh.rotation.z += 0.01;
+
+            // One render call for all 36 sub-cameras.
+            renderer.render(scene, camera);
+        }
+
+        // --------------------------------------------------
+        // CLEANUP
+        // --------------------------------------------------
+
+        function cleanup() {
+
+            isRunning = false;
+
+            if (renderer) {
+                renderer.setAnimationLoop(null);
+                renderer.dispose();
+            }
+
+            window.removeEventListener(
+                'resize',
+                onWindowResize
+            );
+        }
+
+        window.addEventListener(
+            'pagehide',
+            cleanup,
+            { once: true }
+        );
+
+        // --------------------------------------------------
+        // START
+        // --------------------------------------------------
+
+        init().catch(error => {
+
+            console.error('Array Camera Error:', error);
+
+            status.textContent = error.message;
+            status.style.color = '#ff7777';
+
+        });
+
+    </script>
+
+</body>
+</html>

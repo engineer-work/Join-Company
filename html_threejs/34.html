@@ -1,0 +1,896 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js - Logarithmic Depth Buffer</title>
+    <link rel="icon" href="data:,">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+            color: white;
+            font-family: Arial, sans-serif;
+            touch-action: none;
+        }
+
+        #container {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            overflow: hidden;
+        }
+
+        #container_normal,
+        #container_logzbuf {
+            position: relative;
+            width: 50%;
+            height: 100%;
+            min-width: 1px;
+            overflow: hidden;
+        }
+
+        #container_normal canvas,
+        #container_logzbuf canvas {
+            display: block;
+        }
+
+        .renderer_label {
+            position: absolute;
+            bottom: 1em;
+            left: 0;
+            width: 100%;
+            margin: 0;
+            color: white;
+            text-align: center;
+            font-size: 16px;
+            z-index: 5;
+            pointer-events: none;
+            text-shadow: 0 1px 4px black;
+        }
+
+        #renderer_border {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 5px;
+            transform: translateX(-50%);
+            z-index: 10;
+            background: #ccc;
+            border: 1px solid #888;
+            opacity: 0.85;
+            cursor: col-resize;
+            touch-action: none;
+        }
+
+        #renderer_border:hover {
+            background: white;
+        }
+
+        #info {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            z-index: 10;
+            line-height: 1.5;
+            pointer-events: none;
+            text-shadow: 0 1px 4px black;
+        }
+
+        #info a {
+            color: #08f;
+            text-decoration: none;
+            pointer-events: auto;
+        }
+
+        #status {
+            position: absolute;
+            z-index: 20;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 15px 20px;
+            max-width: 90%;
+            background: #222;
+            border-radius: 6px;
+            color: white;
+            text-align: center;
+        }
+    </style>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.183.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+
+<body>
+
+    <div id="container">
+
+        <div id="container_normal">
+            <h2 class="renderer_label">Normal Z-buffer</h2>
+        </div>
+
+        <div id="container_logzbuf">
+            <h2 class="renderer_label">Logarithmic Z-buffer</h2>
+        </div>
+
+        <div id="renderer_border"></div>
+
+    </div>
+
+    <div id="info">
+        <a href="https://threejs.org/" target="_blank" rel="noopener">three.js</a>
+        - Cameras - Logarithmic Depth Buffer
+        <br>
+        Move the mouse to rotate the viewing direction.
+        <br>
+        Use the mouse wheel to zoom.
+        <br>
+        Drag the center divider to compare.
+    </div>
+
+    <div id="status">Loading font and initializing scene...</div>
+
+    <script type="module">
+
+        import * as THREE from 'three';
+
+        import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+        import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+        import Stats from 'three/addons/libs/stats.module.js';
+
+        // --------------------------------------------------
+        // CONFIGURATION
+        // --------------------------------------------------
+
+        const NEAR = 1e-6;
+        const FAR = 1e27;
+
+        const FONT_URL =
+            'https://threejs.org/examples/fonts/helvetiker_regular.typeface.json';
+
+        let SCREEN_WIDTH = window.innerWidth;
+        let SCREEN_HEIGHT = window.innerHeight;
+
+        let screensplit = 0.5;
+        let screensplitRight = 0.5;
+
+        const mouse = [0.5, 0.5];
+
+        let zoompos = -100;
+        let minzoomspeed = 0.015;
+        let zoomspeed = minzoomspeed;
+
+        let container;
+        let border;
+        let stats;
+
+        let isDragging = false;
+        let animationId = null;
+        let isRunning = false;
+
+        const objects = {};
+
+        const status = document.getElementById('status');
+
+        // --------------------------------------------------
+        // SCALE LABELS
+        // --------------------------------------------------
+
+        const labeldata = [
+
+            { size: 0.01, scale: 0.0001, label: 'microscopic (1µm)' },
+
+            { size: 0.01, scale: 0.1, label: 'minuscule (1mm)' },
+
+            { size: 0.01, scale: 1.0, label: 'tiny (1cm)' },
+
+            { size: 1, scale: 1.0, label: 'child-sized (1m)' },
+
+            { size: 10, scale: 1.0, label: 'tree-sized (10m)' },
+
+            { size: 100, scale: 1.0, label: 'building-sized (100m)' },
+
+            { size: 1000, scale: 1.0, label: 'medium (1km)' },
+
+            { size: 10000, scale: 1.0, label: 'city-sized (10km)' },
+
+            { size: 3400000, scale: 1.0, label: 'moon-sized (3,400 Km)' },
+
+            { size: 12000000, scale: 1.0, label: 'planet-sized (12,000 km)' },
+
+            { size: 1400000000, scale: 1.0, label: 'sun-sized (1,400,000 km)' },
+
+            { size: 7.47e12, scale: 1.0, label: 'solar system-sized (50Au)' },
+
+            { size: 9.4605284e15, scale: 1.0, label: 'gargantuan (1 light year)' },
+
+            { size: 3.08567758e16, scale: 1.0, label: 'ludicrous (1 parsec)' },
+
+            { size: 1e19, scale: 1.0, label: 'mind boggling (1000 light years)' }
+
+        ];
+
+        // --------------------------------------------------
+        // INITIALIZATION
+        // --------------------------------------------------
+
+        async function init() {
+
+            container = document.getElementById('container');
+            border = document.getElementById('renderer_border');
+
+            stats = new Stats();
+            container.appendChild(stats.dom);
+
+            // Load font
+            const loader = new FontLoader();
+
+            const font = await loader.loadAsync(FONT_URL);
+
+            // Create one shared scene
+            const scene = initScene(font);
+
+            // Initialize normal depth buffer renderer
+            objects.normal = initView(
+                scene,
+                'normal',
+                false
+            );
+
+            // Initialize logarithmic depth buffer renderer
+            objects.logzbuf = initView(
+                scene,
+                'logzbuf',
+                true
+            );
+
+            // Set initial viewport sizes
+            updateRendererSizes();
+
+            // Events
+            border.addEventListener(
+                'pointerdown',
+                onBorderPointerDown
+            );
+
+            window.addEventListener(
+                'pointermove',
+                onPointerMove
+            );
+
+            window.addEventListener(
+                'pointerup',
+                onPointerUp
+            );
+
+            window.addEventListener(
+                'pointercancel',
+                onPointerUp
+            );
+
+            window.addEventListener(
+                'resize',
+                onWindowResize
+            );
+
+            window.addEventListener(
+                'wheel',
+                onMouseWheel,
+                { passive: true }
+            );
+
+            isRunning = true;
+
+            status.style.display = 'none';
+
+            animate();
+        }
+
+        // --------------------------------------------------
+        // CREATE RENDERER VIEW
+        // --------------------------------------------------
+
+        function initView(scene, name, logDepthBuf) {
+
+            const framecontainer =
+                document.getElementById('container_' + name);
+
+            const camera = new THREE.PerspectiveCamera(
+                50,
+                SCREEN_WIDTH / SCREEN_HEIGHT,
+                NEAR,
+                FAR
+            );
+
+            // Both cameras view the same scene.
+            scene.add(camera);
+
+            const renderer = new THREE.WebGLRenderer({
+
+                antialias: true,
+
+                logarithmicDepthBuffer: logDepthBuf
+
+            });
+
+            renderer.setPixelRatio(
+                Math.min(window.devicePixelRatio, 1.5)
+            );
+
+            renderer.setSize(
+                SCREEN_WIDTH / 2,
+                SCREEN_HEIGHT
+            );
+
+            renderer.domElement.style.position = 'relative';
+
+            renderer.domElement.id = 'renderer_' + name;
+
+            framecontainer.appendChild(renderer.domElement);
+
+            return {
+
+                container: framecontainer,
+
+                renderer: renderer,
+
+                scene: scene,
+
+                camera: camera
+
+            };
+        }
+
+        // --------------------------------------------------
+        // CREATE SCENE
+        // --------------------------------------------------
+
+        function initScene(font) {
+
+            const scene = new THREE.Scene();
+
+            // Lighting
+            scene.add(
+                new THREE.AmbientLight(0x777777)
+            );
+
+            const light = new THREE.DirectionalLight(
+                0xffffff,
+                3
+            );
+
+            light.position.set(100, 100, 100);
+
+            scene.add(light);
+
+            // Shared material settings
+            const materialargs = {
+
+                color: 0xffffff,
+
+                specular: 0x050505,
+
+                shininess: 50,
+
+                emissive: 0x000000
+
+            };
+
+            // Shared sphere geometry
+            const geometry = new THREE.SphereGeometry(
+                0.5,
+                24,
+                12
+            );
+
+            // Create objects at different scales
+            for (let i = 0; i < labeldata.length; i++) {
+
+                const data = labeldata[i];
+
+                const scale = data.scale || 1;
+
+                // Create text geometry
+                const labelgeo = new TextGeometry(
+                    data.label,
+                    {
+
+                        font: font,
+
+                        size: data.size,
+
+                        depth: data.size / 2
+
+                    }
+                );
+
+                labelgeo.computeBoundingSphere();
+
+                // Center text geometry
+                labelgeo.translate(
+                    -labelgeo.boundingSphere.radius,
+                    0,
+                    0
+                );
+
+                // Random color
+                materialargs.color =
+                    new THREE.Color().setHSL(
+                        Math.random(),
+                        0.5,
+                        0.5
+                    );
+
+                const material = new THREE.MeshPhongMaterial(
+                    materialargs
+                );
+
+                // Group
+                const group = new THREE.Group();
+
+                group.position.z =
+                    -data.size * scale;
+
+                scene.add(group);
+
+                // Text
+                const textmesh = new THREE.Mesh(
+                    labelgeo,
+                    material
+                );
+
+                textmesh.scale.set(
+                    scale,
+                    scale,
+                    scale
+                );
+
+                textmesh.position.z =
+                    -data.size * scale;
+
+                textmesh.position.y =
+                    data.size / 4 * scale;
+
+                group.add(textmesh);
+
+                // Sphere
+                const dotmesh = new THREE.Mesh(
+                    geometry,
+                    material
+                );
+
+                dotmesh.position.y =
+                    -data.size / 4 * scale;
+
+                dotmesh.scale.multiplyScalar(
+                    data.size * scale
+                );
+
+                group.add(dotmesh);
+            }
+
+            return scene;
+        }
+
+        // --------------------------------------------------
+        // UPDATE RENDERER SIZES
+        // --------------------------------------------------
+
+        function updateRendererSizes() {
+
+            if (!objects.normal || !objects.logzbuf) return;
+
+            SCREEN_WIDTH = window.innerWidth;
+            SCREEN_HEIGHT = window.innerHeight;
+
+            // Keep each panel at least one pixel wide.
+            const leftWidth = Math.max(
+                1,
+                Math.round(screensplit * SCREEN_WIDTH)
+            );
+
+            const rightWidth = Math.max(
+                1,
+                SCREEN_WIDTH - leftWidth
+            );
+
+            screensplit = leftWidth / SCREEN_WIDTH;
+            screensplitRight = rightWidth / SCREEN_WIDTH;
+
+            // ----------------------------------------------
+            // NORMAL DEPTH BUFFER
+            // ----------------------------------------------
+
+            const normal = objects.normal;
+
+            normal.renderer.setSize(
+                leftWidth,
+                SCREEN_HEIGHT
+            );
+
+            normal.camera.aspect =
+                leftWidth / SCREEN_HEIGHT;
+
+            normal.camera.updateProjectionMatrix();
+
+            normal.camera.setViewOffset(
+                SCREEN_WIDTH,
+                SCREEN_HEIGHT,
+                0,
+                0,
+                leftWidth,
+                SCREEN_HEIGHT
+            );
+
+            normal.container.style.width =
+                screensplit * 100 + '%';
+
+            // ----------------------------------------------
+            // LOGARITHMIC DEPTH BUFFER
+            // ----------------------------------------------
+
+            const logzbuf = objects.logzbuf;
+
+            logzbuf.renderer.setSize(
+                rightWidth,
+                SCREEN_HEIGHT
+            );
+
+            logzbuf.camera.aspect =
+                rightWidth / SCREEN_HEIGHT;
+
+            logzbuf.camera.updateProjectionMatrix();
+
+            logzbuf.camera.setViewOffset(
+                SCREEN_WIDTH,
+                SCREEN_HEIGHT,
+                leftWidth,
+                0,
+                rightWidth,
+                SCREEN_HEIGHT
+            );
+
+            logzbuf.container.style.width =
+                screensplitRight * 100 + '%';
+
+            // Divider position
+            border.style.left =
+                screensplit * 100 + '%';
+        }
+
+        // --------------------------------------------------
+        // ANIMATION LOOP
+        // --------------------------------------------------
+
+        function animate() {
+
+            if (!isRunning) return;
+
+            animationId = requestAnimationFrame(animate);
+
+            render();
+        }
+
+        // --------------------------------------------------
+        // RENDER
+        // --------------------------------------------------
+
+        function render() {
+
+            // Zoom limits
+            const minzoom =
+                labeldata[0].size *
+                labeldata[0].scale;
+
+            const maxzoom =
+                labeldata[labeldata.length - 1].size *
+                labeldata[labeldata.length - 1].scale *
+                100;
+
+            let damping =
+                Math.abs(zoomspeed) > minzoomspeed
+                    ? 0.95
+                    : 1.0;
+
+            // Exponential zoom
+            const zoom = THREE.MathUtils.clamp(
+                Math.exp(zoompos),
+                minzoom,
+                maxzoom
+            );
+
+            zoompos = Math.log(zoom);
+
+            // Slow down at zoom limits
+            if (
+                (zoom === minzoom && zoomspeed < 0) ||
+                (zoom === maxzoom && zoomspeed > 0)
+            ) {
+
+                damping = 0.85;
+
+            }
+
+            zoompos += zoomspeed;
+
+            zoomspeed *= damping;
+
+            // ----------------------------------------------
+            // NORMAL CAMERA POSITION
+            // ----------------------------------------------
+
+            const normalCamera = objects.normal.camera;
+
+            normalCamera.position.x =
+                Math.sin(
+                    0.5 * Math.PI * (mouse[0] - 0.5)
+                ) * zoom;
+
+            normalCamera.position.y =
+                Math.sin(
+                    0.25 * Math.PI * (mouse[1] - 0.5)
+                ) * zoom;
+
+            normalCamera.position.z =
+                Math.cos(
+                    0.5 * Math.PI * (mouse[0] - 0.5)
+                ) * zoom;
+
+            normalCamera.lookAt(
+                objects.normal.scene.position
+            );
+
+            normalCamera.updateMatrixWorld(true);
+
+            // ----------------------------------------------
+            // COPY CAMERA TO LOGARITHMIC VIEW
+            // ----------------------------------------------
+
+            const logCamera = objects.logzbuf.camera;
+
+            logCamera.position.copy(
+                normalCamera.position
+            );
+
+            logCamera.quaternion.copy(
+                normalCamera.quaternion
+            );
+
+            logCamera.updateMatrixWorld(true);
+
+            // ----------------------------------------------
+            // UPDATE SPLIT
+            // ----------------------------------------------
+
+            const currentSplitRight = 1 - screensplit;
+
+            if (
+                Math.abs(currentSplitRight - screensplitRight) > 0.0001
+            ) {
+
+                updateRendererSizes();
+
+            }
+
+            // ----------------------------------------------
+            // RENDER NORMAL DEPTH BUFFER
+            // ----------------------------------------------
+
+            objects.normal.renderer.render(
+                objects.normal.scene,
+                objects.normal.camera
+            );
+
+            // ----------------------------------------------
+            // RENDER LOGARITHMIC DEPTH BUFFER
+            // ----------------------------------------------
+
+            objects.logzbuf.renderer.render(
+                objects.logzbuf.scene,
+                objects.logzbuf.camera
+            );
+
+            stats.update();
+        }
+
+        // --------------------------------------------------
+        // WINDOW RESIZE
+        // --------------------------------------------------
+
+        function onWindowResize() {
+
+            updateRendererSizes();
+        }
+
+        // --------------------------------------------------
+        // DIVIDER POINTER EVENTS
+        // --------------------------------------------------
+
+        function onBorderPointerDown(event) {
+
+            event.preventDefault();
+
+            isDragging = true;
+
+            border.setPointerCapture(event.pointerId);
+        }
+
+        function onPointerMove(event) {
+
+            // Update camera direction
+            if (!isDragging) {
+
+                mouse[0] = THREE.MathUtils.clamp(
+                    event.clientX / window.innerWidth,
+                    0,
+                    1
+                );
+
+                mouse[1] = THREE.MathUtils.clamp(
+                    event.clientY / window.innerHeight,
+                    0,
+                    1
+                );
+
+            } else {
+
+                // Move divider
+                screensplit = THREE.MathUtils.clamp(
+                    event.clientX / window.innerWidth,
+                    0.01,
+                    0.99
+                );
+
+            }
+        }
+
+        function onPointerUp() {
+
+            isDragging = false;
+        }
+
+        // --------------------------------------------------
+        // MOUSE WHEEL ZOOM
+        // --------------------------------------------------
+
+        function onMouseWheel(event) {
+
+            const amount = event.deltaY;
+
+            if (amount === 0) return;
+
+            const direction = Math.sign(amount);
+
+            zoomspeed = direction / 10;
+
+            // Slower zoom after the first wheel interaction
+            minzoomspeed = 0.001;
+        }
+
+        // --------------------------------------------------
+        // CLEANUP
+        // --------------------------------------------------
+
+        function cleanup() {
+
+            isRunning = false;
+
+            if (animationId !== null) {
+                cancelAnimationFrame(animationId);
+            }
+
+            window.removeEventListener(
+                'resize',
+                onWindowResize
+            );
+
+            window.removeEventListener(
+                'pointermove',
+                onPointerMove
+            );
+
+            window.removeEventListener(
+                'pointerup',
+                onPointerUp
+            );
+
+            window.removeEventListener(
+                'pointercancel',
+                onPointerUp
+            );
+
+            window.removeEventListener(
+                'wheel',
+                onMouseWheel
+            );
+
+            if (border) {
+                border.removeEventListener(
+                    'pointerdown',
+                    onBorderPointerDown
+                );
+            }
+
+            const disposedGeometries = new Set();
+            const disposedMaterials = new Set();
+
+            if (objects.normal) {
+
+                objects.normal.scene.traverse(object => {
+
+                    if (object.geometry &&
+                        !disposedGeometries.has(object.geometry)) {
+
+                        disposedGeometries.add(object.geometry);
+                        object.geometry.dispose();
+                    }
+
+                    if (object.material) {
+
+                        const materials = Array.isArray(object.material)
+                            ? object.material
+                            : [object.material];
+
+                        for (const material of materials) {
+
+                            if (!disposedMaterials.has(material)) {
+
+                                disposedMaterials.add(material);
+                                material.dispose();
+                            }
+                        }
+                    }
+                });
+
+                objects.normal.renderer.dispose();
+            }
+
+            if (objects.logzbuf) {
+                objects.logzbuf.renderer.dispose();
+            }
+        }
+
+        window.addEventListener(
+            'pagehide',
+            cleanup,
+            { once: true }
+        );
+
+        // --------------------------------------------------
+        // START
+        // --------------------------------------------------
+
+        init().catch(error => {
+
+            console.error(
+                'Logarithmic depth buffer example:',
+                error
+            );
+
+            status.textContent =
+                'Initialization error: ' + error.message;
+
+            status.style.color = '#ff7777';
+        });
+
+    </script>
+
+</body>
+</html>

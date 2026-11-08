@@ -1,0 +1,561 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Three.js - Instanced Particle Billboards</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:,">
+
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #000;
+            font-family: Arial, sans-serif;
+        }
+
+        #info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 10;
+            color: white;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        #info a {
+            color: white;
+        }
+
+        #container {
+            width: 100%;
+            height: 100vh;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.183.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+
+<body>
+
+<div id="info">
+    <a href="https://threejs.org" target="_blank" rel="noopener">three.js</a>
+    - Instanced Circle Billboards - Colors
+    <br>
+    75,000 GPU-instanced particles
+</div>
+
+<div id="container"></div>
+
+<!-- ==================================================
+     VERTEX SHADER
+================================================== -->
+
+<script id="vshader" type="x-shader/x-vertex">
+
+    precision highp float;
+
+    uniform mat4 modelViewMatrix;
+    uniform mat4 projectionMatrix;
+
+    uniform float time;
+
+    attribute vec3 position;
+    attribute vec2 uv;
+    attribute vec3 translate;
+
+    varying vec2 vUv;
+    varying float vScale;
+
+    void main() {
+
+        // Transform particle position.
+
+        vec4 mvPosition =
+            modelViewMatrix * vec4(translate, 1.0);
+
+        // Animate particle movement and size.
+
+        vec3 trTime = vec3(
+            translate.x + time,
+            translate.y + time,
+            translate.z + time
+        );
+
+        float scale =
+            sin(trTime.x * 2.1) +
+            sin(trTime.y * 3.2) +
+            sin(trTime.z * 4.3);
+
+        vScale = scale;
+
+        scale = scale * 10.0 + 10.0;
+
+        // Expand billboard around its center.
+
+        mvPosition.xyz += position * scale;
+
+        vUv = uv;
+
+        gl_Position =
+            projectionMatrix * mvPosition;
+
+    }
+
+</script>
+
+<!-- ==================================================
+     FRAGMENT SHADER
+================================================== -->
+
+<script id="fshader" type="x-shader/x-fragment">
+
+    precision highp float;
+
+    uniform sampler2D map;
+
+    varying vec2 vUv;
+    varying float vScale;
+
+    // HSL to RGB conversion.
+
+    vec3 HUEtoRGB(float H) {
+
+        H = mod(H, 1.0);
+
+        float R = abs(H * 6.0 - 3.0) - 1.0;
+
+        float G = 2.0 - abs(H * 6.0 - 2.0);
+
+        float B = 2.0 - abs(H * 6.0 - 4.0);
+
+        return clamp(
+            vec3(R, G, B),
+            0.0,
+            1.0
+        );
+
+    }
+
+    vec3 HSLtoRGB(vec3 HSL) {
+
+        vec3 RGB = HUEtoRGB(HSL.x);
+
+        float C =
+            (1.0 - abs(2.0 * HSL.z - 1.0)) *
+            HSL.y;
+
+        return (RGB - 0.5) * C + HSL.z;
+
+    }
+
+    void main() {
+
+        vec4 diffuseColor = texture2D(map, vUv);
+
+        // Discard transparent pixels.
+
+        if (diffuseColor.a < 0.5) {
+            discard;
+        }
+
+        vec3 particleColor = HSLtoRGB(
+            vec3(
+                vScale / 5.0,
+                1.0,
+                0.5
+            )
+        );
+
+        gl_FragColor = vec4(
+            diffuseColor.rgb * particleColor,
+            diffuseColor.a
+        );
+
+    }
+
+</script>
+
+<!-- ==================================================
+     MAIN THREE.JS
+================================================== -->
+
+<script type="module">
+
+import * as THREE from 'three';
+
+import Stats from 'three/addons/libs/stats.module.js';
+
+// ==================================================
+// CONFIGURATION
+// ==================================================
+
+const PARTICLE_COUNT = 75000;
+
+// ==================================================
+// VARIABLES
+// ==================================================
+
+let container;
+let stats;
+
+let camera;
+let scene;
+let renderer;
+
+let geometry;
+let material;
+let mesh;
+
+let particleTexture;
+
+// ==================================================
+// INITIALIZATION
+// ==================================================
+
+init();
+
+function init() {
+
+    container = document.getElementById('container');
+
+    // --------------------------------------------------
+    // CAMERA
+    // --------------------------------------------------
+
+    camera = new THREE.PerspectiveCamera(
+
+        50,
+
+        window.innerWidth / window.innerHeight,
+
+        1,
+
+        5000
+
+    );
+
+    camera.position.z = 1400;
+
+    // --------------------------------------------------
+    // SCENE
+    // --------------------------------------------------
+
+    scene = new THREE.Scene();
+
+    // --------------------------------------------------
+    // PARTICLE GEOMETRY
+    // --------------------------------------------------
+
+    const circleGeometry = new THREE.CircleGeometry(
+        1,
+        6
+    );
+
+    geometry = new THREE.InstancedBufferGeometry();
+
+    // Copy base geometry attributes correctly.
+
+    geometry.setIndex(circleGeometry.index);
+
+    geometry.setAttribute(
+        'position',
+        circleGeometry.getAttribute('position')
+    );
+
+    geometry.setAttribute(
+        'uv',
+        circleGeometry.getAttribute('uv')
+    );
+
+    // Set the number of instances explicitly.
+
+    geometry.instanceCount = PARTICLE_COUNT;
+
+    // --------------------------------------------------
+    // PARTICLE POSITIONS
+    // --------------------------------------------------
+
+    const translateArray = new Float32Array(
+        PARTICLE_COUNT * 3
+    );
+
+    for (
+        let i = 0, i3 = 0;
+        i < PARTICLE_COUNT;
+        i++, i3 += 3
+    ) {
+
+        translateArray[i3] =
+            Math.random() * 2 - 1;
+
+        translateArray[i3 + 1] =
+            Math.random() * 2 - 1;
+
+        translateArray[i3 + 2] =
+            Math.random() * 2 - 1;
+
+    }
+
+    geometry.setAttribute(
+
+        'translate',
+
+        new THREE.InstancedBufferAttribute(
+            translateArray,
+            3
+        )
+
+    );
+
+    circleGeometry.dispose();
+
+    // --------------------------------------------------
+    // PARTICLE TEXTURE
+    // --------------------------------------------------
+
+    particleTexture = createCircleTexture();
+
+    // --------------------------------------------------
+    // SHADER MATERIAL
+    // --------------------------------------------------
+
+    material = new THREE.RawShaderMaterial({
+
+        uniforms: {
+
+            map: {
+                value: particleTexture
+            },
+
+            time: {
+                value: 0.0
+            }
+
+        },
+
+        vertexShader:
+            document.getElementById('vshader').textContent,
+
+        fragmentShader:
+            document.getElementById('fshader').textContent,
+
+        transparent: true,
+
+        depthTest: true,
+
+        depthWrite: true
+
+    });
+
+    // --------------------------------------------------
+    // PARTICLE MESH
+    // --------------------------------------------------
+
+    mesh = new THREE.Mesh(
+        geometry,
+        material
+    );
+
+    mesh.scale.set(
+        500,
+        500,
+        500
+    );
+
+    scene.add(mesh);
+
+    // --------------------------------------------------
+    // RENDERER
+    // --------------------------------------------------
+
+    renderer = new THREE.WebGLRenderer({
+
+        antialias: false,
+
+        powerPreference: 'high-performance'
+
+    });
+
+    renderer.setPixelRatio(
+        Math.min(window.devicePixelRatio, 1.5)
+    );
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+
+    container.appendChild(renderer.domElement);
+
+    // --------------------------------------------------
+    // STATS
+    // --------------------------------------------------
+
+    stats = new Stats();
+
+    container.appendChild(stats.dom);
+
+    // --------------------------------------------------
+    // RESIZE
+    // --------------------------------------------------
+
+    window.addEventListener(
+        'resize',
+        onWindowResize
+    );
+
+    // --------------------------------------------------
+    // ANIMATION
+    // --------------------------------------------------
+
+    renderer.setAnimationLoop(animate);
+
+}
+
+// ==================================================
+// CREATE CIRCULAR PARTICLE TEXTURE
+// ==================================================
+
+function createCircleTexture() {
+
+    const size = 128;
+
+    const canvas = document.createElement('canvas');
+
+    canvas.width = size;
+
+    canvas.height = size;
+
+    const context = canvas.getContext('2d');
+
+    const gradient = context.createRadialGradient(
+
+        size / 2,
+        size / 2,
+        0,
+
+        size / 2,
+        size / 2,
+        size / 2
+
+    );
+
+    gradient.addColorStop(0.0, 'rgba(255,255,255,1.0)');
+
+    gradient.addColorStop(0.55, 'rgba(255,255,255,1.0)');
+
+    gradient.addColorStop(0.8, 'rgba(255,255,255,0.8)');
+
+    gradient.addColorStop(1.0, 'rgba(255,255,255,0.0)');
+
+    context.fillStyle = gradient;
+
+    context.fillRect(
+        0,
+        0,
+        size,
+        size
+    );
+
+    const texture = new THREE.CanvasTexture(canvas);
+
+    texture.colorSpace = THREE.SRGBColorSpace;
+
+    texture.needsUpdate = true;
+
+    return texture;
+
+}
+
+// ==================================================
+// WINDOW RESIZE
+// ==================================================
+
+function onWindowResize() {
+
+    camera.aspect =
+        window.innerWidth / window.innerHeight;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+
+    renderer.setPixelRatio(
+        Math.min(window.devicePixelRatio, 1.5)
+    );
+
+}
+
+// ==================================================
+// ANIMATION
+// ==================================================
+
+function animate() {
+
+    const time = performance.now() * 0.0005;
+
+    // Update shader time.
+
+    material.uniforms.time.value = time;
+
+    // Rotate the entire particle system.
+
+    mesh.rotation.x = time * 0.2;
+
+    mesh.rotation.y = time * 0.4;
+
+    // Render scene.
+
+    renderer.render(
+        scene,
+        camera
+    );
+
+    // Update performance monitor.
+
+    stats.update();
+
+}
+
+// ==================================================
+// CLEANUP
+// ==================================================
+
+window.addEventListener('pagehide', function() {
+
+    renderer.setAnimationLoop(null);
+
+    renderer.dispose();
+
+    geometry.dispose();
+
+    material.dispose();
+
+    particleTexture.dispose();
+
+    stats.dom.remove();
+
+});
+
+</script>
+
+</body>
+</html>

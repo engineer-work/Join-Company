@@ -1,0 +1,562 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js WebGPU - Cameras</title>
+    <link rel="icon" href="data:,">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+            font-family: Arial, sans-serif;
+        }
+
+        #info {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            z-index: 10;
+            color: white;
+            pointer-events: none;
+            line-height: 1.5;
+        }
+
+        #info a {
+            color: #08f;
+            text-decoration: none;
+            pointer-events: auto;
+        }
+
+        #info .title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        #info small {
+            display: block;
+            margin-top: 5px;
+            color: #ccc;
+        }
+
+        #status {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            background: #222;
+            padding: 15px 20px;
+            border-radius: 6px;
+            z-index: 20;
+            max-width: 90%;
+            text-align: center;
+        }
+
+        #container {
+            width: 100%;
+            height: 100%;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.webgpu.js",
+            "three/webgpu": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.webgpu.js"
+        }
+    }
+    </script>
+</head>
+
+<body>
+
+    <div id="info">
+        <div class="title">
+            <a href="https://threejs.org/" target="_blank" rel="noopener">three.js</a>
+            - WebGPU Camera
+        </div>
+        <small>
+            Press O: Orthographic camera<br>
+            Press P: Perspective camera
+        </small>
+        <small id="cameraMode">Active camera: Perspective</small>
+    </div>
+
+    <div id="status">Initializing WebGPU...</div>
+    <div id="container"></div>
+
+    <script type="module">
+
+        import * as THREE from 'three/webgpu';
+
+        // --------------------------------------------------
+        // SETTINGS
+        // --------------------------------------------------
+
+        const PARTICLE_COUNT = 10000;
+        const FRUSTUM_SIZE = 600;
+
+        let SCREEN_WIDTH = window.innerWidth;
+        let SCREEN_HEIGHT = window.innerHeight;
+
+        let aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
+
+        // --------------------------------------------------
+        // VARIABLES
+        // --------------------------------------------------
+
+        let container;
+        let renderer;
+        let scene;
+
+        let camera;
+        let cameraRig;
+
+        let cameraPerspective;
+        let cameraOrtho;
+
+        let cameraPerspectiveHelper;
+        let cameraOrthoHelper;
+
+        let activeCamera;
+        let activeHelper;
+
+        let mesh;
+        let mesh2;
+
+        let animationStarted = false;
+
+        const status = document.getElementById('status');
+        const cameraMode = document.getElementById('cameraMode');
+
+        // --------------------------------------------------
+        // INITIALIZATION
+        // --------------------------------------------------
+
+        async function init() {
+
+            if (!navigator.gpu) {
+                throw new Error(
+                    'WebGPU is not available in this browser or graphics device. ' +
+                    'Try a WebGPU-compatible browser and GPU.'
+                );
+            }
+
+            container = document.getElementById('container');
+
+            // Scene
+            scene = new THREE.Scene();
+
+            // --------------------------------------------------
+            // MAIN CAMERA
+            // --------------------------------------------------
+
+            camera = new THREE.PerspectiveCamera(
+                50,
+                0.5 * aspect,
+                1,
+                10000
+            );
+
+            camera.position.z = 2500;
+
+            // --------------------------------------------------
+            // PERSPECTIVE CAMERA
+            // --------------------------------------------------
+
+            cameraPerspective = new THREE.PerspectiveCamera(
+                50,
+                0.5 * aspect,
+                150,
+                1000
+            );
+
+            cameraPerspectiveHelper =
+                new THREE.CameraHelper(cameraPerspective);
+
+            scene.add(cameraPerspectiveHelper);
+
+            // --------------------------------------------------
+            // ORTHOGRAPHIC CAMERA
+            // --------------------------------------------------
+
+            const halfWidth = FRUSTUM_SIZE * aspect / 4;
+
+            cameraOrtho = new THREE.OrthographicCamera(
+                -halfWidth,
+                halfWidth,
+                FRUSTUM_SIZE / 2,
+                -FRUSTUM_SIZE / 2,
+                150,
+                1000
+            );
+
+            cameraOrthoHelper =
+                new THREE.CameraHelper(cameraOrtho);
+
+            scene.add(cameraOrthoHelper);
+
+            // Default active camera
+            activeCamera = cameraPerspective;
+            activeHelper = cameraPerspectiveHelper;
+
+            // Counteract different front orientation
+            // of cameras versus the camera rig.
+            cameraOrtho.rotation.y = Math.PI;
+            cameraPerspective.rotation.y = Math.PI;
+
+            // --------------------------------------------------
+            // CAMERA RIG
+            // --------------------------------------------------
+
+            cameraRig = new THREE.Group();
+
+            cameraRig.add(cameraPerspective);
+            cameraRig.add(cameraOrtho);
+
+            scene.add(cameraRig);
+
+            // --------------------------------------------------
+            // MAIN SPHERE
+            // --------------------------------------------------
+
+            mesh = new THREE.Mesh(
+                new THREE.SphereGeometry(100, 16, 8),
+                new THREE.MeshBasicMaterial({
+                    color: 0xffffff,
+                    wireframe: true
+                })
+            );
+
+            scene.add(mesh);
+
+            // --------------------------------------------------
+            // CHILD SPHERE
+            // --------------------------------------------------
+
+            mesh2 = new THREE.Mesh(
+                new THREE.SphereGeometry(50, 16, 8),
+                new THREE.MeshBasicMaterial({
+                    color: 0x00ff00,
+                    wireframe: true
+                })
+            );
+
+            mesh2.position.y = 150;
+            mesh.add(mesh2);
+
+            // --------------------------------------------------
+            // CAMERA RIG MARKER
+            // --------------------------------------------------
+
+            const mesh3 = new THREE.Mesh(
+                new THREE.SphereGeometry(5, 16, 8),
+                new THREE.MeshBasicMaterial({
+                    color: 0x0000ff,
+                    wireframe: true
+                })
+            );
+
+            mesh3.position.z = 150;
+            cameraRig.add(mesh3);
+
+            // --------------------------------------------------
+            // PARTICLE FIELD
+            // --------------------------------------------------
+
+            const geometry = new THREE.BufferGeometry();
+            const vertices = new Float32Array(PARTICLE_COUNT * 3);
+
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+
+                const i3 = i * 3;
+
+                vertices[i3] =
+                    THREE.MathUtils.randFloatSpread(2000);
+
+                vertices[i3 + 1] =
+                    THREE.MathUtils.randFloatSpread(2000);
+
+                vertices[i3 + 2] =
+                    THREE.MathUtils.randFloatSpread(2000);
+            }
+
+            geometry.setAttribute(
+                'position',
+                new THREE.BufferAttribute(vertices, 3)
+            );
+
+            const particles = new THREE.Points(
+                geometry,
+                new THREE.PointsMaterial({
+                    color: 0xffffff,
+                    size: 2
+                })
+            );
+
+            scene.add(particles);
+
+            // --------------------------------------------------
+            // WEBGPU RENDERER
+            // --------------------------------------------------
+
+            renderer = new THREE.WebGPURenderer({
+                antialias: true
+            });
+
+            renderer.setPixelRatio(
+                Math.min(window.devicePixelRatio, 1.5)
+            );
+
+            renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+            // Important: initialize WebGPU before rendering.
+            await renderer.init();
+
+            renderer.setScissorTest(true);
+            renderer.setClearColor(0x000000, 1);
+
+            container.appendChild(renderer.domElement);
+
+            // --------------------------------------------------
+            // EVENTS
+            // --------------------------------------------------
+
+            window.addEventListener('resize', onWindowResize);
+            document.addEventListener('keydown', onKeyDown);
+
+            // Start rendering only after initialization.
+            animationStarted = true;
+            renderer.setAnimationLoop(animate);
+
+            status.style.display = 'none';
+
+        }
+
+        // --------------------------------------------------
+        // KEYBOARD CAMERA SWITCH
+        // --------------------------------------------------
+
+        function onKeyDown(event) {
+
+            if (event.repeat) return;
+
+            switch (event.key.toLowerCase()) {
+
+                case 'o':
+
+                    activeCamera = cameraOrtho;
+                    activeHelper = cameraOrthoHelper;
+
+                    cameraMode.textContent =
+                        'Active camera: Orthographic';
+
+                    break;
+
+                case 'p':
+
+                    activeCamera = cameraPerspective;
+                    activeHelper = cameraPerspectiveHelper;
+
+                    cameraMode.textContent =
+                        'Active camera: Perspective';
+
+                    break;
+            }
+        }
+
+        // --------------------------------------------------
+        // RESIZE
+        // --------------------------------------------------
+
+        function onWindowResize() {
+
+            SCREEN_WIDTH = window.innerWidth;
+            SCREEN_HEIGHT = window.innerHeight;
+
+            aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
+
+            if (!renderer) return;
+
+            renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+            // Main camera
+            camera.aspect = 0.5 * aspect;
+            camera.updateProjectionMatrix();
+
+            // Perspective camera
+            cameraPerspective.aspect = 0.5 * aspect;
+            cameraPerspective.updateProjectionMatrix();
+
+            // Orthographic camera
+            const halfWidth = FRUSTUM_SIZE * aspect / 4;
+
+            cameraOrtho.left = -halfWidth;
+            cameraOrtho.right = halfWidth;
+            cameraOrtho.top = FRUSTUM_SIZE / 2;
+            cameraOrtho.bottom = -FRUSTUM_SIZE / 2;
+
+            cameraOrtho.updateProjectionMatrix();
+        }
+
+        // --------------------------------------------------
+        // ANIMATION
+        // --------------------------------------------------
+
+        function animate() {
+
+            if (!animationStarted) return;
+
+            render();
+
+        }
+
+        // --------------------------------------------------
+        // RENDER
+        // --------------------------------------------------
+
+        function render() {
+
+            const time = performance.now() * 0.0005;
+
+            // Animate the main sphere
+            mesh.position.x = 700 * Math.cos(time);
+            mesh.position.z = 700 * Math.sin(time);
+            mesh.position.y = 700 * Math.sin(time);
+
+            // Animate the child sphere
+            mesh2.position.x = 70 * Math.cos(2 * time);
+            mesh2.position.z = 70 * Math.sin(time);
+
+            // Update active camera projection
+            const cameraDistance = mesh.position.length() + 500;
+
+            if (activeCamera === cameraPerspective) {
+
+                cameraPerspective.fov =
+                    35 + 30 * Math.sin(0.5 * time);
+
+                cameraPerspective.far = cameraDistance;
+                cameraPerspective.updateProjectionMatrix();
+
+                cameraPerspectiveHelper.visible = true;
+                cameraOrthoHelper.visible = false;
+
+            } else {
+
+                cameraOrtho.far = cameraDistance;
+                cameraOrtho.updateProjectionMatrix();
+
+                cameraOrthoHelper.visible = true;
+                cameraPerspectiveHelper.visible = false;
+
+            }
+
+            // Rotate camera rig toward the animated sphere
+            cameraRig.lookAt(mesh.position);
+
+            // Update world matrices before camera helpers
+            scene.updateMatrixWorld(true);
+
+            cameraPerspectiveHelper.update();
+            cameraOrthoHelper.update();
+
+            // --------------------------------------------------
+            // LEFT VIEW: ACTIVE CAMERA
+            // --------------------------------------------------
+
+            activeHelper.visible = false;
+
+            renderer.setClearColor(0x000000, 1);
+
+            renderer.setScissor(
+                0,
+                0,
+                SCREEN_WIDTH / 2,
+                SCREEN_HEIGHT
+            );
+
+            renderer.setViewport(
+                0,
+                0,
+                SCREEN_WIDTH / 2,
+                SCREEN_HEIGHT
+            );
+
+            renderer.render(scene, activeCamera);
+
+            // --------------------------------------------------
+            // RIGHT VIEW: MAIN CAMERA
+            // --------------------------------------------------
+
+            activeHelper.visible = true;
+
+            renderer.setClearColor(0x111111, 1);
+
+            renderer.setScissor(
+                SCREEN_WIDTH / 2,
+                0,
+                SCREEN_WIDTH / 2,
+                SCREEN_HEIGHT
+            );
+
+            renderer.setViewport(
+                SCREEN_WIDTH / 2,
+                0,
+                SCREEN_WIDTH / 2,
+                SCREEN_HEIGHT
+            );
+
+            renderer.render(scene, camera);
+        }
+
+        // --------------------------------------------------
+        // CLEANUP
+        // --------------------------------------------------
+
+        function cleanup() {
+
+            animationStarted = false;
+
+            if (renderer) {
+                renderer.setAnimationLoop(null);
+                renderer.dispose();
+            }
+
+            window.removeEventListener('resize', onWindowResize);
+            document.removeEventListener('keydown', onKeyDown);
+        }
+
+        window.addEventListener('pagehide', cleanup, { once: true });
+
+        // --------------------------------------------------
+        // START
+        // --------------------------------------------------
+
+        init().catch(error => {
+
+            console.error('WebGPU camera example error:', error);
+
+            status.textContent = error.message;
+            status.style.color = '#ff7777';
+
+        });
+
+    </script>
+
+</body>
+</html>

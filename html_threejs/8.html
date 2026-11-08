@@ -1,0 +1,1066 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Three.js - Rapier Vehicle Controller</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+
+        #info {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            z-index: 10;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.88);
+            border-radius: 8px;
+            line-height: 1.7;
+            pointer-events: none;
+        }
+
+        #status {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            z-index: 10;
+            padding: 8px 12px;
+            color: white;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 6px;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+
+<body>
+
+    <div id="info">
+        <strong>Three.js + Rapier Vehicle Controller</strong>
+        <br>
+        W / ↑ : Accelerate
+        <br>
+        S / ↓ : Reverse
+        <br>
+        A / ← : Steer left
+        <br>
+        D / → : Steer right
+        <br>
+        SPACE : Brake
+        <br>
+        R : Reset vehicle
+        <br>
+        Mouse : Orbit camera
+    </div>
+
+    <div id="status">Initializing physics...</div>
+
+    <script type="module">
+
+        // =====================================================
+        // IMPORTS
+        // =====================================================
+
+        import * as THREE from 'three';
+
+        import { OrbitControls }
+            from 'three/addons/controls/OrbitControls.js';
+
+        import { RapierPhysics }
+            from 'three/addons/physics/RapierPhysics.js';
+
+        import { RapierHelper }
+            from 'three/addons/helpers/RapierHelper.js';
+
+        import Stats from 'three/addons/libs/stats.module.js';
+
+
+        // =====================================================
+        // GLOBAL VARIABLES
+        // =====================================================
+
+        let camera;
+        let scene;
+        let renderer;
+        let stats;
+
+        let physics;
+        let physicsHelper;
+        let controls;
+
+        let car;
+        let chassis;
+        let wheels = [];
+        let vehicleController;
+
+        let movement;
+
+
+        // =====================================================
+        // CONSTANTS
+        // =====================================================
+
+        const FIXED_TIME_STEP = 1 / 60;
+
+        const MAX_STEERING_ANGLE = 0.45;
+
+        const ENGINE_FORCE_STEP = 1;
+
+        const MAX_ENGINE_FORCE = 30;
+
+        const BRAKE_FORCE_STEP = 0.05;
+
+        const MAX_BRAKE_FORCE = 1;
+
+
+        // =====================================================
+        // INITIALIZATION
+        // =====================================================
+
+        init();
+
+
+        async function init() {
+
+            try {
+
+                createScene();
+
+                createCamera();
+
+                createLights();
+
+                createRenderer();
+
+                createGround();
+
+                createStats();
+
+                createOrbitControls();
+
+                createMovementState();
+
+                createEventListeners();
+
+                onWindowResize();
+
+                // Wait until Rapier is initialized.
+                await initPhysics();
+
+                // Start rendering only after physics initialization.
+                renderer.setAnimationLoop(animate);
+
+                document.getElementById('status').textContent =
+                    'Ready. Use WASD or arrow keys to drive.';
+
+            } catch (error) {
+
+                console.error('Initialization error:', error);
+
+                document.getElementById('status').textContent =
+                    'Initialization failed. Check the console.';
+
+            }
+
+        }
+
+
+        // =====================================================
+        // SCENE
+        // =====================================================
+
+        function createScene() {
+
+            scene = new THREE.Scene();
+
+            scene.background = new THREE.Color(0xbfd1e5);
+
+            scene.fog = new THREE.Fog(
+                0xbfd1e5,
+                40,
+                120
+            );
+
+        }
+
+
+        // =====================================================
+        // CAMERA
+        // =====================================================
+
+        function createCamera() {
+
+            camera = new THREE.PerspectiveCamera(
+                60,
+                window.innerWidth / window.innerHeight,
+                0.1,
+                200
+            );
+
+            camera.position.set(0, 5, 12);
+
+        }
+
+
+        // =====================================================
+        // LIGHTING
+        // =====================================================
+
+        function createLights() {
+
+            const ambient = new THREE.HemisphereLight(
+                0x555555,
+                0xffffff,
+                2
+            );
+
+            scene.add(ambient);
+
+
+            const directional = new THREE.DirectionalLight(
+                0xffffff,
+                3
+            );
+
+            directional.position.set(0, 12.5, 12.5);
+
+            directional.castShadow = true;
+
+            directional.shadow.mapSize.set(2048, 2048);
+
+            directional.shadow.camera.left = -40;
+
+            directional.shadow.camera.right = 40;
+
+            directional.shadow.camera.top = 40;
+
+            directional.shadow.camera.bottom = -40;
+
+            directional.shadow.camera.near = 1;
+
+            directional.shadow.camera.far = 80;
+
+            directional.shadow.bias = -0.0001;
+
+            scene.add(directional);
+
+        }
+
+
+        // =====================================================
+        // RENDERER
+        // =====================================================
+
+        function createRenderer() {
+
+            renderer = new THREE.WebGLRenderer({
+                antialias: true
+            });
+
+            renderer.setPixelRatio(
+                Math.min(window.devicePixelRatio, 2)
+            );
+
+            renderer.setSize(
+                window.innerWidth,
+                window.innerHeight
+            );
+
+            renderer.shadowMap.enabled = true;
+
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+            document.body.appendChild(renderer.domElement);
+
+        }
+
+
+        // =====================================================
+        // GROUND
+        // =====================================================
+
+        function createGround() {
+
+            const groundGeometry = new THREE.BoxGeometry(
+                100,
+                0.5,
+                100
+            );
+
+            const groundMaterial = new THREE.MeshStandardMaterial({
+                color: 0xeeeeee,
+                roughness: 0.9
+            });
+
+            const ground = new THREE.Mesh(
+                groundGeometry,
+                groundMaterial
+            );
+
+            ground.position.set(0, -0.25, -20);
+
+            ground.receiveShadow = true;
+
+            // Static physics body.
+            ground.userData.physics = {
+                mass: 0
+            };
+
+            scene.add(ground);
+
+
+            // Procedural grid: no external texture required.
+            const grid = new THREE.GridHelper(
+                100,
+                100,
+                0x555555,
+                0x999999
+            );
+
+            grid.position.set(0, 0.006, -20);
+
+            scene.add(grid);
+
+        }
+
+
+        // =====================================================
+        // PERFORMANCE STATS
+        // =====================================================
+
+        function createStats() {
+
+            stats = new Stats();
+
+            stats.domElement.style.position = 'absolute';
+
+            stats.domElement.style.top = '0px';
+
+            stats.domElement.style.left = '0px';
+
+            document.body.appendChild(stats.domElement);
+
+        }
+
+
+        // =====================================================
+        // CAMERA CONTROLS
+        // =====================================================
+
+        function createOrbitControls() {
+
+            controls = new OrbitControls(
+                camera,
+                renderer.domElement
+            );
+
+            controls.target.set(0, 1, 0);
+
+            controls.enableDamping = true;
+
+            controls.dampingFactor = 0.08;
+
+            controls.update();
+
+        }
+
+
+        // =====================================================
+        // MOVEMENT STATE
+        // =====================================================
+
+        function createMovementState() {
+
+            movement = {
+
+                forward: 0,
+
+                right: 0,
+
+                brake: 0,
+
+                reset: false,
+
+                accelerateForce: 0,
+
+                brakeForce: 0
+
+            };
+
+        }
+
+
+        // =====================================================
+        // EVENT LISTENERS
+        // =====================================================
+
+        function createEventListeners() {
+
+            window.addEventListener(
+                'keydown',
+                onKeyDown
+            );
+
+            window.addEventListener(
+                'keyup',
+                onKeyUp
+            );
+
+            window.addEventListener(
+                'blur',
+                resetInput
+            );
+
+            window.addEventListener(
+                'resize',
+                onWindowResize
+            );
+
+        }
+
+
+        function onKeyDown(event) {
+
+            if (
+                event.code === 'ArrowUp' ||
+                event.code === 'ArrowDown' ||
+                event.code === 'ArrowLeft' ||
+                event.code === 'ArrowRight' ||
+                event.code === 'Space'
+            ) {
+                event.preventDefault();
+            }
+
+            switch (event.code) {
+
+                case 'KeyW':
+                case 'ArrowUp':
+                    movement.forward = -1;
+                    break;
+
+                case 'KeyS':
+                case 'ArrowDown':
+                    movement.forward = 1;
+                    break;
+
+                case 'KeyA':
+                case 'ArrowLeft':
+                    movement.right = 1;
+                    break;
+
+                case 'KeyD':
+                case 'ArrowRight':
+                    movement.right = -1;
+                    break;
+
+                case 'Space':
+                    movement.brake = 1;
+                    break;
+
+                case 'KeyR':
+                    movement.reset = true;
+                    break;
+
+            }
+
+        }
+
+
+        function onKeyUp(event) {
+
+            switch (event.code) {
+
+                case 'KeyW':
+                case 'ArrowUp':
+                case 'KeyS':
+                case 'ArrowDown':
+                    movement.forward = 0;
+                    break;
+
+                case 'KeyA':
+                case 'ArrowLeft':
+                case 'KeyD':
+                case 'ArrowRight':
+                    movement.right = 0;
+                    break;
+
+                case 'Space':
+                    movement.brake = 0;
+                    break;
+
+                case 'KeyR':
+                    movement.reset = false;
+                    break;
+
+            }
+
+        }
+
+
+        function resetInput() {
+
+            if (!movement) return;
+
+            movement.forward = 0;
+
+            movement.right = 0;
+
+            movement.brake = 0;
+
+            movement.reset = false;
+
+        }
+
+
+        // =====================================================
+        // RESIZE
+        // =====================================================
+
+        function onWindowResize() {
+
+            if (!camera || !renderer) return;
+
+            camera.aspect =
+                window.innerWidth / window.innerHeight;
+
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(
+                window.innerWidth,
+                window.innerHeight
+            );
+
+        }
+
+
+        // =====================================================
+        // RAPier INITIALIZATION
+        // =====================================================
+
+        async function initPhysics() {
+
+            physics = await RapierPhysics();
+
+            // Physics debug helper.
+            physicsHelper = new RapierHelper(
+                physics.world
+            );
+
+            physicsHelper.visible = false;
+
+            scene.add(physicsHelper);
+
+            // Register the ground as a static physics body.
+            physics.addScene(scene);
+
+            // Create vehicle after physics is ready.
+            createCar();
+
+        }
+
+
+        // =====================================================
+        // CREATE CAR
+        // =====================================================
+
+        function createCar() {
+
+            const geometry = new THREE.BoxGeometry(
+                2,
+                1,
+                4
+            );
+
+            const material = new THREE.MeshStandardMaterial({
+                color: 0xdd2222,
+                roughness: 0.5,
+                metalness: 0.15
+            });
+
+            car = new THREE.Mesh(
+                geometry,
+                material
+            );
+
+            car.position.set(0, 1, 0);
+
+            car.castShadow = true;
+
+            car.receiveShadow = true;
+
+            scene.add(car);
+
+
+            // Register chassis with Rapier.
+            physics.addMesh(
+                car,
+                10,
+                0.2
+            );
+
+            chassis = car.userData.physics.body;
+
+            if (!chassis) {
+
+                throw new Error(
+                    'Rapier chassis rigid body was not created.'
+                );
+
+            }
+
+
+            // Create vehicle controller.
+            vehicleController =
+                physics.world.createVehicleController(chassis);
+
+
+            wheels = [];
+
+
+            // Front wheels: indices 0 and 1.
+            addWheel(
+                0,
+                { x: -1, y: 0, z: -1.5 }
+            );
+
+            addWheel(
+                1,
+                { x: 1, y: 0, z: -1.5 }
+            );
+
+
+            // Rear wheels: indices 2 and 3.
+            addWheel(
+                2,
+                { x: -1, y: 0, z: 1.5 }
+            );
+
+            addWheel(
+                3,
+                { x: 1, y: 0, z: 1.5 }
+            );
+
+
+            // Initial steering angle.
+            vehicleController.setWheelSteering(0, 0);
+
+            vehicleController.setWheelSteering(1, 0);
+
+        }
+
+
+        // =====================================================
+        // ADD WHEEL
+        // =====================================================
+
+        function addWheel(index, position) {
+
+            const wheelRadius = 0.3;
+
+            const wheelWidth = 0.4;
+
+            const suspensionRestLength = 0.8;
+
+
+            const wheelDirection = {
+                x: 0,
+                y: -1,
+                z: 0
+            };
+
+
+            const wheelAxle = {
+                x: -1,
+                y: 0,
+                z: 0
+            };
+
+
+            // Add wheel to Rapier vehicle controller.
+            vehicleController.addWheel(
+
+                position,
+
+                wheelDirection,
+
+                wheelAxle,
+
+                suspensionRestLength,
+
+                wheelRadius
+
+            );
+
+
+            vehicleController.setWheelSuspensionStiffness(
+                index,
+                24
+            );
+
+            vehicleController.setWheelFrictionSlip(
+                index,
+                1000
+            );
+
+
+            // Wheel visual.
+            const geometry = new THREE.CylinderGeometry(
+                wheelRadius,
+                wheelRadius,
+                wheelWidth,
+                20
+            );
+
+            geometry.rotateZ(Math.PI / 2);
+
+            const material = new THREE.MeshStandardMaterial({
+                color: 0x171717,
+                roughness: 0.9
+            });
+
+            const wheel = new THREE.Mesh(
+                geometry,
+                material
+            );
+
+            wheel.castShadow = true;
+
+            wheel.receiveShadow = true;
+
+            wheel.position.set(
+                position.x,
+                position.y,
+                position.z
+            );
+
+            car.add(wheel);
+
+            wheels.push(wheel);
+
+        }
+
+
+        // =====================================================
+        // UPDATE WHEEL VISUALS
+        // =====================================================
+
+        function updateWheels() {
+
+            if (!vehicleController) return;
+
+            const up = new THREE.Vector3(0, 1, 0);
+
+            const steeringQuaternion =
+                new THREE.Quaternion();
+
+            const rotationQuaternion =
+                new THREE.Quaternion();
+
+
+            wheels.forEach((wheel, index) => {
+
+                const axle = vehicleController.wheelAxleCs(index);
+
+                const connection =
+                    vehicleController
+                        .wheelChassisConnectionPointCs(index);
+
+                const suspension =
+                    vehicleController.wheelSuspensionLength(index);
+
+                const steering =
+                    vehicleController.wheelSteering(index);
+
+                const rotation =
+                    vehicleController.wheelRotation(index);
+
+
+                // Update wheel suspension position.
+                wheel.position.set(
+                    connection.x,
+                    connection.y - suspension,
+                    connection.z
+                );
+
+
+                // Update steering rotation.
+                steeringQuaternion.setFromAxisAngle(
+                    up,
+                    steering
+                );
+
+
+                // Update wheel rotation.
+                const axleVector = new THREE.Vector3(
+                    axle.x,
+                    axle.y,
+                    axle.z
+                );
+
+                rotationQuaternion.setFromAxisAngle(
+                    axleVector.normalize(),
+                    rotation
+                );
+
+
+                wheel.quaternion.multiplyQuaternions(
+                    steeringQuaternion,
+                    rotationQuaternion
+                );
+
+            });
+
+        }
+
+
+        // =====================================================
+        // UPDATE CAR CONTROLS
+        // =====================================================
+
+        function updateCarControl() {
+
+            if (!vehicleController || !chassis) return;
+
+
+            // -------------------------------------------------
+            // RESET
+            // -------------------------------------------------
+
+            if (movement.reset) {
+
+                chassis.setTranslation(
+                    new physics.RAPIER.Vector3(0, 1, 0),
+                    true
+                );
+
+                chassis.setRotation(
+                    new physics.RAPIER.Quaternion(0, 0, 0, 1),
+                    true
+                );
+
+                chassis.setLinvel(
+                    new physics.RAPIER.Vector3(0, 0, 0),
+                    true
+                );
+
+                chassis.setAngvel(
+                    new physics.RAPIER.Vector3(0, 0, 0),
+                    true
+                );
+
+                chassis.wakeUp();
+
+                movement.accelerateForce = 0;
+
+                movement.brakeForce = 0;
+
+                vehicleController.setWheelSteering(0, 0);
+
+                vehicleController.setWheelSteering(1, 0);
+
+                return;
+
+            }
+
+
+            // -------------------------------------------------
+            // ENGINE FORCE
+            // -------------------------------------------------
+
+            let targetEngineForce = 0;
+
+            if (movement.forward < 0) {
+
+                targetEngineForce = -MAX_ENGINE_FORCE;
+
+            } else if (movement.forward > 0) {
+
+                targetEngineForce = MAX_ENGINE_FORCE;
+
+            }
+
+
+            // Smooth acceleration and deceleration.
+            movement.accelerateForce = THREE.MathUtils.damp(
+                movement.accelerateForce,
+                targetEngineForce,
+                4,
+                FIXED_TIME_STEP
+            );
+
+
+            // -------------------------------------------------
+            // BRAKE FORCE
+            // -------------------------------------------------
+
+            const targetBrakeForce = movement.brake
+                ? MAX_BRAKE_FORCE
+                : 0;
+
+
+            movement.brakeForce = THREE.MathUtils.damp(
+                movement.brakeForce,
+                targetBrakeForce,
+                8,
+                FIXED_TIME_STEP
+            );
+
+
+            // -------------------------------------------------
+            // ENGINE
+            // -------------------------------------------------
+
+            const engineForce = movement.accelerateForce;
+
+            // Front-wheel drive.
+            vehicleController.setWheelEngineForce(
+                0,
+                engineForce
+            );
+
+            vehicleController.setWheelEngineForce(
+                1,
+                engineForce
+            );
+
+
+            // -------------------------------------------------
+            // STEERING
+            // -------------------------------------------------
+
+            const targetSteering =
+                MAX_STEERING_ANGLE * movement.right;
+
+
+            const currentSteering =
+                vehicleController.wheelSteering(0);
+
+
+            const steering = THREE.MathUtils.damp(
+                currentSteering,
+                targetSteering,
+                8,
+                FIXED_TIME_STEP
+            );
+
+
+            vehicleController.setWheelSteering(
+                0,
+                steering
+            );
+
+            vehicleController.setWheelSteering(
+                1,
+                steering
+            );
+
+
+            // -------------------------------------------------
+            // BRAKES
+            // -------------------------------------------------
+
+            const brakeForce = movement.brakeForce;
+
+            for (let i = 0; i < 4; i++) {
+
+                vehicleController.setWheelBrake(
+                    i,
+                    brakeForce
+                );
+
+            }
+
+
+            if (
+                movement.forward !== 0 ||
+                movement.right !== 0 ||
+                movement.brake !== 0
+            ) {
+
+                chassis.wakeUp();
+
+            }
+
+        }
+
+
+        // =====================================================
+        // ANIMATION LOOP
+        // =====================================================
+
+        function animate() {
+
+            if (!renderer) return;
+
+
+            if (vehicleController) {
+
+                updateCarControl();
+
+                // Update vehicle suspension and wheel forces.
+                vehicleController.updateVehicle(
+                    FIXED_TIME_STEP
+                );
+
+                updateWheels();
+
+            }
+
+
+            // Follow car with orbit controls.
+            if (controls && car) {
+
+                controls.target.copy(car.position);
+
+                controls.update();
+
+            }
+
+
+            if (physicsHelper) {
+
+                physicsHelper.update();
+
+            }
+
+
+            renderer.render(scene, camera);
+
+
+            if (stats) {
+
+                stats.update();
+
+            }
+
+        }
+
+    </script>
+
+</body>
+</html>

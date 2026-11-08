@@ -1,0 +1,638 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js - Physical Transmission Alpha</title>
+    <link rel="icon" href="data:,">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            width: 100%;
+            min-height: 100%;
+            overflow: hidden;
+            background: #888888;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            touch-action: none;
+        }
+
+        #table {
+            position: relative;
+            z-index: 0;
+            margin-top: 100px;
+            border-collapse: collapse;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        #table td {
+            margin: 0;
+            padding: 0;
+            height: 250px;
+            font-size: 16px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        #block-ff0000 {
+            background-color: #ff0000;
+            color: white;
+        }
+
+        #block-00ff00 {
+            background-color: #00ff00;
+            color: black;
+        }
+
+        #block-0000ff {
+            background-color: #0000ff;
+            color: white;
+        }
+
+        #block-000000 {
+            background-color: #000000;
+            color: white;
+        }
+
+        #container {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        #container canvas {
+            display: block;
+            pointer-events: auto;
+        }
+
+        #info {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            z-index: 10;
+            color: white;
+            font-size: 14px;
+            pointer-events: none;
+            text-shadow: 0 1px 3px black;
+        }
+
+        #info a {
+            color: #08f;
+            text-decoration: none;
+            pointer-events: auto;
+        }
+
+        #status {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 20;
+            padding: 15px 20px;
+            max-width: 90%;
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            text-align: center;
+        }
+
+        .lil-gui {
+            z-index: 30 !important;
+        }
+    </style>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.183.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+
+<body>
+
+    <!-- Background color comparison -->
+    <table id="table">
+        <tbody>
+            <tr>
+                <td id="block-ff0000">ff0000</td>
+                <td id="block-00ff00">00ff00</td>
+                <td id="block-0000ff">0000ff</td>
+                <td id="block-000000">000000</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div id="container"></div>
+
+    <div id="info">
+        <a href="https://threejs.org/" target="_blank" rel="noopener">three.js</a>
+        - Materials - Transmission - Alpha
+    </div>
+
+    <div id="status">Initializing renderer...</div>
+
+    <script type="module">
+
+        import * as THREE from 'three';
+
+        import { GUI } from
+            'three/addons/libs/lil-gui.module.min.js';
+
+        import { OrbitControls } from
+            'three/addons/controls/OrbitControls.js';
+
+        import { UltraHDRLoader } from
+            'three/addons/loaders/UltraHDRLoader.js';
+
+        import { GLTFLoader } from
+            'three/addons/loaders/GLTFLoader.js';
+
+        // --------------------------------------------------
+        // ASSET PATHS
+        // --------------------------------------------------
+
+        const HDR_URL =
+            'https://threejs.org/examples/textures/equirectangular/royal_esplanade_2k.hdr.jpg';
+
+        const MODEL_URL =
+            'https://threejs.org/examples/models/gltf/DragonAttenuation.glb';
+
+        // --------------------------------------------------
+        // PARAMETERS
+        // --------------------------------------------------
+
+        const params = {
+            color: 0xffffff,
+            transmission: 1,
+            opacity: 1,
+            metalness: 0,
+            roughness: 0,
+            ior: 1.5,
+            thickness: 0.01,
+            attenuationColor: 0xffffff,
+            attenuationDistance: 1,
+            specularIntensity: 1,
+            specularColor: 0xffffff,
+            envMapIntensity: 1,
+            exposure: 1
+        };
+
+        // --------------------------------------------------
+        // VARIABLES
+        // --------------------------------------------------
+
+        let camera;
+        let scene;
+        let renderer;
+        let controls;
+        let gui;
+
+        let mesh;
+        let material;
+
+        let hdrTexture;
+        let isDisposed = false;
+
+        const container = document.getElementById('container');
+        const status = document.getElementById('status');
+
+        // --------------------------------------------------
+        // INITIALIZE RENDERER AND CAMERA
+        // --------------------------------------------------
+
+        function initRenderer() {
+
+            renderer = new THREE.WebGLRenderer({
+                antialias: true,
+                alpha: true
+            });
+
+            renderer.setPixelRatio(
+                Math.min(window.devicePixelRatio, 1.5)
+            );
+
+            renderer.setSize(
+                window.innerWidth,
+                window.innerHeight
+            );
+
+            renderer.setClearColor(0x000000, 0);
+
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = params.exposure;
+
+            renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+            container.appendChild(renderer.domElement);
+
+            // Camera
+            camera = new THREE.PerspectiveCamera(
+                40,
+                window.innerWidth / window.innerHeight,
+                0.01,
+                2000
+            );
+
+            camera.position.set(-5, 0.5, 0);
+
+            // Scene
+            scene = new THREE.Scene();
+
+            // Controls
+            controls = new OrbitControls(
+                camera,
+                renderer.domElement
+            );
+
+            controls.minDistance = 5;
+            controls.maxDistance = 20;
+            controls.target.set(0, 0.5, 0);
+
+            controls.addEventListener('change', render);
+
+            controls.update();
+        }
+
+        // --------------------------------------------------
+        // LOAD HDR ENVIRONMENT
+        // --------------------------------------------------
+
+        async function loadEnvironment() {
+
+            status.textContent = 'Loading HDR environment...';
+
+            const loader = new UltraHDRLoader();
+
+            hdrTexture = await loader.loadAsync(HDR_URL);
+
+            hdrTexture.mapping =
+                THREE.EquirectangularReflectionMapping;
+
+            scene.environment = hdrTexture;
+
+            // Keep the scene background transparent.
+            scene.background = null;
+        }
+
+        // --------------------------------------------------
+        // LOAD GLTF MODEL
+        // --------------------------------------------------
+
+        async function loadModel() {
+
+            status.textContent = 'Loading dragon model...';
+
+            const loader = new GLTFLoader();
+
+            const gltf = await loader.loadAsync(MODEL_URL);
+
+            scene.add(gltf.scene);
+
+            // Find a physical material in the model.
+            gltf.scene.traverse(child => {
+
+                if (
+                    !mesh &&
+                    child.isMesh &&
+                    child.material &&
+                    !Array.isArray(child.material) &&
+                    child.material.isMeshPhysicalMaterial
+                ) {
+
+                    mesh = child;
+                    material = child.material;
+
+                }
+
+            });
+
+            if (!material) {
+
+                throw new Error(
+                    'No MeshPhysicalMaterial was found in the GLB model.'
+                );
+
+            }
+
+            // Read the original material settings.
+            updateParametersFromMaterial();
+
+            // Create GUI after the model is loaded.
+            createGUI();
+
+            status.style.display = 'none';
+
+            render();
+        }
+
+        // --------------------------------------------------
+        // READ MATERIAL SETTINGS
+        // --------------------------------------------------
+
+        function updateParametersFromMaterial() {
+
+            const color = new THREE.Color();
+
+            params.color = material.color.getHex();
+
+            params.roughness = material.roughness;
+            params.metalness = material.metalness;
+
+            params.ior = material.ior;
+            params.specularIntensity = material.specularIntensity;
+
+            params.transmission = material.transmission;
+            params.opacity = material.opacity;
+
+            params.thickness = material.thickness;
+
+            params.attenuationColor =
+                color.copy(material.attenuationColor).getHex();
+
+            params.attenuationDistance =
+                material.attenuationDistance;
+
+            params.specularColor =
+                color.copy(material.specularColor).getHex();
+
+            params.envMapIntensity = material.envMapIntensity;
+        }
+
+        // --------------------------------------------------
+        // CREATE GUI
+        // --------------------------------------------------
+
+        function createGUI() {
+
+            gui = new GUI();
+
+            gui.title('Physical Material Controls');
+
+            // Color
+            gui.addColor(params, 'color')
+                .name('Color')
+                .onChange(value => {
+
+                    material.color.set(value);
+                    render();
+
+                });
+
+            // Transmission
+            gui.add(params, 'transmission', 0, 1, 0.01)
+                .name('Transmission')
+                .onChange(value => {
+
+                    material.transmission = value;
+                    render();
+
+                });
+
+            // Opacity
+            gui.add(params, 'opacity', 0, 1, 0.01)
+                .name('Opacity')
+                .onChange(value => {
+
+                    material.opacity = value;
+
+                    const transparent = value < 1;
+
+                    if (transparent !== material.transparent) {
+
+                        material.transparent = transparent;
+                        material.needsUpdate = true;
+
+                    }
+
+                    render();
+
+                });
+
+            // Metalness
+            gui.add(params, 'metalness', 0, 1, 0.01)
+                .name('Metalness')
+                .onChange(value => {
+
+                    material.metalness = value;
+                    render();
+
+                });
+
+            // Roughness
+            gui.add(params, 'roughness', 0, 1, 0.01)
+                .name('Roughness')
+                .onChange(value => {
+
+                    material.roughness = value;
+                    render();
+
+                });
+
+            // IOR
+            gui.add(params, 'ior', 1, 2, 0.01)
+                .name('IOR')
+                .onChange(value => {
+
+                    material.ior = value;
+                    render();
+
+                });
+
+            // Thickness
+            gui.add(params, 'thickness', 0, 5, 0.01)
+                .name('Thickness')
+                .onChange(value => {
+
+                    material.thickness = value;
+                    render();
+
+                });
+
+            // Attenuation color
+            gui.addColor(params, 'attenuationColor')
+                .name('Attenuation Color')
+                .onChange(value => {
+
+                    material.attenuationColor.set(value);
+                    render();
+
+                });
+
+            // Attenuation distance
+            gui.add(params, 'attenuationDistance', 0, 10, 0.01)
+                .name('Attenuation Distance')
+                .onChange(value => {
+
+                    material.attenuationDistance = value;
+                    render();
+
+                });
+
+            // Specular intensity
+            gui.add(params, 'specularIntensity', 0, 1, 0.01)
+                .name('Specular Intensity')
+                .onChange(value => {
+
+                    material.specularIntensity = value;
+                    render();
+
+                });
+
+            // Specular color
+            gui.addColor(params, 'specularColor')
+                .name('Specular Color')
+                .onChange(value => {
+
+                    material.specularColor.set(value);
+                    render();
+
+                });
+
+            // Environment intensity
+            gui.add(params, 'envMapIntensity', 0, 5, 0.01)
+                .name('Environment Intensity')
+                .onChange(value => {
+
+                    material.envMapIntensity = value;
+                    render();
+
+                });
+
+            // Exposure
+            gui.add(params, 'exposure', 0, 2, 0.01)
+                .name('Exposure')
+                .onChange(value => {
+
+                    renderer.toneMappingExposure = value;
+                    render();
+
+                });
+
+            gui.open();
+        }
+
+        // --------------------------------------------------
+        // RENDER
+        // --------------------------------------------------
+
+        function render() {
+
+            if (
+                isDisposed ||
+                !renderer ||
+                !scene ||
+                !camera
+            ) {
+                return;
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        // --------------------------------------------------
+        // RESIZE
+        // --------------------------------------------------
+
+        function onWindowResize() {
+
+            if (!camera || !renderer) return;
+
+            camera.aspect =
+                window.innerWidth / window.innerHeight;
+
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(
+                window.innerWidth,
+                window.innerHeight
+            );
+
+            render();
+        }
+
+        // --------------------------------------------------
+        // CLEANUP
+        // --------------------------------------------------
+
+        function cleanup() {
+
+            isDisposed = true;
+
+            window.removeEventListener(
+                'resize',
+                onWindowResize
+            );
+
+            if (controls) {
+                controls.dispose();
+            }
+
+            if (gui) {
+                gui.destroy();
+            }
+
+            if (hdrTexture) {
+                hdrTexture.dispose();
+            }
+
+            if (renderer) {
+                renderer.dispose();
+            }
+        }
+
+        window.addEventListener(
+            'resize',
+            onWindowResize
+        );
+
+        window.addEventListener(
+            'pagehide',
+            cleanup,
+            { once: true }
+        );
+
+        // --------------------------------------------------
+        // START
+        // --------------------------------------------------
+
+        async function start() {
+
+            try {
+
+                initRenderer();
+
+                await loadEnvironment();
+
+                await loadModel();
+
+            } catch (error) {
+
+                console.error('Initialization error:', error);
+
+                status.textContent =
+                    'Error: ' + error.message;
+
+                status.style.color = '#ff7777';
+
+            }
+        }
+
+        start();
+
+    </script>
+
+</body>
+</html>

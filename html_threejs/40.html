@@ -1,0 +1,588 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Three.js - PMREM Cubemap</title>
+
+    <link rel="icon" href="data:,">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+            font-family: Arial, sans-serif;
+        }
+
+        #container {
+            position: fixed;
+            inset: 0;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        #info {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            z-index: 10;
+            color: white;
+            line-height: 1.5;
+            pointer-events: none;
+            text-shadow: 0 1px 3px #000;
+        }
+
+        #info a {
+            color: #08f;
+            text-decoration: none;
+            pointer-events: auto;
+        }
+
+        #status {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 20;
+            padding: 15px 20px;
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            text-align: center;
+        }
+
+        #status.error {
+            color: #ff7777;
+        }
+    </style>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.183.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+
+<body>
+
+<div id="container"></div>
+
+<div id="info">
+    <a href="https://threejs.org/" target="_blank" rel="noopener">
+        three.js
+    </a>
+    <br>
+    PMREM Cubemap
+    <br>
+    Physically Based Material Comparison
+</div>
+
+<div id="status">
+    Loading HDR environment...
+</div>
+
+<script type="module">
+
+import * as THREE from 'three';
+
+import { HDRCubeTextureLoader } from
+    'three/addons/loaders/HDRCubeTextureLoader.js';
+
+import { OrbitControls } from
+    'three/addons/controls/OrbitControls.js';
+
+
+// ======================================================
+// VARIABLES
+// ======================================================
+
+let camera;
+let scene;
+let renderer;
+let controls;
+
+let pmremGenerator;
+let environmentMap;
+
+let sphereGeometry;
+let materials = [];
+
+let disposed = false;
+let environmentReady = false;
+
+const container = document.getElementById('container');
+const status = document.getElementById('status');
+
+
+// ======================================================
+// HDR CUBEMAP ASSETS
+// ======================================================
+
+const HDR_PATH =
+    'https://threejs.org/examples/textures/cube/pisaHDR/';
+
+const HDR_FILES = [
+    'px.hdr',
+    'nx.hdr',
+    'py.hdr',
+    'ny.hdr',
+    'pz.hdr',
+    'nz.hdr'
+];
+
+
+// ======================================================
+// STATUS
+// ======================================================
+
+function setStatus(message, error = false) {
+
+    status.textContent = message;
+
+    status.classList.toggle('error', error);
+
+    status.style.display = 'block';
+
+}
+
+
+// ======================================================
+// INITIALIZATION
+// ======================================================
+
+function init() {
+
+    // --------------------------------------------------
+    // CAMERA
+    // --------------------------------------------------
+
+    camera = new THREE.PerspectiveCamera(
+        45,
+        window.innerWidth / window.innerHeight,
+        0.25,
+        20
+    );
+
+    camera.position.set(0, 0, 8);
+
+
+    // --------------------------------------------------
+    // SCENE
+    // --------------------------------------------------
+
+    scene = new THREE.Scene();
+
+    scene.background = new THREE.Color(0x111111);
+
+
+    // --------------------------------------------------
+    // RENDERER
+    // --------------------------------------------------
+
+    renderer = new THREE.WebGLRenderer({
+
+        antialias: true
+
+    });
+
+    renderer.setPixelRatio(
+        Math.min(window.devicePixelRatio, 1.5)
+    );
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+
+    renderer.toneMappingExposure = 1;
+
+    container.appendChild(renderer.domElement);
+
+
+    // --------------------------------------------------
+    // CONTROLS
+    // --------------------------------------------------
+
+    controls = new OrbitControls(
+        camera,
+        renderer.domElement
+    );
+
+    controls.minDistance = 2;
+
+    controls.maxDistance = 10;
+
+    controls.enableDamping = true;
+
+    controls.dampingFactor = 0.05;
+
+    controls.addEventListener('change', render);
+
+    controls.update();
+
+
+    // --------------------------------------------------
+    // RESIZE
+    // --------------------------------------------------
+
+    window.addEventListener(
+        'resize',
+        onWindowResize
+    );
+
+
+    // --------------------------------------------------
+    // LOAD HDR CUBEMAP
+    // --------------------------------------------------
+
+    loadEnvironment();
+
+
+    // Render continuously for damping controls.
+    renderer.setAnimationLoop(animate);
+
+}
+
+
+// ======================================================
+// LOAD HDR CUBEMAP
+// ======================================================
+
+function loadEnvironment() {
+
+    setStatus('Downloading six HDR cubemap faces...');
+
+    const loader = new HDRCubeTextureLoader();
+
+    loader.setPath(HDR_PATH);
+
+    loader.load(
+
+        HDR_FILES,
+
+        function (hdrCubeTexture) {
+
+            if (disposed) {
+                hdrCubeTexture.dispose();
+                return;
+            }
+
+            console.log(
+                'HDR cubemap loaded:',
+                hdrCubeTexture
+            );
+
+
+            // --------------------------------------------------
+            // PMREM GENERATOR
+            // --------------------------------------------------
+
+            setStatus('Generating PMREM environment...');
+
+            pmremGenerator = new THREE.PMREMGenerator(renderer);
+
+            pmremGenerator.compileCubemapShader();
+
+
+            // Convert HDR cubemap to PMREM.
+            const pmremResult =
+                pmremGenerator.fromCubemap(hdrCubeTexture);
+
+            environmentMap = pmremResult.texture;
+
+
+            // Original HDR cubemap is no longer needed.
+            hdrCubeTexture.dispose();
+
+
+            // --------------------------------------------------
+            // BACKGROUND
+            // --------------------------------------------------
+
+            scene.background = environmentMap;
+
+            scene.backgroundBlurriness = 0.5;
+
+
+            // --------------------------------------------------
+            // SPHERE GEOMETRY
+            // --------------------------------------------------
+
+            sphereGeometry = new THREE.SphereGeometry(
+                0.4,
+                48,
+                48
+            );
+
+
+            // --------------------------------------------------
+            // MATERIAL GRID
+            // --------------------------------------------------
+
+            const roughnessCount = 6;
+
+            const metalnessCount = 5;
+
+            for (let i = 0; i < roughnessCount; i++) {
+
+                for (let j = 0; j < metalnessCount; j++) {
+
+                    const roughness = i / 5;
+
+                    const metalness = j / 4;
+
+
+                    const material = new THREE.MeshPhysicalMaterial({
+
+                        roughness: roughness,
+
+                        metalness: metalness,
+
+                        envMap: environmentMap
+
+                    });
+
+                    materials.push(material);
+
+
+                    const sphere = new THREE.Mesh(
+                        sphereGeometry,
+                        material
+                    );
+
+                    sphere.position.set(
+                        i - 2.5,
+                        j - 2,
+                        0
+                    );
+
+                    scene.add(sphere);
+
+                }
+
+            }
+
+
+            environmentReady = true;
+
+            console.log('PMREM environment generated.');
+
+            console.log(
+                'Material combinations:',
+                materials.length
+            );
+
+
+            setStatus('Environment ready.');
+
+            setTimeout(() => {
+
+                if (!disposed) {
+                    status.style.display = 'none';
+                }
+
+            }, 800);
+
+            render();
+
+        },
+
+        function (xhr) {
+
+            if (xhr.total > 0) {
+
+                const percent = (
+                    xhr.loaded / xhr.total * 100
+                ).toFixed(1);
+
+                setStatus(
+                    `Loading HDR cubemap: ${percent}%`
+                );
+
+            } else {
+
+                setStatus(
+                    `Loading HDR cubemap: ${
+                        (xhr.loaded / 1024 / 1024).toFixed(2)
+                    } MB`
+                );
+
+            }
+
+        },
+
+        function (error) {
+
+            console.error(
+                'HDR cubemap loading error:',
+                error
+            );
+
+            setStatus(
+                'Failed to load HDR cubemap. Check the Network tab.',
+                true
+            );
+
+        }
+
+    );
+
+}
+
+
+// ======================================================
+// ANIMATION
+// ======================================================
+
+function animate() {
+
+    if (disposed) return;
+
+    controls.update();
+
+    render();
+
+}
+
+
+// ======================================================
+// RENDER
+// ======================================================
+
+function render() {
+
+    if (!renderer || !scene || !camera || disposed) {
+        return;
+    }
+
+    renderer.render(scene, camera);
+
+}
+
+
+// ======================================================
+// RESIZE
+// ======================================================
+
+function onWindowResize() {
+
+    if (!camera || !renderer) return;
+
+    camera.aspect =
+        window.innerWidth / window.innerHeight;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+
+}
+
+
+// ======================================================
+// CLEANUP
+// ======================================================
+
+function cleanup() {
+
+    disposed = true;
+
+    window.removeEventListener(
+        'resize',
+        onWindowResize
+    );
+
+    if (renderer) {
+        renderer.setAnimationLoop(null);
+    }
+
+    if (controls) {
+        controls.dispose();
+    }
+
+    if (scene) {
+
+        scene.traverse(object => {
+
+            if (object.geometry) {
+                object.geometry.dispose();
+            }
+
+        });
+
+    }
+
+    if (sphereGeometry) {
+        sphereGeometry.dispose();
+    }
+
+    materials.forEach(material => {
+        material.dispose();
+    });
+
+    if (environmentMap) {
+        environmentMap.dispose();
+    }
+
+    if (pmremGenerator) {
+        pmremGenerator.dispose();
+    }
+
+    if (renderer) {
+        renderer.dispose();
+    }
+
+}
+
+window.addEventListener(
+    'pagehide',
+    cleanup,
+    { once: true }
+);
+
+
+// ======================================================
+// START
+// ======================================================
+
+try {
+
+    init();
+
+} catch (error) {
+
+    console.error(error);
+
+    setStatus(
+        'Initialization error: ' + error.message,
+        true
+    );
+
+}
+
+</script>
+
+</body>
+</html>

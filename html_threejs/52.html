@@ -1,0 +1,1030 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js - Skeletal Animation Walking</title>
+    <link rel="icon" href="data:,">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background: #5e5d5d;
+        }
+
+        #container {
+            width: 100%;
+            height: 100vh;
+        }
+
+        #container canvas {
+            display: block;
+        }
+
+        #info {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            color: white;
+            font-size: 13px;
+            line-height: 1.6;
+            z-index: 5;
+            pointer-events: none;
+            text-shadow: 0 1px 3px black;
+        }
+
+        #info a {
+            color: #ff5555;
+            pointer-events: auto;
+        }
+
+        #loading {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            background: rgba(0, 0, 0, 0.65);
+            font-size: 18px;
+            z-index: 10;
+        }
+
+        #error {
+            display: none;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 85%;
+            padding: 18px;
+            color: white;
+            background: #8b2020;
+            border-radius: 8px;
+            z-index: 20;
+            white-space: pre-wrap;
+        }
+    </style>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.183.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+
+<body>
+
+    <div id="container"></div>
+
+    <div id="info">
+        <a href="https://threejs.org" target="_blank" rel="noopener">three.js</a>
+        - Skeletal Animation Walking
+        <br>
+        Model from
+        <a href="https://www.mixamo.com/" target="_blank" rel="noopener">Mixamo</a>
+        <br>
+        Use arrow keys or WASD to move.
+        <br>
+        Hold SHIFT to run.
+        <br>
+        Use mouse to rotate the camera.
+    </div>
+
+    <div id="loading">Loading character...</div>
+    <div id="error"></div>
+
+    <script type="module">
+
+        import * as THREE from 'three';
+
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+        import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
+
+        // --------------------------------------------------
+        // GLOBAL VARIABLES
+        // --------------------------------------------------
+
+        let scene;
+        let renderer;
+        let camera;
+        let floor;
+        let orbitControls;
+
+        let group;
+        let followGroup;
+        let model;
+        let skeleton;
+        let mixer;
+        let timer;
+
+        let actions = {};
+
+        const PI = Math.PI;
+        const PI90 = Math.PI / 2;
+
+        const settings = {
+            show_skeleton: false,
+            fixe_transition: true
+        };
+
+        const controls = {
+
+            key: [0, 0, 0],
+
+            ease: new THREE.Vector3(),
+            position: new THREE.Vector3(),
+
+            up: new THREE.Vector3(0, 1, 0),
+            rotate: new THREE.Quaternion(),
+
+            current: 'Idle',
+
+            fadeDuration: 0.5,
+
+            runVelocity: 5,
+            walkVelocity: 1.8,
+
+            rotateSpeed: 3.5,
+
+            floorDecale: 0
+
+        };
+
+        const loadingElement = document.getElementById('loading');
+        const errorElement = document.getElementById('error');
+
+        // --------------------------------------------------
+        // INITIALIZATION
+        // --------------------------------------------------
+
+        init();
+
+        function init() {
+
+            const container = document.getElementById('container');
+
+            // Camera
+            camera = new THREE.PerspectiveCamera(
+                45,
+                window.innerWidth / window.innerHeight,
+                0.1,
+                100
+            );
+
+            camera.position.set(0, 2, -5);
+
+            // Timer
+            timer = new THREE.Timer();
+            timer.connect(document);
+
+            // Scene
+            scene = new THREE.Scene();
+
+            scene.background = new THREE.Color(0x5e5d5d);
+            scene.fog = new THREE.Fog(0x5e5d5d, 2, 20);
+
+            // Character group
+            group = new THREE.Group();
+            scene.add(group);
+
+            // Camera-following light group
+            followGroup = new THREE.Group();
+            scene.add(followGroup);
+
+            // Lighting
+            const ambientLight = new THREE.HemisphereLight(
+                0xffffff,
+                0x444444,
+                2
+            );
+
+            scene.add(ambientLight);
+
+            const dirLight = new THREE.DirectionalLight(
+                0xffffff,
+                5
+            );
+
+            dirLight.position.set(-2, 5, -3);
+            dirLight.castShadow = true;
+
+            const shadowCamera = dirLight.shadow.camera;
+
+            shadowCamera.top = 2;
+            shadowCamera.right = 2;
+            shadowCamera.bottom = -2;
+            shadowCamera.left = -2;
+
+            shadowCamera.near = 0.1;
+            shadowCamera.far = 10;
+
+            dirLight.shadow.mapSize.set(1024, 1024);
+
+            dirLight.shadow.bias = -0.0002;
+
+            followGroup.add(dirLight);
+            followGroup.add(dirLight.target);
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer({
+                antialias: true
+            });
+
+            renderer.setPixelRatio(
+                Math.min(window.devicePixelRatio, 1.5)
+            );
+
+            renderer.setSize(
+                window.innerWidth,
+                window.innerHeight
+            );
+
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFShadowMap;
+
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 0.5;
+
+            renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+            container.appendChild(renderer.domElement);
+
+            // Orbit controls
+            orbitControls = new OrbitControls(
+                camera,
+                renderer.domElement
+            );
+
+            orbitControls.target.set(0, 1, 0);
+
+            orbitControls.enableDamping = true;
+            orbitControls.enablePan = false;
+
+            orbitControls.maxPolarAngle = PI90 - 0.05;
+
+            orbitControls.update();
+
+            // Events
+            window.addEventListener('resize', onWindowResize);
+
+            document.addEventListener('keydown', onKeyDown);
+            document.addEventListener('keyup', onKeyUp);
+
+            // Floor
+            addFloor();
+
+            // Environment
+            loadEnvironment();
+
+            // Character
+            loadModel();
+
+            // Animation loop
+            renderer.setAnimationLoop(animate);
+
+        }
+
+        // --------------------------------------------------
+        // ENVIRONMENT
+        // --------------------------------------------------
+
+        function loadEnvironment() {
+
+            const hdrLoader = new RGBELoader();
+
+            hdrLoader.load(
+                'https://threejs.org/examples/textures/equirectangular/lobe.hdr',
+
+                function (texture) {
+
+                    texture.mapping =
+                        THREE.EquirectangularReflectionMapping;
+
+                    scene.environment = texture;
+                    scene.environmentIntensity = 1.5;
+
+                },
+
+                undefined,
+
+                function (error) {
+
+                    console.warn(
+                        'HDR environment could not be loaded:',
+                        error
+                    );
+
+                }
+            );
+
+        }
+
+        // --------------------------------------------------
+        // FLOOR
+        // --------------------------------------------------
+
+        function addFloor() {
+
+            const size = 50;
+            const repeat = 16;
+
+            const textureLoader = new THREE.TextureLoader();
+
+            const maxAnisotropy =
+                renderer.capabilities.getMaxAnisotropy();
+
+            const floorT = textureLoader.load(
+                'https://threejs.org/examples/textures/floors/FloorsCheckerboard_S_Diffuse.jpg'
+            );
+
+            floorT.colorSpace = THREE.SRGBColorSpace;
+
+            floorT.repeat.set(repeat, repeat);
+
+            floorT.wrapS = THREE.RepeatWrapping;
+            floorT.wrapT = THREE.RepeatWrapping;
+
+            floorT.anisotropy = maxAnisotropy;
+
+            const floorN = textureLoader.load(
+                'https://threejs.org/examples/textures/floors/FloorsCheckerboard_S_Normal.jpg'
+            );
+
+            floorN.repeat.set(repeat, repeat);
+
+            floorN.wrapS = THREE.RepeatWrapping;
+            floorN.wrapT = THREE.RepeatWrapping;
+
+            floorN.anisotropy = maxAnisotropy;
+
+            const material = new THREE.MeshStandardMaterial({
+
+                map: floorT,
+
+                normalMap: floorN,
+
+                normalScale: new THREE.Vector2(0.5, 0.5),
+
+                color: 0x404040,
+
+                roughness: 0.85,
+
+                depthWrite: false
+
+            });
+
+            const geometry = new THREE.PlaneGeometry(
+                size,
+                size,
+                50,
+                50
+            );
+
+            geometry.rotateX(-PI90);
+
+            floor = new THREE.Mesh(
+                geometry,
+                material
+            );
+
+            floor.receiveShadow = true;
+
+            scene.add(floor);
+
+            controls.floorDecale = (size / repeat) * 4;
+
+            // Small floor light
+            const bulbGeometry = new THREE.SphereGeometry(
+                0.05,
+                16,
+                8
+            );
+
+            const bulbMaterial = new THREE.MeshStandardMaterial({
+
+                emissive: 0xffffee,
+
+                emissiveIntensity: 1,
+
+                color: 0x000000
+
+            });
+
+            const bulbLight = new THREE.PointLight(
+                0xffee88,
+                2,
+                500,
+                2
+            );
+
+            bulbLight.add(
+                new THREE.Mesh(
+                    bulbGeometry,
+                    bulbMaterial
+                )
+            );
+
+            bulbLight.position.set(1, 0.1, -3);
+
+            floor.add(bulbLight);
+
+        }
+
+        // --------------------------------------------------
+        // LOAD CHARACTER
+        // --------------------------------------------------
+
+        function loadModel() {
+
+            const loader = new GLTFLoader();
+
+            loader.load(
+
+                'https://threejs.org/examples/models/gltf/Soldier.glb',
+
+                function (gltf) {
+
+                    model = gltf.scene;
+
+                    group.add(model);
+
+                    model.rotation.y = PI;
+                    group.rotation.y = PI;
+
+                    // Character materials and shadows
+                    model.traverse(function (object) {
+
+                        if (!object.isMesh) return;
+
+                        object.castShadow = true;
+                        object.receiveShadow = true;
+
+                        if (object.material) {
+
+                            object.material = object.material.clone();
+
+                            if (object.name === 'vanguard_Mesh') {
+
+                                object.material.metalness = 1.0;
+                                object.material.roughness = 0.2;
+
+                                object.material.color.set(
+                                    0xffffff
+                                );
+
+                                if (object.material.map) {
+
+                                    object.material.metalnessMap =
+                                        object.material.map;
+
+                                }
+
+                            } else {
+
+                                object.material.metalness = 1.0;
+                                object.material.roughness = 0.2;
+
+                                object.material.transparent = true;
+                                object.material.opacity = 0.8;
+
+                                object.material.color.set(
+                                    0xffffff
+                                );
+
+                            }
+
+                        }
+
+                    });
+
+                    // Skeleton helper
+                    skeleton = new THREE.SkeletonHelper(model);
+
+                    skeleton.setColors(
+                        new THREE.Color(0xe000ff),
+                        new THREE.Color(0x00e0ff)
+                    );
+
+                    skeleton.visible = false;
+
+                    scene.add(skeleton);
+
+                    // Animation setup
+                    setupAnimations(gltf.animations);
+
+                    // GUI
+                    createPanel();
+
+                    loadingElement.style.display = 'none';
+
+                },
+
+                function (xhr) {
+
+                    if (xhr.total > 0) {
+
+                        const percent =
+                            (xhr.loaded / xhr.total) * 100;
+
+                        loadingElement.textContent =
+                            `Loading character... ${percent.toFixed(0)}%`;
+
+                    }
+
+                },
+
+                function (error) {
+
+                    console.error('Model loading error:', error);
+
+                    showError(
+                        'Could not load Soldier.glb. Check your internet connection and try again.'
+                    );
+
+                }
+
+            );
+
+        }
+
+        // --------------------------------------------------
+        // ANIMATIONS
+        // --------------------------------------------------
+
+        function setupAnimations(animations) {
+
+            if (!animations || animations.length === 0) {
+
+                showError('No animations were found in the character model.');
+
+                return;
+
+            }
+
+            mixer = new THREE.AnimationMixer(model);
+
+            // The Soldier model contains these animation clips.
+            const idleClip = animations[0];
+            const runClip = animations[1];
+            const walkClip = animations[3];
+
+            if (!idleClip || !runClip || !walkClip) {
+
+                console.error(
+                    'Expected Idle, Run and Walk animation clips were not found.',
+                    animations.map(animation => animation.name)
+                );
+
+                showError(
+                    'The expected Idle, Walk or Run animation is missing.'
+                );
+
+                return;
+
+            }
+
+            actions = {
+
+                Idle: mixer.clipAction(idleClip),
+
+                Walk: mixer.clipAction(walkClip),
+
+                Run: mixer.clipAction(runClip)
+
+            };
+
+            for (const name in actions) {
+
+                const action = actions[name];
+
+                action.enabled = true;
+
+                action.setEffectiveTimeScale(1);
+
+                action.setEffectiveWeight(
+                    name === 'Idle' ? 1 : 0
+                );
+
+            }
+
+            actions.Idle.play();
+
+            controls.current = 'Idle';
+
+        }
+
+        // --------------------------------------------------
+        // CHARACTER MOVEMENT
+        // --------------------------------------------------
+
+        function updateCharacter(delta) {
+
+            if (!mixer || !actions.Idle) return;
+
+            const fade = controls.fadeDuration;
+
+            const key = controls.key;
+
+            const up = controls.up;
+
+            const ease = controls.ease;
+
+            const rotate = controls.rotate;
+
+            const position = controls.position;
+
+            const azimuth = orbitControls.getAzimuthalAngle();
+
+            // Determine movement
+            const active =
+                key[0] !== 0 || key[1] !== 0;
+
+            const play = active
+                ? (key[2] ? 'Run' : 'Walk')
+                : 'Idle';
+
+            // ----------------------------------------------
+            // ANIMATION TRANSITION
+            // ----------------------------------------------
+
+            if (controls.current !== play) {
+
+                const current = actions[play];
+
+                const old = actions[controls.current];
+
+                if (!current || !old) return;
+
+                controls.current = play;
+
+                current.reset();
+
+                current.enabled = true;
+
+                current.setEffectiveTimeScale(1);
+
+                if (settings.fixe_transition) {
+
+                    // Keep the animation phase synchronized.
+                    if (play !== 'Idle') {
+
+                        current.time =
+                            old.time *
+                            (
+                                current.getClip().duration /
+                                old.getClip().duration
+                            );
+
+                    }
+
+                    current.setEffectiveWeight(1);
+
+                    current.play();
+
+                    old.crossFadeTo(
+                        current,
+                        fade,
+                        false
+                    );
+
+                } else {
+
+                    current.reset();
+
+                    current.setEffectiveWeight(1);
+
+                    current.play();
+
+                    old.fadeOut(fade);
+
+                    current.fadeIn(fade);
+
+                }
+
+            }
+
+            // ----------------------------------------------
+            // MOVEMENT
+            // ----------------------------------------------
+
+            if (controls.current !== 'Idle') {
+
+                const velocity =
+                    controls.current === 'Run'
+                        ? controls.runVelocity
+                        : controls.walkVelocity;
+
+                // Movement direction
+                ease.set(
+                    key[1],
+                    0,
+                    key[0]
+                );
+
+                // Prevent faster diagonal movement
+                if (ease.lengthSq() > 1) {
+
+                    ease.normalize();
+
+                }
+
+                ease.multiplyScalar(velocity * delta);
+
+                // Calculate character direction
+                const angle = unwrapRad(
+                    Math.atan2(ease.x, ease.z) + azimuth
+                );
+
+                rotate.setFromAxisAngle(up, angle);
+
+                // Convert movement into camera direction
+                ease.applyAxisAngle(up, azimuth);
+
+                // Update character position
+                position.add(ease);
+
+                // Move camera with character
+                camera.position.add(ease);
+
+                // Update character transform
+                group.position.copy(position);
+
+                group.quaternion.rotateTowards(
+                    rotate,
+                    controls.rotateSpeed * delta
+                );
+
+                // Update camera target
+                orbitControls.target.set(
+                    position.x,
+                    position.y + 1,
+                    position.z
+                );
+
+                // Follow lighting
+                followGroup.position.copy(position);
+
+                // Move floor texture area with character
+                const dx = position.x - floor.position.x;
+
+                const dz = position.z - floor.position.z;
+
+                if (Math.abs(dx) > controls.floorDecale) {
+
+                    floor.position.x += dx;
+
+                }
+
+                if (Math.abs(dz) > controls.floorDecale) {
+
+                    floor.position.z += dz;
+
+                }
+
+            }
+
+            // Update animation mixer
+            mixer.update(delta);
+
+            // Update camera controls
+            orbitControls.update();
+
+        }
+
+        // --------------------------------------------------
+        // ANGLE HELPER
+        // --------------------------------------------------
+
+        function unwrapRad(r) {
+
+            return Math.atan2(
+                Math.sin(r),
+                Math.cos(r)
+            );
+
+        }
+
+        // --------------------------------------------------
+        // GUI PANEL
+        // --------------------------------------------------
+
+        function createPanel() {
+
+            const panel = new GUI({
+                width: 280
+            });
+
+            panel.title('Character Settings');
+
+            panel.add(
+                settings,
+                'show_skeleton'
+            )
+            .name('Show Skeleton')
+            .onChange(function (visible) {
+
+                if (skeleton) {
+
+                    skeleton.visible = visible;
+
+                }
+
+            });
+
+            panel.add(
+                settings,
+                'fixe_transition'
+            )
+            .name('Fixed Transition');
+
+            panel.add(
+                controls,
+                'walkVelocity',
+                0.5,
+                4
+            )
+            .name('Walk Speed');
+
+            panel.add(
+                controls,
+                'runVelocity',
+                1,
+                8
+            )
+            .name('Run Speed');
+
+            panel.add(
+                controls,
+                'fadeDuration',
+                0.1,
+                2
+            )
+            .name('Transition Duration');
+
+        }
+
+        // --------------------------------------------------
+        // KEYBOARD EVENTS
+        // --------------------------------------------------
+
+        function onKeyDown(event) {
+
+            const key = controls.key;
+
+            switch (event.code) {
+
+                case 'ArrowUp':
+                case 'KeyW':
+                case 'KeyZ':
+
+                    key[0] = -1;
+                    break;
+
+                case 'ArrowDown':
+                case 'KeyS':
+
+                    key[0] = 1;
+                    break;
+
+                case 'ArrowLeft':
+                case 'KeyA':
+                case 'KeyQ':
+
+                    key[1] = -1;
+                    break;
+
+                case 'ArrowRight':
+                case 'KeyD':
+
+                    key[1] = 1;
+                    break;
+
+                case 'ShiftLeft':
+                case 'ShiftRight':
+
+                    key[2] = 1;
+                    break;
+
+            }
+
+        }
+
+        function onKeyUp(event) {
+
+            const key = controls.key;
+
+            switch (event.code) {
+
+                case 'ArrowUp':
+                case 'KeyW':
+                case 'KeyZ':
+
+                    if (key[0] < 0) key[0] = 0;
+                    break;
+
+                case 'ArrowDown':
+                case 'KeyS':
+
+                    if (key[0] > 0) key[0] = 0;
+                    break;
+
+                case 'ArrowLeft':
+                case 'KeyA':
+                case 'KeyQ':
+
+                    if (key[1] < 0) key[1] = 0;
+                    break;
+
+                case 'ArrowRight':
+                case 'KeyD':
+
+                    if (key[1] > 0) key[1] = 0;
+                    break;
+
+                case 'ShiftLeft':
+                case 'ShiftRight':
+
+                    key[2] = 0;
+                    break;
+
+            }
+
+        }
+
+        // --------------------------------------------------
+        // WINDOW RESIZE
+        // --------------------------------------------------
+
+        function onWindowResize() {
+
+            camera.aspect =
+                window.innerWidth / window.innerHeight;
+
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(
+                window.innerWidth,
+                window.innerHeight
+            );
+
+            renderer.setPixelRatio(
+                Math.min(window.devicePixelRatio, 1.5)
+            );
+
+        }
+
+        // --------------------------------------------------
+        // ERROR DISPLAY
+        // --------------------------------------------------
+
+        function showError(message) {
+
+            loadingElement.style.display = 'none';
+
+            errorElement.style.display = 'block';
+
+            errorElement.textContent = message;
+
+            console.error(message);
+
+        }
+
+        // --------------------------------------------------
+        // ANIMATION LOOP
+        // --------------------------------------------------
+
+        function animate() {
+
+            timer.update();
+
+            const delta = Math.min(
+                timer.getDelta(),
+                0.05
+            );
+
+            updateCharacter(delta);
+
+            renderer.render(
+                scene,
+                camera
+            );
+
+        }
+
+    </script>
+
+</body>
+</html>

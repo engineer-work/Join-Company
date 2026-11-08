@@ -1,0 +1,889 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Three.js - Animation Retargeting</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:,">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #13172b;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        #info {
+            position: absolute;
+            top: 15px;
+            left: 18px;
+            z-index: 10;
+            pointer-events: none;
+            line-height: 1.6;
+        }
+
+        #info a {
+            color: #9bdce5;
+            pointer-events: auto;
+        }
+
+        .title-wrapper {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            font-size: 18px;
+        }
+
+        #status {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 20;
+            padding: 14px 20px;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.75);
+            color: white;
+            font-size: 14px;
+            text-align: center;
+            max-width: 85%;
+        }
+
+        #status.error {
+            color: #ffaaaa;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.webgpu.js",
+            "three/webgpu": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.webgpu.js",
+            "three/tsl": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.tsl.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.183.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+
+<body>
+
+<div id="info">
+
+    <div class="title-wrapper">
+        <a href="https://threejs.org/" target="_blank" rel="noopener">
+            three.js
+        </a>
+
+        <span>Animation Retargeting</span>
+    </div>
+
+    <small>
+        Mixamo animation retargeted to Ready Player Me
+    </small>
+
+</div>
+
+<div id="status">
+    Checking WebGPU support...
+</div>
+
+<script type="module">
+
+import * as THREE from 'three/webgpu';
+
+import {
+    screenUV,
+    color,
+    vec2,
+    vec4,
+    reflector,
+    positionWorld
+} from 'three/tsl';
+
+import { OrbitControls } from
+    'three/addons/controls/OrbitControls.js';
+
+import { GLTFLoader } from
+    'three/addons/loaders/GLTFLoader.js';
+
+import { FBXLoader } from
+    'three/addons/loaders/FBXLoader.js';
+
+import * as SkeletonUtils from
+    'three/addons/utils/SkeletonUtils.js';
+
+
+// ==================================================
+// ASSET PATHS
+// ==================================================
+
+const MODEL_BASE =
+    'https://threejs.org/examples/models/';
+
+const SOURCE_URL =
+    MODEL_BASE + 'fbx/mixamo.fbx';
+
+const TARGET_URL =
+    MODEL_BASE + 'gltf/readyplayer.me.glb';
+
+
+// ==================================================
+// GLOBAL VARIABLES
+// ==================================================
+
+let scene;
+let camera;
+let renderer;
+let controls;
+
+let sourceModel;
+let targetModel;
+
+let sourceAnimation;
+let targetMixer;
+
+let timer;
+
+let reflectionTarget;
+let reflectionMaterial;
+let floorGeometry;
+
+let animationRunning = false;
+
+
+// ==================================================
+// STATUS
+// ==================================================
+
+const statusElement = document.getElementById('status');
+
+function setStatus(message, isError = false) {
+
+    statusElement.textContent = message;
+
+    statusElement.classList.toggle(
+        'error',
+        isError
+    );
+
+    statusElement.style.display = 'block';
+
+}
+
+function hideStatus() {
+
+    statusElement.style.display = 'none';
+
+}
+
+
+// ==================================================
+// START APPLICATION
+// ==================================================
+
+startApplication();
+
+async function startApplication() {
+
+    try {
+
+        // --------------------------------------------------
+        // CHECK WEBGPU
+        // --------------------------------------------------
+
+        if (!navigator.gpu) {
+
+            throw new Error(
+                'WebGPU is not available in this browser or GPU configuration. ' +
+                'Try a supported browser and WebGPU-capable graphics hardware.'
+            );
+
+        }
+
+        setStatus('Loading character models...');
+
+        // --------------------------------------------------
+        // LOAD MODELS
+        // --------------------------------------------------
+
+        const [source, target] = await Promise.all([
+
+            loadFBX(SOURCE_URL),
+
+            loadGLTF(TARGET_URL)
+
+        ]);
+
+        sourceModel = source;
+
+        targetModel = target;
+
+        // --------------------------------------------------
+        // CREATE SCENE
+        // --------------------------------------------------
+
+        createScene();
+
+        // --------------------------------------------------
+        // ADD MODELS
+        // --------------------------------------------------
+
+        scene.add(sourceModel);
+
+        scene.add(targetModel.scene);
+
+        // Mixamo uses centimeters.
+        // Ready Player Me uses meters.
+
+        sourceModel.scale.setScalar(0.01);
+
+        sourceModel.position.x = -0.9;
+
+        targetModel.scene.position.x = 0.9;
+
+        // --------------------------------------------------
+        // FIND TARGET SKELETON
+        // --------------------------------------------------
+
+        const targetSkin = findSkinnedMesh(
+            targetModel.scene
+        );
+
+        if (!targetSkin) {
+
+            throw new Error(
+                'No SkinnedMesh was found in the Ready Player Me model.'
+            );
+
+        }
+
+        // --------------------------------------------------
+        // PREPARE SOURCE ANIMATION
+        // --------------------------------------------------
+
+        sourceAnimation = getSource(sourceModel);
+
+        // --------------------------------------------------
+        // RETARGET ANIMATION
+        // --------------------------------------------------
+
+        targetMixer = retargetModel(
+            sourceAnimation,
+            targetSkin
+        );
+
+        // --------------------------------------------------
+        // CAMERA
+        // --------------------------------------------------
+
+        camera = new THREE.PerspectiveCamera(
+
+            40,
+
+            window.innerWidth / window.innerHeight,
+
+            0.25,
+
+            50
+
+        );
+
+        camera.position.set(0, 3, 5);
+
+        // --------------------------------------------------
+        // RENDERER
+        // --------------------------------------------------
+
+        renderer = new THREE.WebGPURenderer({
+
+            antialias: true,
+
+            powerPreference: 'high-performance'
+
+        });
+
+        renderer.setPixelRatio(
+            Math.min(window.devicePixelRatio, 1.5)
+        );
+
+        renderer.setSize(
+            window.innerWidth,
+            window.innerHeight
+        );
+
+        renderer.toneMapping = THREE.NeutralToneMapping;
+
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+        // WebGPU initialization must finish before rendering.
+
+        setStatus('Initializing WebGPU...');
+
+        await renderer.init();
+
+        document.body.appendChild(renderer.domElement);
+
+        // --------------------------------------------------
+        // ORBIT CONTROLS
+        // --------------------------------------------------
+
+        controls = new OrbitControls(
+            camera,
+            renderer.domElement
+        );
+
+        controls.minDistance = 3;
+
+        controls.maxDistance = 12;
+
+        controls.target.set(0, 1, 0);
+
+        controls.maxPolarAngle = Math.PI / 2;
+
+        controls.update();
+
+        // --------------------------------------------------
+        // REFLECTIVE FLOOR
+        // --------------------------------------------------
+
+        createReflectiveFloor();
+
+        // --------------------------------------------------
+        // TIMER
+        // --------------------------------------------------
+
+        timer = new THREE.Timer();
+
+        timer.connect(document);
+
+        // --------------------------------------------------
+        // RESIZE
+        // --------------------------------------------------
+
+        window.addEventListener(
+            'resize',
+            onWindowResize
+        );
+
+        // --------------------------------------------------
+        // START
+        // --------------------------------------------------
+
+        hideStatus();
+
+        animationRunning = true;
+
+        renderer.setAnimationLoop(animate);
+
+    } catch (error) {
+
+        console.error('Application error:', error);
+
+        setStatus(
+            'Error: ' + error.message,
+            true
+        );
+
+    }
+
+}
+
+
+// ==================================================
+// LOAD FBX
+// ==================================================
+
+function loadFBX(url) {
+
+    return new Promise((resolve, reject) => {
+
+        const loader = new FBXLoader();
+
+        loader.load(
+
+            url,
+
+            resolve,
+
+            (progress) => {
+
+                if (progress.total > 0) {
+
+                    const percent = Math.round(
+                        progress.loaded / progress.total * 100
+                    );
+
+                    setStatus(
+                        `Loading Mixamo model: ${percent}%`
+                    );
+
+                } else {
+
+                    setStatus('Loading Mixamo model...');
+
+                }
+
+            },
+
+            reject
+
+        );
+
+    });
+
+}
+
+
+// ==================================================
+// LOAD GLTF
+// ==================================================
+
+function loadGLTF(url) {
+
+    return new Promise((resolve, reject) => {
+
+        const loader = new GLTFLoader();
+
+        loader.load(
+
+            url,
+
+            resolve,
+
+            (progress) => {
+
+                if (progress.total > 0) {
+
+                    const percent = Math.round(
+                        progress.loaded / progress.total * 100
+                    );
+
+                    setStatus(
+                        `Loading Ready Player Me model: ${percent}%`
+                    );
+
+                } else {
+
+                    setStatus(
+                        'Loading Ready Player Me model...'
+                    );
+
+                }
+
+            },
+
+            reject
+
+        );
+
+    });
+
+}
+
+
+// ==================================================
+// CREATE SCENE
+// ==================================================
+
+function createScene() {
+
+    scene = new THREE.Scene();
+
+    // --------------------------------------------------
+    // BACKGROUND
+    // --------------------------------------------------
+
+    const horizontalEffect = screenUV.x.mix(
+
+        color(0x13172b),
+
+        color(0x311649)
+
+    );
+
+    const lightEffect = screenUV.distance(
+        vec2(0.5, 1.0)
+    ).oneMinus().mul(
+        color(0x0c5d68)
+    );
+
+    scene.backgroundNode =
+        horizontalEffect.add(lightEffect);
+
+    // --------------------------------------------------
+    // LIGHTING
+    // --------------------------------------------------
+
+    const hemisphereLight = new THREE.HemisphereLight(
+
+        0x311649,
+
+        0x0c5d68,
+
+        10
+
+    );
+
+    scene.add(hemisphereLight);
+
+    const backLight = new THREE.DirectionalLight(
+        0xffffff,
+        10
+    );
+
+    backLight.position.set(0, 5, -5);
+
+    scene.add(backLight);
+
+    const keyLight = new THREE.DirectionalLight(
+        0xfff9ea,
+        4
+    );
+
+    keyLight.position.set(3, 5, 3);
+
+    scene.add(keyLight);
+
+}
+
+
+// ==================================================
+// FIND SKINNED MESH
+// ==================================================
+
+function findSkinnedMesh(root) {
+
+    let result = null;
+
+    root.traverse((object) => {
+
+        if (!result && object.isSkinnedMesh) {
+
+            result = object;
+
+        }
+
+    });
+
+    return result;
+
+}
+
+
+// ==================================================
+// GET SOURCE ANIMATION
+// ==================================================
+
+function getSource(model) {
+
+    if (!model.animations || model.animations.length === 0) {
+
+        throw new Error(
+            'The Mixamo FBX file does not contain an animation.'
+        );
+
+    }
+
+    const clip = model.animations[0];
+
+    // Create a skeleton from the source model.
+
+    const helper = new THREE.SkeletonHelper(model);
+
+    const skeleton = new THREE.Skeleton(helper.bones);
+
+    helper.dispose();
+
+    // Play source animation.
+
+    const mixer = new THREE.AnimationMixer(model);
+
+    const action = mixer.clipAction(clip);
+
+    action.play();
+
+    return {
+
+        clip,
+
+        skeleton,
+
+        mixer
+
+    };
+
+}
+
+
+// ==================================================
+// RETARGET ANIMATION
+// ==================================================
+
+function retargetModel(source, targetSkin) {
+
+    const retargetOptions = {
+
+        // Source Mixamo hip bone.
+
+        hip: 'mixamorigHips',
+
+        // Preserve target model scale.
+
+        scale: 0.01,
+
+        // Map target bone names to Mixamo bone names.
+
+        getBoneName: function(bone) {
+
+            return 'mixamorig' + bone.name;
+
+        }
+
+    };
+
+    const retargetedClip = SkeletonUtils.retargetClip(
+
+        targetSkin,
+
+        source.skeleton,
+
+        source.clip,
+
+        retargetOptions
+
+    );
+
+    if (!retargetedClip) {
+
+        throw new Error(
+            'Animation retargeting did not produce an animation clip.'
+        );
+
+    }
+
+    const mixer = new THREE.AnimationMixer(targetSkin);
+
+    mixer.clipAction(retargetedClip).play();
+
+    return mixer;
+
+}
+
+
+// ==================================================
+// REFLECTIVE FLOOR
+// ==================================================
+
+function createReflectiveFloor() {
+
+    const reflection = reflector();
+
+    reflection.target.rotateX(-Math.PI / 2);
+
+    reflectionTarget = reflection.target;
+
+    scene.add(reflectionTarget);
+
+    const reflectionMask = positionWorld.xz
+        .distance(0)
+        .mul(0.1)
+        .clamp()
+        .oneMinus();
+
+    reflectionMaterial = new THREE.NodeMaterial();
+
+    reflectionMaterial.colorNode = vec4(
+        reflection.rgb,
+        reflectionMask
+    );
+
+    reflectionMaterial.opacity = 0.2;
+
+    reflectionMaterial.transparent = true;
+
+    floorGeometry = new THREE.BoxGeometry(
+        50,
+        0.001,
+        50
+    );
+
+    const floor = new THREE.Mesh(
+        floorGeometry,
+        reflectionMaterial
+    );
+
+    floor.receiveShadow = true;
+
+    floor.position.set(0, 0, 0);
+
+    scene.add(floor);
+
+}
+
+
+// ==================================================
+// WINDOW RESIZE
+// ==================================================
+
+function onWindowResize() {
+
+    if (!camera || !renderer) return;
+
+    camera.aspect =
+        window.innerWidth / window.innerHeight;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+
+    renderer.setPixelRatio(
+        Math.min(window.devicePixelRatio, 1.5)
+    );
+
+}
+
+
+// ==================================================
+// ANIMATION LOOP
+// ==================================================
+
+function animate() {
+
+    if (!animationRunning) return;
+
+    timer.update();
+
+    const delta = timer.getDelta();
+
+    // Animate original Mixamo character.
+
+    sourceAnimation.mixer.update(delta);
+
+    // Animate retargeted Ready Player Me character.
+
+    targetMixer.update(delta);
+
+    controls.update();
+
+    renderer.render(
+        scene,
+        camera
+    );
+
+}
+
+
+// ==================================================
+// CLEANUP
+// ==================================================
+
+window.addEventListener('pagehide', () => {
+
+    animationRunning = false;
+
+    if (renderer) {
+
+        renderer.setAnimationLoop(null);
+
+        renderer.dispose();
+
+    }
+
+    if (controls) {
+
+        controls.dispose();
+
+    }
+
+    if (timer) {
+
+        timer.dispose();
+
+    }
+
+    if (floorGeometry) {
+
+        floorGeometry.dispose();
+
+    }
+
+    if (reflectionMaterial) {
+
+        reflectionMaterial.dispose();
+
+    }
+
+    if (sourceModel) {
+
+        sourceModel.traverse((object) => {
+
+            if (object.isMesh) {
+
+                object.geometry.dispose();
+
+                if (Array.isArray(object.material)) {
+
+                    object.material.forEach(
+                        material => material.dispose()
+                    );
+
+                } else if (object.material) {
+
+                    object.material.dispose();
+
+                }
+
+            }
+
+        });
+
+    }
+
+    if (targetModel) {
+
+        targetModel.scene.traverse((object) => {
+
+            if (object.isMesh) {
+
+                object.geometry.dispose();
+
+                if (Array.isArray(object.material)) {
+
+                    object.material.forEach(
+                        material => material.dispose()
+                    );
+
+                } else if (object.material) {
+
+                    object.material.dispose();
+
+                }
+
+            }
+
+        });
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>

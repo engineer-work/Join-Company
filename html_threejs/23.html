@@ -1,0 +1,689 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js - Shadow Map</title>
+    <link rel="icon" href="data:,">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #111;
+            font-family: Arial, sans-serif;
+        }
+
+        #container {
+            width: 100%;
+            height: 100vh;
+        }
+
+        #info {
+            position: absolute;
+            top: 12px;
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-size: 14px;
+            pointer-events: none;
+            z-index: 10;
+            text-shadow: 0 1px 3px black;
+        }
+
+        #status {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            color: white;
+            background: rgba(0, 0, 0, 0.65);
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 12px;
+            z-index: 10;
+            max-width: 80%;
+        }
+    </style>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.183.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+
+<body>
+
+<div id="container"></div>
+
+<div id="info">
+    Three.js Shadow Map Example | Drag to rotate | Scroll to zoom | Press T to toggle shadow map
+</div>
+
+<div id="status">Loading scene...</div>
+
+<script type="module">
+
+import * as THREE from "three";
+
+import Stats from "three/addons/libs/stats.module.js";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { FontLoader } from "three/addons/loaders/FontLoader.js";
+import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
+import { ShadowMapViewer } from "three/addons/utils/ShadowMapViewer.js";
+
+// IMPORTANT: Correct namespace import
+import * as SkeletonUtils from "three/addons/utils/SkeletonUtils.js";
+
+
+/* =========================================================
+   GLOBAL VARIABLES
+========================================================= */
+
+let container;
+let camera;
+let scene;
+let renderer;
+let controls;
+let stats;
+
+let directionalLight;
+let shadowMapViewer;
+
+let showShadowMap = false;
+
+const mixers = [];
+const clock = new THREE.Clock();
+
+const statusElement = document.getElementById("status");
+
+const MODEL_BASE =
+    "https://cdn.jsdelivr.net/npm/three@0.183.0/examples/models/gltf/";
+
+const FONT_URL =
+    "https://cdn.jsdelivr.net/npm/three@0.183.0/examples/fonts/helvetiker_bold.typeface.json";
+
+
+/* =========================================================
+   LOADERS
+
+   Initialize loaders BEFORE calling init().
+========================================================= */
+
+const gltfLoader = new GLTFLoader();
+const fontLoader = new FontLoader();
+
+
+/* =========================================================
+   INITIALIZATION
+========================================================= */
+
+init();
+
+function init() {
+
+    container = document.getElementById("container");
+
+    // Scene
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x87a9c4);
+    scene.fog = new THREE.Fog(0x87a9c4, 1500, 5000);
+
+    // Camera
+    camera = new THREE.PerspectiveCamera(
+        45,
+        window.innerWidth / window.innerHeight,
+        1,
+        10000
+    );
+
+    camera.position.set(700, 500, 1200);
+
+    // Renderer
+    renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        powerPreference: "high-performance"
+    });
+
+    renderer.setPixelRatio(
+        Math.min(window.devicePixelRatio, 1.5)
+    );
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.0;
+
+    renderer.setClearColor(0x87a9c4);
+
+    container.appendChild(renderer.domElement);
+
+    // Controls
+    controls = new OrbitControls(
+        camera,
+        renderer.domElement
+    );
+
+    controls.target.set(0, 100, 0);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    controls.minDistance = 300;
+    controls.maxDistance = 2500;
+
+    controls.maxPolarAngle = Math.PI / 2 - 0.02;
+
+    // Stats
+    stats = new Stats();
+    container.appendChild(stats.dom);
+
+    // Lights
+    createLights();
+
+    // Ground
+    createGround();
+
+    // Objects
+    createObjects();
+
+    // Text
+    createText();
+
+    // Animals
+    createAnimals();
+
+    // Shadow map viewer
+    shadowMapViewer = new ShadowMapViewer(directionalLight);
+
+    shadowMapViewer.size.set(256, 256);
+    shadowMapViewer.position.set(10, 10);
+
+    // Events
+    window.addEventListener("resize", onWindowResize);
+    window.addEventListener("keydown", onKeyDown);
+
+    statusElement.textContent =
+        "Scene ready. Loading animated models...";
+
+    animate();
+}
+
+
+/* =========================================================
+   LIGHTS
+========================================================= */
+
+function createLights() {
+
+    // Ambient light
+    const ambientLight = new THREE.AmbientLight(
+        0xffffff,
+        0.55
+    );
+
+    scene.add(ambientLight);
+
+    // Directional light
+    directionalLight = new THREE.DirectionalLight(
+        0xffffff,
+        2.5
+    );
+
+    directionalLight.position.set(
+        -500,
+        1500,
+        1000
+    );
+
+    directionalLight.castShadow = true;
+
+    directionalLight.shadow.mapSize.set(
+        2048,
+        2048
+    );
+
+    directionalLight.shadow.camera.left = -1200;
+    directionalLight.shadow.camera.right = 1200;
+    directionalLight.shadow.camera.top = 1200;
+    directionalLight.shadow.camera.bottom = -1200;
+
+    directionalLight.shadow.camera.near = 1;
+    directionalLight.shadow.camera.far = 4000;
+
+    directionalLight.shadow.bias = -0.0002;
+    directionalLight.shadow.normalBias = 0.02;
+
+    directionalLight.target.position.set(0, 0, 0);
+
+    scene.add(directionalLight);
+    scene.add(directionalLight.target);
+}
+
+
+/* =========================================================
+   GROUND
+========================================================= */
+
+function createGround() {
+
+    const groundGeometry = new THREE.PlaneGeometry(
+        10000,
+        10000
+    );
+
+    const groundMaterial = new THREE.MeshStandardMaterial({
+        color: 0x777777,
+        roughness: 0.9,
+        metalness: 0.0
+    });
+
+    const ground = new THREE.Mesh(
+        groundGeometry,
+        groundMaterial
+    );
+
+    ground.rotation.x = -Math.PI / 2;
+    ground.position.y = -1;
+
+    ground.receiveShadow = true;
+
+    scene.add(ground);
+
+}
+
+
+/* =========================================================
+   OBJECTS
+========================================================= */
+
+function createObjects() {
+
+    // Main box
+    const boxGeometry = new THREE.BoxGeometry(
+        200,
+        200,
+        200
+    );
+
+    const boxMaterial = new THREE.MeshStandardMaterial({
+        color: 0x999999,
+        roughness: 0.65
+    });
+
+    const box = new THREE.Mesh(
+        boxGeometry,
+        boxMaterial
+    );
+
+    box.position.set(-350, 100, 0);
+
+    box.castShadow = true;
+    box.receiveShadow = true;
+
+    scene.add(box);
+
+
+    // Second box
+    const box2 = new THREE.Mesh(
+        new THREE.BoxGeometry(200, 200, 200),
+        new THREE.MeshStandardMaterial({
+            color: 0x999999,
+            roughness: 0.65
+        })
+    );
+
+    box2.position.set(350, 100, 0);
+
+    box2.castShadow = true;
+    box2.receiveShadow = true;
+
+    scene.add(box2);
+
+
+    // Platform 1
+    const platform1 = new THREE.Mesh(
+        new THREE.BoxGeometry(350, 40, 350),
+        new THREE.MeshStandardMaterial({
+            color: 0x555555,
+            roughness: 0.8
+        })
+    );
+
+    platform1.position.set(-350, 220, 0);
+
+    platform1.castShadow = true;
+    platform1.receiveShadow = true;
+
+    scene.add(platform1);
+
+
+    // Platform 2
+    const platform2 = new THREE.Mesh(
+        new THREE.BoxGeometry(350, 40, 350),
+        new THREE.MeshStandardMaterial({
+            color: 0x555555,
+            roughness: 0.8
+        })
+    );
+
+    platform2.position.set(350, 220, 0);
+
+    platform2.castShadow = true;
+    platform2.receiveShadow = true;
+
+    scene.add(platform2);
+
+}
+
+
+/* =========================================================
+   TEXT
+========================================================= */
+
+function createText() {
+
+    fontLoader.load(
+        FONT_URL,
+
+        function(font) {
+
+            const geometry = new TextGeometry(
+                "THREE.JS SHADOW MAP",
+                {
+                    font: font,
+                    size: 70,
+                    depth: 8,
+                    curveSegments: 4,
+                    bevelEnabled: false
+                }
+            );
+
+            geometry.computeBoundingBox();
+
+            const textWidth =
+                geometry.boundingBox.max.x -
+                geometry.boundingBox.min.x;
+
+            const material = new THREE.MeshStandardMaterial({
+                color: 0xffffff,
+                roughness: 0.6
+            });
+
+            const textMesh = new THREE.Mesh(
+                geometry,
+                material
+            );
+
+            textMesh.position.set(
+                -textWidth / 2,
+                350,
+                -300
+            );
+
+            textMesh.castShadow = true;
+            textMesh.receiveShadow = true;
+
+            scene.add(textMesh);
+
+        },
+
+        undefined,
+
+        function(error) {
+            console.error("Font loading error:", error);
+        }
+    );
+
+}
+
+
+/* =========================================================
+   ANIMATED GLTF MODELS
+========================================================= */
+
+function loadAnimatedModel(
+    filename,
+    position,
+    scale,
+    rotationY = 0
+) {
+
+    // gltfLoader is already initialized globally.
+    gltfLoader.load(
+
+        MODEL_BASE + filename,
+
+        function(gltf) {
+
+            // Clone the complete model, including skinned meshes.
+            const root = SkeletonUtils.clone(gltf.scene);
+
+            root.position.set(
+                position.x,
+                position.y,
+                position.z
+            );
+
+            root.scale.setScalar(scale);
+            root.rotation.y = rotationY;
+
+            root.traverse(function(object) {
+
+                if (object.isMesh) {
+
+                    object.castShadow = true;
+                    object.receiveShadow = true;
+
+                    if (object.material) {
+                        object.material.needsUpdate = true;
+                    }
+
+                }
+
+            });
+
+            scene.add(root);
+
+            // Create an independent mixer for this model.
+            if (gltf.animations && gltf.animations.length > 0) {
+
+                const mixer = new THREE.AnimationMixer(root);
+
+                for (const clip of gltf.animations) {
+                    mixer.clipAction(clip).play();
+                }
+
+                mixers.push(mixer);
+
+            }
+
+            console.log("Loaded model:", filename);
+
+            statusElement.textContent =
+                "Loaded: " + filename;
+
+        },
+
+        function(xhr) {
+
+            if (xhr.total > 0) {
+                const percent = (
+                    xhr.loaded / xhr.total * 100
+                ).toFixed(0);
+
+                statusElement.textContent =
+                    "Loading " + filename + ": " + percent + "%";
+            }
+
+        },
+
+        function(error) {
+
+            console.error(
+                "Model loading error:",
+                filename,
+                error
+            );
+
+            statusElement.textContent =
+                "Could not load " + filename +
+                ". Check the browser console.";
+
+        }
+
+    );
+
+}
+
+
+/* =========================================================
+   ANIMALS
+========================================================= */
+
+function createAnimals() {
+
+    loadAnimatedModel(
+        "Horse.glb",
+        new THREE.Vector3(-750, 0, 250),
+        1.5,
+        Math.PI
+    );
+
+    loadAnimatedModel(
+        "Flamingo.glb",
+        new THREE.Vector3(-250, 0, -350),
+        0.35
+    );
+
+    loadAnimatedModel(
+        "Stork.glb",
+        new THREE.Vector3(250, 0, -350),
+        0.35
+    );
+
+    loadAnimatedModel(
+        "Parrot.glb",
+        new THREE.Vector3(750, 0, 250),
+        0.35
+    );
+
+}
+
+
+/* =========================================================
+   KEYBOARD
+========================================================= */
+
+function onKeyDown(event) {
+
+    if (event.code === "KeyT") {
+
+        showShadowMap = !showShadowMap;
+
+        statusElement.textContent = showShadowMap
+            ? "Shadow map viewer enabled."
+            : "Shadow map viewer disabled.";
+
+    }
+
+}
+
+
+/* =========================================================
+   RESIZE
+========================================================= */
+
+function onWindowResize() {
+
+    camera.aspect =
+        window.innerWidth / window.innerHeight;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+
+    renderer.setPixelRatio(
+        Math.min(window.devicePixelRatio, 1.5)
+    );
+
+}
+
+
+/* =========================================================
+   ANIMATION LOOP
+========================================================= */
+
+function animate() {
+
+    requestAnimationFrame(animate);
+
+    const delta = Math.min(clock.getDelta(), 0.05);
+
+    // Update animated models
+    for (const mixer of mixers) {
+        mixer.update(delta);
+    }
+
+    controls.update();
+
+    stats.update();
+
+    // Render scene
+    renderer.autoClear = true;
+    renderer.render(scene, camera);
+
+    // Render shadow map viewer when enabled
+    if (showShadowMap && shadowMapViewer) {
+
+        renderer.autoClear = false;
+
+        shadowMapViewer.update();
+        shadowMapViewer.render(renderer);
+
+        renderer.autoClear = true;
+
+    }
+
+}
+
+
+/* =========================================================
+   CLEANUP
+========================================================= */
+
+window.addEventListener("pagehide", function() {
+
+    window.removeEventListener("resize", onWindowResize);
+    window.removeEventListener("keydown", onKeyDown);
+
+    controls.dispose();
+
+    renderer.dispose();
+
+    clock.stop();
+
+});
+
+</script>
+
+</body>
+</html>

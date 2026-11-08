@@ -1,0 +1,710 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Three.js - PMREM Directional Light Test</title>
+
+    <link rel="icon" href="data:,">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+            font-family: Arial, sans-serif;
+        }
+
+        #container {
+            position: fixed;
+            inset: 0;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        #info {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            z-index: 10;
+            color: white;
+            line-height: 1.6;
+            pointer-events: none;
+            text-shadow: 0 1px 3px #000;
+        }
+
+        #info a {
+            color: #08f;
+            text-decoration: none;
+            pointer-events: auto;
+        }
+
+        #status {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 20;
+            padding: 15px 20px;
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            text-align: center;
+        }
+
+        #status.error {
+            color: #ff7777;
+        }
+
+        .lil-gui {
+            z-index: 30 !important;
+        }
+    </style>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.183.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+
+<body>
+
+<div id="container">
+
+    <div id="info">
+        <a href="https://threejs.org/" target="_blank" rel="noopener">
+            three.js
+        </a>
+        -
+        PMREM test by
+        <a href="https://github.com/elalish" target="_blank" rel="noopener">
+            Emmett Lalish
+        </a>
+
+        <br><br>
+
+        1: White metal. 2: White dielectric. 3: Black dielectric.
+
+        <br>
+
+        PMREM ON: HDR with a single bright pixel.
+
+        <br>
+
+        PMREM OFF: DirectionalLight.
+
+        <br>
+
+        The difference between these renders indicates the error
+        in the PMREM approximations.
+    </div>
+
+</div>
+
+<div id="status">
+    Loading HDR environment...
+</div>
+
+<script type="module">
+
+import * as THREE from 'three';
+
+import { OrbitControls } from
+    'three/addons/controls/OrbitControls.js';
+
+import { RGBELoader } from
+    'three/addons/loaders/RGBELoader.js';
+
+import { GUI } from
+    'three/addons/libs/lil-gui.module.min.js';
+
+
+// ======================================================
+// VARIABLES
+// ======================================================
+
+let scene;
+let camera;
+let renderer;
+let controls;
+let gui;
+
+let directionalLight;
+
+let pmremGenerator;
+let hdrTexture;
+let radianceMap;
+
+let sphereGeometry;
+
+const materials = [];
+
+let pmremEnabled = true;
+let disposed = false;
+
+const container = document.getElementById('container');
+const status = document.getElementById('status');
+
+
+// ======================================================
+// HDR ASSET
+// ======================================================
+
+const HDR_URL =
+    'https://threejs.org/examples/textures/equirectangular/spot1Lux.hdr';
+
+
+// ======================================================
+// STATUS
+// ======================================================
+
+function setStatus(message, error = false) {
+
+    status.textContent = message;
+
+    status.classList.toggle('error', error);
+
+    status.style.display = 'block';
+
+}
+
+
+// ======================================================
+// INITIALIZATION
+// ======================================================
+
+function init() {
+
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    const aspect = width / height;
+
+
+    // --------------------------------------------------
+    // RENDERER
+    // --------------------------------------------------
+
+    renderer = new THREE.WebGLRenderer({
+
+        antialias: true
+
+    });
+
+    renderer.setPixelRatio(
+        Math.min(window.devicePixelRatio, 1.5)
+    );
+
+    renderer.setSize(width, height);
+
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+
+    renderer.toneMappingExposure = 1;
+
+    container.appendChild(renderer.domElement);
+
+
+    // --------------------------------------------------
+    // SCENE
+    // --------------------------------------------------
+
+    scene = new THREE.Scene();
+
+
+    // --------------------------------------------------
+    // CAMERA
+    // --------------------------------------------------
+
+    camera = new THREE.PerspectiveCamera(
+        40,
+        aspect,
+        1,
+        30
+    );
+
+    updateCamera();
+
+    camera.position.set(0, 0, 16);
+
+
+    // --------------------------------------------------
+    // CONTROLS
+    // --------------------------------------------------
+
+    controls = new OrbitControls(
+        camera,
+        renderer.domElement
+    );
+
+    controls.minDistance = 4;
+
+    controls.maxDistance = 20;
+
+    controls.enableDamping = true;
+
+    controls.dampingFactor = 0.05;
+
+    controls.addEventListener('change', render);
+
+    controls.update();
+
+
+    // --------------------------------------------------
+    // DIRECTIONAL LIGHT
+    // --------------------------------------------------
+
+    directionalLight = new THREE.DirectionalLight(
+        0xffffff,
+        0
+    );
+
+    const x = 597;
+    const y = 213;
+
+    const theta = (x + 0.5) * Math.PI / 512;
+
+    const phi = (y + 0.5) * Math.PI / 512;
+
+    directionalLight.position.setFromSphericalCoords(
+        100,
+        -phi,
+        Math.PI / 2 - theta
+    );
+
+    scene.add(directionalLight);
+
+
+    // --------------------------------------------------
+    // GUI
+    // --------------------------------------------------
+
+    initGUI();
+
+
+    // --------------------------------------------------
+    // RESIZE
+    // --------------------------------------------------
+
+    window.addEventListener(
+        'resize',
+        onWindowResize
+    );
+
+
+    // --------------------------------------------------
+    // HDR LOADING
+    // --------------------------------------------------
+
+    loadEnvironment();
+
+}
+
+
+// ======================================================
+// CREATE MATERIALS AND OBJECTS
+// ======================================================
+
+function createObjects() {
+
+    sphereGeometry = new THREE.SphereGeometry(
+        0.4,
+        32,
+        32
+    );
+
+
+    // 11 roughness values
+    // 3 material categories
+
+    for (let x = 0; x <= 10; x++) {
+
+        for (let y = 0; y <= 2; y++) {
+
+            const roughness = x / 10;
+
+            const metalness = y < 1 ? 1 : 0;
+
+            const color = y < 2
+                ? 0xffffff
+                : 0x000000;
+
+
+            const material = new THREE.MeshPhysicalMaterial({
+
+                roughness: roughness,
+
+                metalness: metalness,
+
+                color: color,
+
+                envMap: radianceMap,
+
+                envMapIntensity: pmremEnabled ? 1 : 0
+
+            });
+
+            materials.push(material);
+
+
+            const mesh = new THREE.Mesh(
+                sphereGeometry,
+                material
+            );
+
+            mesh.position.x = x - 5;
+
+            mesh.position.y = 1 - y;
+
+            scene.add(mesh);
+
+        }
+
+    }
+
+
+    console.log('PMREM test objects created.');
+
+    console.log('Total spheres:', materials.length);
+
+}
+
+
+// ======================================================
+// LOAD HDR ENVIRONMENT
+// ======================================================
+
+async function loadEnvironment() {
+
+    setStatus('Downloading spot1Lux.hdr...');
+
+    const loader = new RGBELoader();
+
+    try {
+
+        // Use half-float texture data.
+        loader.setDataType(THREE.HalfFloatType);
+
+        hdrTexture = await loader.loadAsync(HDR_URL);
+
+        if (disposed) {
+
+            hdrTexture.dispose();
+
+            return;
+
+        }
+
+        console.log('HDR loaded:', hdrTexture);
+
+
+        // --------------------------------------------------
+        // PMREM GENERATOR
+        // --------------------------------------------------
+
+        setStatus('Generating PMREM environment...');
+
+        pmremGenerator = new THREE.PMREMGenerator(renderer);
+
+        pmremGenerator.compileEquirectangularShader();
+
+
+        // Convert HDR equirectangular texture to PMREM.
+        const result = pmremGenerator.fromEquirectangular(
+            hdrTexture
+        );
+
+        radianceMap = result.texture;
+
+
+        // The original HDR texture is no longer required.
+        hdrTexture.dispose();
+
+        hdrTexture = null;
+
+
+        // --------------------------------------------------
+        // CREATE SCENE OBJECTS
+        // --------------------------------------------------
+
+        createObjects();
+
+
+        // --------------------------------------------------
+        // FINISH
+        // --------------------------------------------------
+
+        setStatus('PMREM environment ready.');
+
+        render();
+
+        setTimeout(() => {
+
+            if (!disposed) {
+                status.style.display = 'none';
+            }
+
+        }, 800);
+
+        console.log('PMREM environment generated successfully.');
+
+    } catch (error) {
+
+        console.error('HDR / PMREM error:', error);
+
+        setStatus(
+            'HDR loading failed: ' + error.message,
+            true
+        );
+
+    }
+
+}
+
+
+// ======================================================
+// GUI
+// ======================================================
+
+function initGUI() {
+
+    gui = new GUI({
+
+        title: 'PMREM Controls'
+
+    });
+
+    const params = {
+
+        enabled: true
+
+    };
+
+
+    gui.add(params, 'enabled')
+
+        .name('PMREM')
+
+        .onChange(value => {
+
+            pmremEnabled = value;
+
+            // PMREM ON:
+            // Environment map supplies reflections.
+            //
+            // PMREM OFF:
+            // Environment reflection is disabled and
+            // DirectionalLight supplies direct illumination.
+
+            directionalLight.intensity =
+                pmremEnabled ? 0 : 1;
+
+
+            for (const material of materials) {
+
+                material.envMapIntensity =
+                    pmremEnabled ? 1 : 0;
+
+            }
+
+            render();
+
+        });
+
+}
+
+
+// ======================================================
+// CAMERA FIELD OF VIEW
+// ======================================================
+
+function updateCamera() {
+
+    // Preserve a horizontal field of view of 40 degrees.
+
+    const horizontalFoV = 40;
+
+    const verticalFoV = 2 * Math.atan(
+
+        Math.tan(horizontalFoV * 0.5 * Math.PI / 180)
+        / camera.aspect
+
+    ) * 180 / Math.PI;
+
+    camera.fov = verticalFoV;
+
+    camera.updateProjectionMatrix();
+
+}
+
+
+// ======================================================
+// RESIZE
+// ======================================================
+
+function onWindowResize() {
+
+    if (!camera || !renderer) return;
+
+    const width = window.innerWidth;
+
+    const height = window.innerHeight;
+
+    camera.aspect = width / height;
+
+    updateCamera();
+
+    renderer.setSize(width, height);
+
+    render();
+
+}
+
+
+// ======================================================
+// RENDER
+// ======================================================
+
+function render() {
+
+    if (!renderer || !scene || !camera || disposed) {
+        return;
+    }
+
+    renderer.render(scene, camera);
+
+}
+
+
+// ======================================================
+// ANIMATION
+// ======================================================
+
+function animate() {
+
+    if (disposed) return;
+
+    controls.update();
+
+    render();
+
+}
+
+
+// ======================================================
+// CLEANUP
+// ======================================================
+
+function cleanup() {
+
+    disposed = true;
+
+    window.removeEventListener(
+        'resize',
+        onWindowResize
+    );
+
+    if (renderer) {
+
+        renderer.setAnimationLoop(null);
+
+    }
+
+    if (controls) {
+
+        controls.dispose();
+
+    }
+
+    if (gui) {
+
+        gui.destroy();
+
+    }
+
+    if (sphereGeometry) {
+
+        sphereGeometry.dispose();
+
+    }
+
+    materials.forEach(material => {
+
+        material.dispose();
+
+    });
+
+    if (radianceMap) {
+
+        radianceMap.dispose();
+
+    }
+
+    if (hdrTexture) {
+
+        hdrTexture.dispose();
+
+    }
+
+    if (pmremGenerator) {
+
+        pmremGenerator.dispose();
+
+    }
+
+    if (renderer) {
+
+        renderer.dispose();
+
+    }
+
+}
+
+window.addEventListener(
+    'pagehide',
+    cleanup,
+    { once: true }
+);
+
+
+// ======================================================
+// START
+// ======================================================
+
+try {
+
+    init();
+
+    renderer.setAnimationLoop(animate);
+
+} catch (error) {
+
+    console.error(error);
+
+    setStatus(
+        'Initialization error: ' + error.message,
+        true
+    );
+
+}
+
+</script>
+
+</body>
+</html>

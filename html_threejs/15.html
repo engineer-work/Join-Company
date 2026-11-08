@@ -1,0 +1,536 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js - Morph Targets - Face</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #666666;
+            font-family: Arial, sans-serif;
+        }
+
+        #info {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            z-index: 10;
+            color: white;
+            font-size: 13px;
+            line-height: 1.6;
+            pointer-events: none;
+        }
+
+        #info a {
+            color: white;
+            text-decoration: none;
+            pointer-events: auto;
+        }
+
+        #status {
+            position: absolute;
+            left: 15px;
+            bottom: 15px;
+            z-index: 10;
+            color: white;
+            font-size: 12px;
+            text-shadow: 0 1px 3px black;
+            pointer-events: none;
+        }
+
+        #error {
+            display: none;
+            position: absolute;
+            inset: 0;
+            z-index: 100;
+            padding: 25px;
+            align-items: center;
+            justify-content: center;
+            background: #171717;
+            color: white;
+            font: 14px/1.6 monospace;
+            white-space: pre-wrap;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        .stats {
+            position: absolute !important;
+            top: 0;
+            right: 0;
+            left: auto !important;
+        }
+    </style>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.183.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+
+<body>
+
+    <div id="info">
+        <a href="https://threejs.org/" target="_blank" rel="noopener">
+            three.js
+        </a>
+        WebGL - Morph Targets - Face
+        <br>
+        Model by
+        <a href="https://www.bannaflak.com/face-cap"
+           target="_blank"
+           rel="noopener">
+            Face Cap
+        </a>
+    </div>
+
+    <div id="status">Loading Face Cap model...</div>
+    <div id="error"></div>
+
+    <script type="module">
+
+        import * as THREE from 'three';
+
+        import Stats from 'three/addons/libs/stats.module.js';
+
+        import { OrbitControls } from
+            'three/addons/controls/OrbitControls.js';
+
+        import { GLTFLoader } from
+            'three/addons/loaders/GLTFLoader.js';
+
+        import { KTX2Loader } from
+            'three/addons/loaders/KTX2Loader.js';
+
+        import { MeshoptDecoder } from
+            'three/addons/libs/meshopt_decoder.module.js';
+
+        import { RoomEnvironment } from
+            'three/addons/environments/RoomEnvironment.js';
+
+        import { GUI } from
+            'three/addons/libs/lil-gui.module.min.js';
+
+
+        // ==================================================
+        // GLOBAL VARIABLES
+        // ==================================================
+
+        let camera;
+        let scene;
+        let renderer;
+        let stats;
+        let mixer;
+        let controls;
+        let gui;
+
+        const clock = new THREE.Clock();
+
+        const statusElement = document.getElementById('status');
+        const errorElement = document.getElementById('error');
+
+        const container = document.createElement('div');
+        document.body.appendChild(container);
+
+
+        // ==================================================
+        // ASSET PATHS
+        // ==================================================
+
+        const THREE_VERSION = '0.183.0';
+
+        const CDN_BASE =
+            `https://cdn.jsdelivr.net/npm/three@${THREE_VERSION}`;
+
+        const MODEL_URL =
+            'https://threejs.org/examples/models/gltf/facecap.glb';
+
+        const BASIS_PATH =
+            `${CDN_BASE}/examples/jsm/libs/basis/`;
+
+
+        // ==================================================
+        // INITIALIZATION
+        // ==================================================
+
+        async function init() {
+
+            // ----------------------------------------------
+            // CAMERA
+            // ----------------------------------------------
+
+            camera = new THREE.PerspectiveCamera(
+                45,
+                window.innerWidth / window.innerHeight,
+                1,
+                20
+            );
+
+            camera.position.set(-1.8, 0.8, 3);
+
+
+            // ----------------------------------------------
+            // SCENE
+            // ----------------------------------------------
+
+            scene = new THREE.Scene();
+
+            scene.background = new THREE.Color(0x666666);
+
+
+            // ----------------------------------------------
+            // WEBGL RENDERER
+            // ----------------------------------------------
+
+            renderer = new THREE.WebGLRenderer({
+                antialias: true
+            });
+
+            renderer.setPixelRatio(
+                Math.min(window.devicePixelRatio, 1.5)
+            );
+
+            renderer.setSize(
+                window.innerWidth,
+                window.innerHeight
+            );
+
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+
+            container.appendChild(renderer.domElement);
+
+
+            // ----------------------------------------------
+            // ENVIRONMENT
+            // ----------------------------------------------
+
+            const environment = new RoomEnvironment();
+
+            const pmremGenerator =
+                new THREE.PMREMGenerator(renderer);
+
+            scene.environment =
+                pmremGenerator.fromScene(
+                    environment,
+                    0.04
+                ).texture;
+
+            pmremGenerator.dispose();
+            environment.dispose();
+
+
+            // ----------------------------------------------
+            // ORBIT CONTROLS
+            // ----------------------------------------------
+
+            controls = new OrbitControls(
+                camera,
+                renderer.domElement
+            );
+
+            controls.enableDamping = true;
+
+            controls.minDistance = 2.5;
+            controls.maxDistance = 5;
+
+            controls.minAzimuthAngle = -Math.PI / 2;
+            controls.maxAzimuthAngle = Math.PI / 2;
+
+            controls.maxPolarAngle = Math.PI / 1.8;
+
+            controls.target.set(0, 0.15, -0.2);
+
+            controls.update();
+
+
+            // ----------------------------------------------
+            // PERFORMANCE STATS
+            // ----------------------------------------------
+
+            stats = new Stats();
+
+            stats.dom.classList.add('stats');
+
+            container.appendChild(stats.dom);
+
+
+            // ----------------------------------------------
+            // KTX2 LOADER
+            // ----------------------------------------------
+
+            const ktx2Loader = new KTX2Loader()
+                .setTranscoderPath(BASIS_PATH)
+                .detectSupport(renderer);
+
+
+            // ----------------------------------------------
+            // GLTF LOADER
+            // ----------------------------------------------
+
+            const gltfLoader = new GLTFLoader();
+
+            gltfLoader
+                .setKTX2Loader(ktx2Loader)
+                .setMeshoptDecoder(MeshoptDecoder);
+
+
+            // ----------------------------------------------
+            // LOAD FACE CAP MODEL
+            // ----------------------------------------------
+
+            const gltf = await new Promise((resolve, reject) => {
+
+                gltfLoader.load(
+                    MODEL_URL,
+
+                    (result) => resolve(result),
+
+                    (progress) => {
+
+                        if (progress.total > 0) {
+
+                            const percent = Math.round(
+                                progress.loaded / progress.total * 100
+                            );
+
+                            statusElement.textContent =
+                                `Loading Face Cap model... ${percent}%`;
+
+                        }
+
+                    },
+
+                    (error) => reject(error)
+                );
+
+            });
+
+
+            // ----------------------------------------------
+            // MODEL ROOT
+            // ----------------------------------------------
+
+            const model = gltf.scene;
+
+            if (!model) {
+                throw new Error('The GLTF file contains no scene.');
+            }
+
+            scene.add(model);
+
+
+            // ----------------------------------------------
+            // ANIMATION MIXER
+            // ----------------------------------------------
+
+            if (gltf.animations && gltf.animations.length > 0) {
+
+                mixer = new THREE.AnimationMixer(model);
+
+                for (const clip of gltf.animations) {
+
+                    mixer.clipAction(clip).play();
+
+                }
+
+            }
+
+
+            // ----------------------------------------------
+            // FIND FACE MESH
+            // ----------------------------------------------
+
+            let head = model.getObjectByName('mesh_2');
+
+            // Fallback: locate a mesh with morph targets
+            // if the original object name changes.
+
+            if (
+                !head ||
+                !head.morphTargetInfluences ||
+                !head.morphTargetDictionary
+            ) {
+
+                head = null;
+
+                model.traverse((object) => {
+
+                    if (
+                        !head &&
+                        object.isMesh &&
+                        object.morphTargetInfluences &&
+                        object.morphTargetDictionary
+                    ) {
+
+                        head = object;
+
+                    }
+
+                });
+
+            }
+
+
+            if (!head) {
+
+                throw new Error(
+                    'Could not find a face mesh with morph targets.'
+                );
+
+            }
+
+
+            // ----------------------------------------------
+            // MORPH TARGET GUI
+            // ----------------------------------------------
+
+            const influences = head.morphTargetInfluences;
+
+            const dictionary = head.morphTargetDictionary;
+
+            gui = new GUI({
+                title: 'Face Morph Targets'
+            });
+
+            gui.close();
+
+
+            for (const [key, index] of Object.entries(dictionary)) {
+
+                gui.add(
+                    influences,
+                    index,
+                    0,
+                    1,
+                    0.01
+                )
+                .name(
+                    key.replace('blendShape1.', '')
+                )
+                .listen();
+
+            }
+
+
+            // ----------------------------------------------
+            // CLEANUP KTX2 LOADER
+            // ----------------------------------------------
+
+            ktx2Loader.dispose();
+
+
+            // ----------------------------------------------
+            // RESIZE EVENT
+            // ----------------------------------------------
+
+            window.addEventListener(
+                'resize',
+                onWindowResize
+            );
+
+
+            // ----------------------------------------------
+            // READY
+            // ----------------------------------------------
+
+            statusElement.textContent =
+                'Face model loaded. Open the GUI to control facial expressions.';
+
+
+            // ----------------------------------------------
+            // START ANIMATION
+            // ----------------------------------------------
+
+            renderer.setAnimationLoop(animate);
+
+        }
+
+
+        // ==================================================
+        // WINDOW RESIZE
+        // ==================================================
+
+        function onWindowResize() {
+
+            camera.aspect =
+                window.innerWidth / window.innerHeight;
+
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(
+                window.innerWidth,
+                window.innerHeight
+            );
+
+        }
+
+
+        // ==================================================
+        // ANIMATION LOOP
+        // ==================================================
+
+        function animate() {
+
+            const delta = clock.getDelta();
+
+            if (mixer) {
+
+                mixer.update(delta);
+
+            }
+
+            controls.update();
+
+            renderer.render(scene, camera);
+
+            stats.update();
+
+        }
+
+
+        // ==================================================
+        // ERROR HANDLING
+        // ==================================================
+
+        function showError(error) {
+
+            console.error(error);
+
+            statusElement.style.display = 'none';
+
+            errorElement.style.display = 'flex';
+
+            errorElement.textContent =
+                'Face model initialization failed.\n\n' +
+                (error?.stack || error?.message || String(error)) +
+                '\n\nCheck your internet connection and browser console.';
+
+        }
+
+
+        // ==================================================
+        // START
+        // ==================================================
+
+        init().catch(showError);
+
+    </script>
+
+</body>
+</html>

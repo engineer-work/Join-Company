@@ -1,0 +1,1369 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Three.js Audio Lip Sync</title>
+
+    <link rel="icon" href="data:,">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #10131b;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        #viewer {
+            position: fixed;
+            inset: 0;
+        }
+
+        #panel {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            z-index: 10;
+            width: 320px;
+            max-width: calc(100vw - 32px);
+            padding: 16px;
+            background: rgba(20, 25, 36, 0.95);
+            border: 1px solid #394253;
+            border-radius: 12px;
+        }
+
+        h2 {
+            margin: 0 0 14px;
+            font-size: 19px;
+        }
+
+        label {
+            display: block;
+            margin: 12px 0 5px;
+            font-size: 13px;
+            color: #bdc8d8;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            font-size: 12px;
+        }
+
+        button {
+            margin: 12px 5px 0 0;
+            padding: 9px 13px;
+            border: 0;
+            border-radius: 6px;
+            background: #3984ee;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        #status {
+            margin-top: 12px;
+            font-size: 12px;
+            color: #bdc8d8;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        #currentWord {
+            min-height: 28px;
+            margin-top: 14px;
+            color: #70c5ff;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        #progress {
+            width: 100%;
+            margin-top: 12px;
+        }
+
+        #timeDisplay {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #bdc8d8;
+        }
+
+        #audio {
+            display: none;
+        }
+    </style>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.183.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+
+<body>
+
+    <div id="viewer"></div>
+
+    <div id="panel">
+
+        <h2>🎙️ Audio Lip Sync</h2>
+
+        <label>Audio file (.wav)</label>
+        <input
+            id="audioFile"
+            type="file"
+            accept="audio/*"
+        >
+
+        <label>REAOWL timing JSON</label>
+        <input
+            id="jsonFile"
+            type="file"
+            accept=".json,application/json"
+        >
+
+        <div>
+            <button id="playButton" disabled>▶ Play</button>
+            <button id="pauseButton" disabled>Ⅱ Pause</button>
+            <button id="resetButton" disabled>↺ Reset</button>
+        </div>
+
+        <div id="currentWord">Loading face model...</div>
+
+        <input
+            id="progress"
+            type="range"
+            min="0"
+            max="100"
+            step="0.01"
+            value="0"
+        >
+
+        <div id="timeDisplay">
+            <span id="currentTime">0.00 s</span>
+            <span id="totalTime">0.00 s</span>
+        </div>
+
+        <div id="status">
+            Initializing Three.js...
+        </div>
+
+    </div>
+
+    <audio id="audio" preload="auto"></audio>
+
+    <script type="module">
+
+        import * as THREE from "three";
+
+        import { OrbitControls }
+            from "three/addons/controls/OrbitControls.js";
+
+        import { GLTFLoader }
+            from "three/addons/loaders/GLTFLoader.js";
+
+        import { KTX2Loader }
+            from "three/addons/loaders/KTX2Loader.js";
+
+        import { MeshoptDecoder }
+            from "three/addons/libs/meshopt_decoder.module.js";
+
+
+        // ==================================================
+        // DOM ELEMENTS
+        // ==================================================
+
+        const viewer = document.getElementById("viewer");
+
+        const audio = document.getElementById("audio");
+
+        const audioFileInput =
+            document.getElementById("audioFile");
+
+        const jsonFileInput =
+            document.getElementById("jsonFile");
+
+        const playButton =
+            document.getElementById("playButton");
+
+        const pauseButton =
+            document.getElementById("pauseButton");
+
+        const resetButton =
+            document.getElementById("resetButton");
+
+        const progress =
+            document.getElementById("progress");
+
+        const status =
+            document.getElementById("status");
+
+        const currentWord =
+            document.getElementById("currentWord");
+
+        const currentTimeDisplay =
+            document.getElementById("currentTime");
+
+        const totalTimeDisplay =
+            document.getElementById("totalTime");
+
+
+        // ==================================================
+        // THREE.JS SCENE
+        // ==================================================
+
+        const scene = new THREE.Scene();
+
+        scene.background = new THREE.Color(0x10131b);
+
+        const camera = new THREE.PerspectiveCamera(
+            35,
+            window.innerWidth / window.innerHeight,
+            0.01,
+            100
+        );
+
+        camera.position.set(0, 0, 2);
+
+        const renderer = new THREE.WebGLRenderer({
+            antialias: true
+        });
+
+        renderer.setPixelRatio(
+            Math.min(window.devicePixelRatio, 1.5)
+        );
+
+        renderer.setSize(
+            window.innerWidth,
+            window.innerHeight
+        );
+
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+        viewer.appendChild(renderer.domElement);
+
+
+        // ==================================================
+        // LIGHTING
+        // ==================================================
+
+        scene.add(
+            new THREE.HemisphereLight(
+                0xffffff,
+                0x353b50,
+                2
+            )
+        );
+
+        const keyLight = new THREE.DirectionalLight(
+            0xffffff,
+            2.5
+        );
+
+        keyLight.position.set(2, 3, 4);
+
+        scene.add(keyLight);
+
+        const fillLight = new THREE.DirectionalLight(
+            0x7caaff,
+            1
+        );
+
+        fillLight.position.set(-3, 1, 2);
+
+        scene.add(fillLight);
+
+
+        // ==================================================
+        // ORBIT CONTROLS
+        // ==================================================
+
+        const controls = new OrbitControls(
+            camera,
+            renderer.domElement
+        );
+
+        controls.enableDamping = true;
+
+
+        // ==================================================
+        // GLTF + KTX2 + MESHOPT
+        // Configure before loading the model.
+        // ==================================================
+
+        const BASIS_PATH =
+            "https://cdn.jsdelivr.net/npm/three@0.183.0/examples/jsm/libs/basis/";
+
+        const ktx2Loader = new KTX2Loader();
+
+        ktx2Loader.setTranscoderPath(BASIS_PATH);
+
+        ktx2Loader.detectSupport(renderer);
+
+        const loader = new GLTFLoader();
+
+        loader.setKTX2Loader(ktx2Loader);
+
+        loader.setMeshoptDecoder(MeshoptDecoder);
+
+
+        // ==================================================
+        // FACE MODEL STATE
+        // ==================================================
+
+        let faceMesh = null;
+
+        let morphDictionary = {};
+
+        let morphInfluences = null;
+
+        let modelReady = false;
+
+
+        // ==================================================
+        // MORPH TARGET UTILITIES
+        // ==================================================
+
+        function normalizeName(name) {
+
+            return name
+                .replace(/^blendShape[._]*/i, "")
+                .replace(/[^a-z0-9]/gi, "")
+                .toLowerCase();
+        }
+
+
+        function findMorph(name) {
+
+            const wanted = normalizeName(name);
+
+            for (const [key, index] of
+                Object.entries(morphDictionary)) {
+
+                if (normalizeName(key) === wanted) {
+                    return index;
+                }
+            }
+
+            return null;
+        }
+
+
+        function setMorph(name, value) {
+
+            if (!morphInfluences) return;
+
+            const index = findMorph(name);
+
+            if (index !== null) {
+
+                morphInfluences[index] =
+                    THREE.MathUtils.clamp(value, 0, 1);
+            }
+        }
+
+
+        function resetMorphs() {
+
+            if (!morphInfluences) return;
+
+            for (let i = 0; i < morphInfluences.length; i++) {
+                morphInfluences[i] = 0;
+            }
+        }
+
+
+        // ==================================================
+        // LOAD FACE MODEL
+        // ==================================================
+
+        function loadFace() {
+
+            status.textContent = "Loading facecap.glb...";
+
+            loader.load(
+
+                "https://threejs.org/examples/models/gltf/facecap.glb",
+
+                (gltf) => {
+
+                    scene.add(gltf.scene);
+
+                    const candidates = [];
+
+                    gltf.scene.traverse((object) => {
+
+                        if (
+                            object.isMesh &&
+                            object.morphTargetInfluences &&
+                            object.morphTargetDictionary
+                        ) {
+                            candidates.push(object);
+                        }
+
+                    });
+
+                    faceMesh =
+                        candidates.find(
+                            object => object.name === "mesh_2"
+                        ) || candidates[0];
+
+                    if (!faceMesh) {
+
+                        status.textContent =
+                            "No morph-target face mesh found.";
+
+                        console.error(
+                            "Available meshes:",
+                            candidates
+                        );
+
+                        return;
+                    }
+
+                    morphDictionary =
+                        faceMesh.morphTargetDictionary;
+
+                    morphInfluences =
+                        faceMesh.morphTargetInfluences;
+
+                    modelReady = true;
+
+                    console.log("Face mesh:", faceMesh.name);
+
+                    console.log(
+                        "Morph target dictionary:",
+                        morphDictionary
+                    );
+
+                    // Print actual mouth-related targets.
+                    const mouthTargets =
+                        Object.keys(morphDictionary).filter(name =>
+                            /jaw|mouth|lip|tongue/i.test(name)
+                        );
+
+                    console.log(
+                        "Available mouth morph targets:",
+                        mouthTargets
+                    );
+
+                    // Fit camera to model.
+                    const bounds = new THREE.Box3().setFromObject(
+                        gltf.scene
+                    );
+
+                    const center = bounds.getCenter(
+                        new THREE.Vector3()
+                    );
+
+                    const size = bounds.getSize(
+                        new THREE.Vector3()
+                    );
+
+                    const maxSize = Math.max(
+                        size.x,
+                        size.y,
+                        size.z
+                    );
+
+                    controls.target.copy(center);
+
+                    camera.position.set(
+                        center.x,
+                        center.y,
+                        center.z + maxSize * 2.8
+                    );
+
+                    camera.near = Math.max(
+                        maxSize / 100,
+                        0.001
+                    );
+
+                    camera.far = maxSize * 100;
+
+                    camera.updateProjectionMatrix();
+
+                    controls.update();
+
+                    status.textContent =
+                        "Face model loaded. Select audio and JSON.";
+
+                    updateButtons();
+
+                },
+
+                (event) => {
+
+                    if (event.total > 0) {
+
+                        const percent =
+                            (event.loaded / event.total) * 100;
+
+                        status.textContent =
+                            `Loading face: ${percent.toFixed(0)}%`;
+                    }
+
+                },
+
+                (error) => {
+
+                    console.error(
+                        "Face model loading error:",
+                        error
+                    );
+
+                    status.textContent =
+                        "Model loading failed. Check browser console.";
+                }
+
+            );
+        }
+
+        loadFace();
+
+
+        // ==================================================
+        // AUDIO FILE
+        // ==================================================
+
+        let audioURL = null;
+
+        let audioReady = false;
+
+        audioFileInput.addEventListener("change", () => {
+
+            const file = audioFileInput.files[0];
+
+            if (!file) return;
+
+            if (audioURL) {
+                URL.revokeObjectURL(audioURL);
+            }
+
+            audioReady = false;
+
+            audio.pause();
+
+            audioURL = URL.createObjectURL(file);
+
+            audio.src = audioURL;
+
+            audio.load();
+
+            currentWord.textContent = "Loading audio...";
+
+            status.textContent =
+                `Selected audio: ${file.name}`;
+
+            updateButtons();
+
+        });
+
+
+        audio.addEventListener("loadedmetadata", () => {
+
+            audioReady = true;
+
+            progress.max = audio.duration || 100;
+
+            totalTimeDisplay.textContent =
+                `${audio.duration.toFixed(2)} s`;
+
+            currentTimeDisplay.textContent = "0.00 s";
+
+            status.textContent =
+                `Audio loaded: ${audio.duration.toFixed(2)} seconds`;
+
+            updateButtons();
+
+        });
+
+
+        audio.addEventListener("error", () => {
+
+            audioReady = false;
+
+            status.textContent =
+                "Audio loading failed. Check the selected audio file.";
+
+            updateButtons();
+
+        });
+
+
+        // ==================================================
+        // TIMING JSON - REAOWL FORMAT
+        //
+        // Expected structure:
+        //
+        // {
+        //   "duration": 467.45,
+        //   "sample_rate": 24000,
+        //   "word_timings": [
+        //     {
+        //       "text": "Welcome.",
+        //       "start": 0.225,
+        //       "end": 0.975
+        //     }
+        //   ]
+        // }
+        //
+        // Invalid entries are skipped.
+        // ==================================================
+
+        let timingData = [];
+
+        let timingLoaded = false;
+
+        let jsonDuration = 0;
+
+        jsonFileInput.addEventListener("change", async () => {
+
+            const file = jsonFileInput.files[0];
+
+            if (!file) return;
+
+            timingData = [];
+
+            timingLoaded = false;
+
+            jsonDuration = 0;
+
+            updateButtons();
+
+            try {
+
+                const text = await file.text();
+
+                const data = JSON.parse(text);
+
+                if (
+                    !data ||
+                    !Array.isArray(data.word_timings)
+                ) {
+
+                    throw new Error(
+                        "Expected an object containing a word_timings array."
+                    );
+                }
+
+                jsonDuration = Number(data.duration);
+
+                let skippedEntries = 0;
+
+                const invalidEntries = [];
+
+                timingData = data.word_timings.flatMap(
+                    (item, index) => {
+
+                        const word =
+                            String(item?.text ?? "").trim();
+
+                        // Reject missing or null values.
+                        if (
+                            item?.start == null ||
+                            item?.end == null ||
+                            item.start === "" ||
+                            item.end === "" ||
+                            !word
+                        ) {
+
+                            skippedEntries++;
+
+                            invalidEntries.push(index);
+
+                            return [];
+                        }
+
+                        const start = Number(item.start);
+
+                        const end = Number(item.end);
+
+                        if (
+                            !Number.isFinite(start) ||
+                            !Number.isFinite(end) ||
+                            start < 0 ||
+                            end <= start
+                        ) {
+
+                            skippedEntries++;
+
+                            invalidEntries.push(index);
+
+                            return [];
+                        }
+
+                        return [{
+                            word,
+                            start,
+                            end
+                        }];
+
+                    }
+                );
+
+                // Sort valid entries by start time.
+                timingData.sort(
+                    (a, b) => a.start - b.start
+                );
+
+                if (timingData.length === 0) {
+
+                    throw new Error(
+                        "No valid word timings found."
+                    );
+                }
+
+                timingLoaded = true;
+
+                console.log(
+                    "REAOWL timing data:",
+                    timingData
+                );
+
+                console.log(
+                    "Total entries:",
+                    data.word_timings.length
+                );
+
+                console.log(
+                    "Valid entries:",
+                    timingData.length
+                );
+
+                console.log(
+                    "Skipped entries:",
+                    skippedEntries
+                );
+
+                console.log(
+                    "Skipped entry indexes:",
+                    invalidEntries
+                );
+
+                console.log(
+                    "JSON duration:",
+                    jsonDuration
+                );
+
+                console.log(
+                    "Sample rate:",
+                    data.sample_rate
+                );
+
+                console.log(
+                    "Cache signature:",
+                    data.cache_signature
+                );
+
+                status.textContent =
+                    `Loaded ${timingData.length} valid words. ` +
+                    `Skipped ${skippedEntries} invalid entries.`;
+
+                // Check JSON and audio duration.
+                if (
+                    Number.isFinite(jsonDuration) &&
+                    jsonDuration > 0 &&
+                    audioReady
+                ) {
+
+                    const difference = Math.abs(
+                        audio.duration - jsonDuration
+                    );
+
+                    if (difference > 1) {
+
+                        console.warn(
+                            "Audio and JSON durations differ:",
+                            {
+                                audioDuration: audio.duration,
+                                jsonDuration
+                            }
+                        );
+
+                        status.textContent +=
+                            " Warning: audio and JSON durations differ.";
+                    }
+                }
+
+                updateButtons();
+
+            } catch (error) {
+
+                timingData = [];
+
+                timingLoaded = false;
+
+                status.textContent =
+                    "JSON error: " + error.message;
+
+                console.error(
+                    "Timing JSON error:",
+                    error
+                );
+
+                updateButtons();
+
+            }
+
+        });
+
+
+        // ==================================================
+        // BUTTON ENABLE / DISABLE
+        // ==================================================
+
+        function updateButtons() {
+
+            const ready =
+                modelReady &&
+                audioReady &&
+                timingLoaded;
+
+            playButton.disabled = !ready;
+
+            pauseButton.disabled = !ready;
+
+            resetButton.disabled = !ready;
+
+        }
+
+
+        // ==================================================
+        // APPROXIMATE LETTER-TO-VISEME MAPPING
+        //
+        // Uses common ARKit-style morph target names.
+        // Missing targets are safely ignored.
+        // ==================================================
+
+        function getViseme(character) {
+
+            const c = character.toLowerCase();
+
+            // P, B, M: lips close.
+            if ("pbm".includes(c)) {
+
+                return {
+                    jawOpen: 0.02,
+                    mouthClose: 0.85,
+                    mouthPressLeft: 0.35,
+                    mouthPressRight: 0.35
+                };
+
+            }
+
+            // F, V: lower lip moves.
+            if ("fv".includes(c)) {
+
+                return {
+                    jawOpen: 0.10,
+                    mouthLowerDownLeft: 0.18,
+                    mouthLowerDownRight: 0.18
+                };
+
+            }
+
+            // A.
+            if (c === "a") {
+
+                return {
+                    jawOpen: 0.85
+                };
+
+            }
+
+            // E.
+            if (c === "e") {
+
+                return {
+                    jawOpen: 0.38,
+                    mouthStretchLeft: 0.28,
+                    mouthStretchRight: 0.28
+                };
+
+            }
+
+            // I.
+            if (c === "i") {
+
+                return {
+                    jawOpen: 0.18,
+                    mouthSmileLeft: 0.3,
+                    mouthSmileRight: 0.3,
+                    mouthStretchLeft: 0.3,
+                    mouthStretchRight: 0.3
+                };
+
+            }
+
+            // O.
+            if (c === "o") {
+
+                return {
+                    jawOpen: 0.38,
+                    mouthFunnel: 0.7
+                };
+
+            }
+
+            // U.
+            if (c === "u") {
+
+                return {
+                    jawOpen: 0.15,
+                    mouthPucker: 0.8
+                };
+
+            }
+
+            // S, Z, X.
+            if ("szx".includes(c)) {
+
+                return {
+                    jawOpen: 0.12,
+                    mouthStretchLeft: 0.25,
+                    mouthStretchRight: 0.25
+                };
+
+            }
+
+            // General consonants.
+            return {
+                jawOpen: 0.20
+            };
+
+        }
+
+
+        // ==================================================
+        // SHAPE INTERPOLATION
+        // ==================================================
+
+        function interpolateShapes(a, b, t) {
+
+            const result = {};
+
+            const keys = new Set([
+                ...Object.keys(a),
+                ...Object.keys(b)
+            ]);
+
+            for (const key of keys) {
+
+                result[key] = THREE.MathUtils.lerp(
+                    a[key] || 0,
+                    b[key] || 0,
+                    t
+                );
+
+            }
+
+            return result;
+
+        }
+
+
+        function smoothstep(t) {
+
+            t = THREE.MathUtils.clamp(t, 0, 1);
+
+            return t * t * (3 - 2 * t);
+
+        }
+
+
+        function applyShape(shape, strength = 1) {
+
+            resetMorphs();
+
+            for (const [name, value] of
+                Object.entries(shape)) {
+
+                setMorph(
+                    name,
+                    value * strength
+                );
+
+            }
+
+        }
+
+
+        // ==================================================
+        // FIND WORD AT CURRENT AUDIO TIME
+        //
+        // Binary search for efficient lookup.
+        // ==================================================
+
+        function findActiveWord(time) {
+
+            let low = 0;
+
+            let high = timingData.length - 1;
+
+            let candidate = -1;
+
+            while (low <= high) {
+
+                const mid = Math.floor(
+                    (low + high) / 2
+                );
+
+                if (timingData[mid].start <= time) {
+
+                    candidate = mid;
+
+                    low = mid + 1;
+
+                } else {
+
+                    high = mid - 1;
+
+                }
+
+            }
+
+            if (candidate < 0) return null;
+
+            const item = timingData[candidate];
+
+            if (
+                time >= item.start &&
+                time <= item.end
+            ) {
+
+                return item;
+
+            }
+
+            return null;
+
+        }
+
+
+        // ==================================================
+        // GENERATE MOUTH SHAPE FOR WORD
+        // ==================================================
+
+        function getWordShape(item, time) {
+
+            const chars = [...item.word.toLowerCase()]
+                .filter(c => /[a-z]/.test(c));
+
+            if (chars.length === 0) {
+                return {};
+            }
+
+            const duration = Math.max(
+                item.end - item.start,
+                0.001
+            );
+
+            const wordProgress = THREE.MathUtils.clamp(
+                (time - item.start) / duration,
+                0,
+                0.999
+            );
+
+            const position =
+                wordProgress * chars.length;
+
+            const index = Math.floor(position);
+
+            const localProgress =
+                position - index;
+
+            const first = getViseme(
+                chars[index]
+            );
+
+            const second = getViseme(
+                chars[
+                    Math.min(
+                        index + 1,
+                        chars.length - 1
+                    )
+                ]
+            );
+
+            return interpolateShapes(
+                first,
+                second,
+                smoothstep(localProgress)
+            );
+
+        }
+
+
+        // ==================================================
+        // UPDATE LIP SYNC FROM AUDIO CLOCK
+        //
+        // audio.currentTime is the master clock.
+        // No independent timing timer is used.
+        // ==================================================
+
+        function updateLipSync() {
+
+            if (
+                !modelReady ||
+                !timingLoaded ||
+                !audioReady
+            ) {
+                return;
+            }
+
+            const time = audio.currentTime;
+
+            const item = findActiveWord(time);
+
+            if (item) {
+
+                currentWord.textContent = item.word;
+
+                const shape = getWordShape(
+                    item,
+                    time
+                );
+
+                const fadeIn = smoothstep(
+                    (time - item.start) / 0.035
+                );
+
+                const fadeOut = smoothstep(
+                    (item.end - time) / 0.045
+                );
+
+                applyShape(
+                    shape,
+                    Math.min(fadeIn, fadeOut)
+                );
+
+            } else {
+
+                currentWord.textContent = "…";
+
+                resetMorphs();
+
+            }
+
+            if (audio.duration) {
+
+                progress.value = time;
+
+                currentTimeDisplay.textContent =
+                    `${time.toFixed(2)} s`;
+
+            }
+
+        }
+
+
+        // ==================================================
+        // PLAYBACK CONTROLS
+        // ==================================================
+
+        playButton.addEventListener("click", async () => {
+
+            if (
+                !modelReady ||
+                !timingLoaded ||
+                !audioReady
+            ) {
+                return;
+            }
+
+            try {
+
+                await audio.play();
+
+                status.textContent =
+                    "Playing synchronized audio...";
+
+            } catch (error) {
+
+                console.error(error);
+
+                status.textContent =
+                    "Audio playback error: " + error.message;
+
+            }
+
+        });
+
+
+        pauseButton.addEventListener("click", () => {
+
+            audio.pause();
+
+            updateLipSync();
+
+        });
+
+
+        resetButton.addEventListener("click", () => {
+
+            audio.pause();
+
+            audio.currentTime = 0;
+
+            resetMorphs();
+
+            currentWord.textContent = "Ready";
+
+            progress.value = 0;
+
+            currentTimeDisplay.textContent = "0.00 s";
+
+        });
+
+
+        // Seek audio and immediately update face.
+        progress.addEventListener("input", () => {
+
+            if (!audioReady || !audio.duration) {
+                return;
+            }
+
+            audio.currentTime = Number(progress.value);
+
+            updateLipSync();
+
+        });
+
+
+        // ==================================================
+        // AUDIO EVENTS
+        // ==================================================
+
+        audio.addEventListener("timeupdate", () => {
+
+            updateLipSync();
+
+        });
+
+
+        audio.addEventListener("seeked", () => {
+
+            updateLipSync();
+
+        });
+
+
+        audio.addEventListener("ended", () => {
+
+            resetMorphs();
+
+            currentWord.textContent = "Finished";
+
+            progress.value = 0;
+
+            currentTimeDisplay.textContent =
+                `${audio.duration.toFixed(2)} s`;
+
+            status.textContent =
+                "Playback completed.";
+
+        });
+
+
+        audio.addEventListener("pause", () => {
+
+            updateLipSync();
+
+            if (!audio.ended) {
+
+                status.textContent = "Paused.";
+
+            }
+
+        });
+
+
+        // ==================================================
+        // ANIMATION LOOP
+        // ==================================================
+
+        function animate() {
+
+            controls.update();
+
+            // Audio currentTime controls lip synchronization.
+            if (!audio.paused) {
+
+                updateLipSync();
+
+            }
+
+            renderer.render(
+                scene,
+                camera
+            );
+
+        }
+
+        renderer.setAnimationLoop(animate);
+
+
+        // ==================================================
+        // RESIZE
+        // ==================================================
+
+        window.addEventListener("resize", () => {
+
+            camera.aspect =
+                window.innerWidth / window.innerHeight;
+
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(
+                window.innerWidth,
+                window.innerHeight
+            );
+
+        });
+
+
+        // ==================================================
+        // CLEANUP
+        // ==================================================
+
+        window.addEventListener("pagehide", () => {
+
+            if (audioURL) {
+
+                URL.revokeObjectURL(audioURL);
+
+            }
+
+            audio.pause();
+
+            ktx2Loader.dispose();
+
+            renderer.setAnimationLoop(null);
+
+            controls.dispose();
+
+            renderer.dispose();
+
+        });
+
+    </script>
+
+</body>
+</html>

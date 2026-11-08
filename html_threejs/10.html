@@ -1,0 +1,937 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Three.js - WebGPU Volumetric Lighting</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #101116;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        #info {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            z-index: 10;
+            padding: 12px 16px;
+            background: rgba(10, 12, 20, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            pointer-events: none;
+        }
+
+        #info a {
+            color: #75baff;
+            text-decoration: none;
+        }
+
+        #info .title-wrapper {
+            display: flex;
+            gap: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        #info small {
+            display: block;
+            margin-top: 8px;
+            color: #bbb;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.webgpu.js",
+            "three/webgpu": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.webgpu.js",
+            "three/tsl": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.tsl.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.183.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+
+<body>
+
+    <div id="info">
+        <div class="title-wrapper">
+            <a href="https://threejs.org/" target="_blank">three.js</a>
+            <span>Volumetric Lighting</span>
+        </div>
+
+        <small>
+            Compatible with native lights and shadows using post-processing.
+        </small>
+    </div>
+
+
+    <script type="module">
+
+        import * as THREE from 'three/webgpu';
+
+        import {
+            vec3,
+            Fn,
+            time,
+            texture3D,
+            screenUV,
+            uniform,
+            screenCoordinate,
+            pass
+        } from 'three/tsl';
+
+        import { Inspector } from
+            'three/addons/inspector/Inspector.js';
+
+        import { OrbitControls } from
+            'three/addons/controls/OrbitControls.js';
+
+        import { ImprovedNoise } from
+            'three/addons/math/ImprovedNoise.js';
+
+        import { TeapotGeometry } from
+            'three/addons/geometries/TeapotGeometry.js';
+
+        import { bayer16 } from
+            'three/addons/tsl/math/Bayer.js';
+
+        import { gaussianBlur } from
+            'three/addons/tsl/display/GaussianBlurNode.js';
+
+
+        /* =====================================================
+           GLOBAL VARIABLES
+        ===================================================== */
+
+        let renderer;
+        let scene;
+        let camera;
+        let controls;
+
+        let volumetricMesh;
+        let volumetricMaterial;
+
+        let teapot;
+
+        let pointLight;
+        let spotLight;
+
+        let renderPipeline;
+
+        let volumetricPass;
+        let scenePass;
+        let blurredVolumetricPass;
+
+        let volumetricLightingIntensity;
+        let smokeAmount;
+        let denoiseStrength;
+
+        const LAYER_VOLUMETRIC_LIGHTING = 10;
+
+        const params = {
+            resolution: 0.25,
+            denoise: true
+        };
+
+
+        /* =====================================================
+           APPLICATION INITIALIZATION
+        ===================================================== */
+
+        init();
+
+
+        async function init() {
+
+            try {
+
+                /* ---------------------------------------------
+                   Renderer
+                --------------------------------------------- */
+
+                renderer = new THREE.WebGPURenderer({
+                    antialias: false,
+                    powerPreference: 'high-performance'
+                });
+
+                renderer.setPixelRatio(
+                    Math.min(window.devicePixelRatio, 1.25)
+                );
+
+                renderer.setSize(
+                    window.innerWidth,
+                    window.innerHeight
+                );
+
+                renderer.toneMapping = THREE.NeutralToneMapping;
+
+                renderer.toneMappingExposure = 2;
+
+                renderer.shadowMap.enabled = true;
+
+                renderer.inspector = new Inspector();
+
+                document.body.appendChild(
+                    renderer.domElement
+                );
+
+                // Initialize WebGPU before creating the pipeline.
+                await renderer.init();
+
+
+                /* ---------------------------------------------
+                   Scene
+                --------------------------------------------- */
+
+                scene = new THREE.Scene();
+
+                scene.background = new THREE.Color(0x101116);
+
+
+                /* ---------------------------------------------
+                   Camera
+                --------------------------------------------- */
+
+                camera = new THREE.PerspectiveCamera(
+                    60,
+                    window.innerWidth / window.innerHeight,
+                    0.1,
+                    100
+                );
+
+                camera.position.set(-8, 1, -6);
+
+
+                /* ---------------------------------------------
+                   Orbit Controls
+                --------------------------------------------- */
+
+                controls = new OrbitControls(
+                    camera,
+                    renderer.domElement
+                );
+
+                controls.maxDistance = 40;
+                controls.minDistance = 2;
+
+                controls.enableDamping = true;
+
+                controls.update();
+
+
+                /* ---------------------------------------------
+                   Volumetric Fog
+                --------------------------------------------- */
+
+                createVolumetricFog();
+
+
+                /* ---------------------------------------------
+                   Objects
+                --------------------------------------------- */
+
+                createObjects();
+
+
+                /* ---------------------------------------------
+                   Lights
+                --------------------------------------------- */
+
+                createLights();
+
+
+                /* ---------------------------------------------
+                   Post Processing
+                --------------------------------------------- */
+
+                createPostProcessing();
+
+
+                /* ---------------------------------------------
+                   GUI
+                --------------------------------------------- */
+
+                createGUI();
+
+
+                /* ---------------------------------------------
+                   Events
+                --------------------------------------------- */
+
+                window.addEventListener(
+                    'resize',
+                    onWindowResize
+                );
+
+
+                /* ---------------------------------------------
+                   Animation
+                --------------------------------------------- */
+
+                renderer.setAnimationLoop(animate);
+
+                console.log(
+                    'Volumetric Lighting initialized.'
+                );
+
+                console.log(
+                    'Three.js revision:', THREE.REVISION
+                );
+
+            } catch (error) {
+
+                console.error(
+                    'Initialization failed:',
+                    error
+                );
+
+                document.body.insertAdjacentHTML(
+                    'beforeend',
+                    `<div style="
+                        position:fixed;
+                        bottom:10px;
+                        left:10px;
+                        right:10px;
+                        padding:12px;
+                        background:#7b2020;
+                        color:white;
+                        z-index:100;
+                        font:13px monospace;
+                    ">${error.message}</div>`
+                );
+
+            }
+
+        }
+
+
+        /* =====================================================
+           1. CREATE 3D NOISE TEXTURE
+        ===================================================== */
+
+        function createTexture3D() {
+
+            let i = 0;
+
+            const size = 128;
+
+            const data = new Uint8Array(
+                size * size * size
+            );
+
+            const scale = 10;
+
+            const perlin = new ImprovedNoise();
+
+            const repeatFactor = 5.0;
+
+
+            for (let z = 0; z < size; z++) {
+
+                for (let y = 0; y < size; y++) {
+
+                    for (let x = 0; x < size; x++) {
+
+                        const nx =
+                            (x / size) * repeatFactor;
+
+                        const ny =
+                            (y / size) * repeatFactor;
+
+                        const nz =
+                            (z / size) * repeatFactor;
+
+
+                        const noiseValue = perlin.noise(
+                            nx * scale,
+                            ny * scale,
+                            nz * scale
+                        );
+
+
+                        data[i] = (
+                            128 + 128 * noiseValue
+                        );
+
+                        i++;
+
+                    }
+
+                }
+
+            }
+
+
+            const texture = new THREE.Data3DTexture(
+                data,
+                size,
+                size,
+                size
+            );
+
+            texture.format = THREE.RedFormat;
+
+            texture.minFilter = THREE.LinearFilter;
+
+            texture.magFilter = THREE.LinearFilter;
+
+            texture.wrapS = THREE.RepeatWrapping;
+
+            texture.wrapT = THREE.RepeatWrapping;
+
+            texture.wrapR = THREE.RepeatWrapping;
+
+            texture.unpackAlignment = 1;
+
+            texture.needsUpdate = true;
+
+            return texture;
+
+        }
+
+
+        /* =====================================================
+           2. VOLUMETRIC FOG
+        ===================================================== */
+
+        function createVolumetricFog() {
+
+            const noiseTexture3D = createTexture3D();
+
+            smokeAmount = uniform(2);
+
+
+            volumetricMaterial =
+                new THREE.VolumeNodeMaterial();
+
+            volumetricMaterial.steps = 12;
+
+
+            // Dithering reduces visual banding.
+            volumetricMaterial.offsetNode = bayer16(
+                screenCoordinate
+            );
+
+
+            volumetricMaterial.scatteringNode = Fn(
+                ({ positionRay }) => {
+
+                    const timeScaled = vec3(
+                        time,
+                        0,
+                        time.mul(0.3)
+                    );
+
+
+                    const sampleGrain = (
+                        scale,
+                        timeScale = 1
+                    ) => {
+
+                        return texture3D(
+                            noiseTexture3D,
+
+                            positionRay
+                                .add(
+                                    timeScaled.mul(timeScale)
+                                )
+                                .mul(scale)
+                                .mod(1),
+
+                            0
+
+                        ).r.add(0.5);
+
+                    };
+
+
+                    let density = sampleGrain(0.1);
+
+                    density = density.mul(
+                        sampleGrain(0.05, 1)
+                    );
+
+                    density = density.mul(
+                        sampleGrain(0.02, 2)
+                    );
+
+
+                    return smokeAmount.mix(
+                        1,
+                        density
+                    );
+
+                }
+            );
+
+
+            volumetricMesh = new THREE.Mesh(
+                new THREE.BoxGeometry(20, 10, 20),
+                volumetricMaterial
+            );
+
+            volumetricMesh.receiveShadow = true;
+
+            volumetricMesh.position.y = 2;
+
+
+            // Isolate the volume to its own rendering layer.
+            volumetricMesh.layers.disableAll();
+
+            volumetricMesh.layers.enable(
+                LAYER_VOLUMETRIC_LIGHTING
+            );
+
+
+            scene.add(volumetricMesh);
+
+        }
+
+
+        /* =====================================================
+           3. SCENE OBJECTS
+        ===================================================== */
+
+        function createObjects() {
+
+            /* Teapot */
+
+            teapot = new THREE.Mesh(
+                new TeapotGeometry(0.8, 18),
+
+                new THREE.MeshStandardMaterial({
+                    color: 0xffffff,
+                    side: THREE.DoubleSide
+                })
+            );
+
+            teapot.castShadow = true;
+
+            scene.add(teapot);
+
+
+            /* Floor */
+
+            const floor = new THREE.Mesh(
+                new THREE.PlaneGeometry(100, 100),
+
+                new THREE.MeshStandardMaterial({
+                    color: 0xffffff
+                })
+            );
+
+            floor.rotation.x = -Math.PI / 2;
+
+            floor.position.y = -3;
+
+            floor.receiveShadow = true;
+
+            scene.add(floor);
+
+        }
+
+
+        /* =====================================================
+           4. LIGHTS
+        ===================================================== */
+
+        function createLights() {
+
+            /* Point Light */
+
+            pointLight = new THREE.PointLight(
+                0xf9bb50,
+                3,
+                100
+            );
+
+            pointLight.castShadow = true;
+
+            pointLight.position.set(
+                0,
+                1.4,
+                0
+            );
+
+            pointLight.layers.enable(
+                LAYER_VOLUMETRIC_LIGHTING
+            );
+
+            scene.add(pointLight);
+
+
+            /* Spot Light */
+
+            spotLight = new THREE.SpotLight(
+                0xffffff,
+                100
+            );
+
+            spotLight.position.set(
+                2.5,
+                5,
+                2.5
+            );
+
+            spotLight.angle = Math.PI / 6;
+
+            spotLight.penumbra = 1;
+
+            spotLight.decay = 2;
+
+            spotLight.distance = 0;
+
+
+            /*
+                IMPORTANT:
+                Load the original Three.js colored spotlight
+                projection texture using an absolute URL.
+
+                This avoids the missing local textures/colors.png
+                problem in VS Code Live Server.
+            */
+
+            const textureLoader = new THREE.TextureLoader();
+
+            spotLight.map = textureLoader.load(
+                'https://threejs.org/examples/textures/colors.png'
+            );
+
+            spotLight.map.colorSpace =
+                THREE.SRGBColorSpace;
+
+
+            spotLight.castShadow = true;
+
+            spotLight.shadow.intensity = 0.98;
+
+            spotLight.shadow.mapSize.set(
+                1024,
+                1024
+            );
+
+            spotLight.shadow.camera.near = 1;
+
+            spotLight.shadow.camera.far = 15;
+
+            spotLight.shadow.focus = 1;
+
+            spotLight.layers.enable(
+                LAYER_VOLUMETRIC_LIGHTING
+            );
+
+            scene.add(spotLight);
+
+        }
+
+
+        /* =====================================================
+           5. POST-PROCESSING
+        ===================================================== */
+
+        function createPostProcessing() {
+
+            // Correct constructor for Three.js r183.
+            renderPipeline = new THREE.RenderPipeline(
+                renderer
+            );
+
+
+            /* Volumetric intensity */
+
+            volumetricLightingIntensity = uniform(1);
+
+
+            /* Volumetric layer */
+
+            const volumetricLayer = new THREE.Layers();
+
+            volumetricLayer.disableAll();
+
+            volumetricLayer.enable(
+                LAYER_VOLUMETRIC_LIGHTING
+            );
+
+
+            /* Scene pass */
+
+            scenePass = pass(
+                scene,
+                camera
+            );
+
+            const sceneDepth =
+                scenePass.getTextureNode('depth');
+
+
+            /* Depth occlusion */
+
+            volumetricMaterial.depthNode =
+                sceneDepth.sample(screenUV);
+
+
+            /* Volumetric lighting pass */
+
+            volumetricPass = pass(
+                scene,
+                camera,
+                {
+                    depthBuffer: false
+                }
+            );
+
+            volumetricPass.name =
+                'Volumetric Lighting';
+
+            volumetricPass.setLayers(
+                volumetricLayer
+            );
+
+            volumetricPass.setResolutionScale(
+                params.resolution
+            );
+
+
+            /* Denoising */
+
+            denoiseStrength = uniform(0.6);
+
+            blurredVolumetricPass = gaussianBlur(
+                volumetricPass,
+                denoiseStrength
+            );
+
+
+            /* Compose */
+
+            const volumetricOutput =
+                params.denoise
+                    ? blurredVolumetricPass
+                    : volumetricPass;
+
+
+            const scenePassColor = scenePass.add(
+                volumetricOutput.mul(
+                    volumetricLightingIntensity
+                )
+            );
+
+
+            renderPipeline.outputNode =
+                scenePassColor;
+
+        }
+
+
+        /* =====================================================
+           6. GUI
+        ===================================================== */
+
+        function createGUI() {
+
+            const gui =
+                renderer.inspector.createParameters(
+                    'Volumetric Lighting'
+                );
+
+
+            /* Ray Marching */
+
+            const rayMarching = gui.addFolder(
+                'Ray Marching'
+            );
+
+
+            rayMarching.add(
+                params,
+                'resolution',
+                0.1,
+                1
+            ).name('Resolution').onChange(
+                (resolution) => {
+
+                    volumetricPass.setResolutionScale(
+                        resolution
+                    );
+
+                }
+            );
+
+
+            rayMarching.add(
+                volumetricMaterial,
+                'steps',
+                2,
+                16
+            ).name('Step count');
+
+
+            rayMarching.add(
+                denoiseStrength,
+                'value',
+                0,
+                1
+            ).name('Denoise strength');
+
+
+            rayMarching.add(
+                params,
+                'denoise'
+            ).name('Denoising').onChange(
+                (denoise) => {
+
+                    const volumetric = denoise
+                        ? blurredVolumetricPass
+                        : volumetricPass;
+
+
+                    const scenePassColor = scenePass.add(
+                        volumetric.mul(
+                            volumetricLightingIntensity
+                        )
+                    );
+
+
+                    renderPipeline.outputNode =
+                        scenePassColor;
+
+                    renderPipeline.needsUpdate = true;
+
+                }
+            );
+
+
+            /* Lighting */
+
+            const lighting = gui.addFolder(
+                'Lighting / Scene'
+            );
+
+
+            lighting.add(
+                pointLight,
+                'intensity',
+                0,
+                6
+            ).name('Light intensity');
+
+
+            lighting.add(
+                spotLight,
+                'intensity',
+                0,
+                200
+            ).name('Spot intensity');
+
+
+            lighting.add(
+                volumetricLightingIntensity,
+                'value',
+                0,
+                2
+            ).name('Fog intensity');
+
+
+            lighting.add(
+                smokeAmount,
+                'value',
+                0,
+                3
+            ).name('Smoke amount');
+
+        }
+
+
+        /* =====================================================
+           7. WINDOW RESIZE
+        ===================================================== */
+
+        function onWindowResize() {
+
+            if (!camera || !renderer) return;
+
+            camera.aspect =
+                window.innerWidth / window.innerHeight;
+
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(
+                window.innerWidth,
+                window.innerHeight
+            );
+
+        }
+
+
+        /* =====================================================
+           8. ANIMATION
+        ===================================================== */
+
+        function animate() {
+
+            if (!renderPipeline) return;
+
+            const elapsed =
+                performance.now() * 0.001;
+
+            const scale = 2.4;
+
+
+            /* Animate Point Light */
+
+            pointLight.position.x =
+                Math.sin(elapsed * 0.7) * scale;
+
+            pointLight.position.y =
+                Math.cos(elapsed * 0.5) * scale;
+
+            pointLight.position.z =
+                Math.cos(elapsed * 0.3) * scale;
+
+
+            /* Animate Spot Light */
+
+            spotLight.position.x =
+                Math.cos(elapsed * 0.3) * scale;
+
+            spotLight.lookAt(0, 0, 0);
+
+
+            /* Animate Teapot */
+
+            teapot.rotation.y =
+                elapsed * 0.2;
+
+
+            /* Update controls */
+
+            controls.update();
+
+
+            /* Render */
+
+            renderPipeline.render();
+
+        }
+
+    </script>
+
+</body>
+</html>

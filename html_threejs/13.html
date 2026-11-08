@@ -1,0 +1,638 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Three.js - WebAudio Orientation</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #a0a0a0;
+            font-family: Arial, sans-serif;
+        }
+
+        #container {
+            width: 100%;
+            height: 100%;
+        }
+
+        #container canvas {
+            display: block;
+        }
+
+        #info {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            z-index: 10;
+            color: #111;
+            font-size: 13px;
+            line-height: 1.6;
+            pointer-events: none;
+        }
+
+        #info a {
+            color: #111;
+            pointer-events: auto;
+            text-decoration: none;
+        }
+
+        #overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.65);
+        }
+
+        #startButton {
+            padding: 14px 35px;
+            border: none;
+            border-radius: 5px;
+            background: #ffffff;
+            color: #111;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        #startButton:hover {
+            background: #dddddd;
+        }
+
+        #status {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            z-index: 10;
+            color: white;
+            font-size: 12px;
+            text-shadow: 0 1px 3px black;
+            pointer-events: none;
+        }
+
+        #error {
+            position: absolute;
+            inset: 0;
+            z-index: 200;
+            display: none;
+            padding: 25px;
+            align-items: center;
+            justify-content: center;
+            background: #171717;
+            color: white;
+            font: 14px/1.6 monospace;
+            white-space: pre-wrap;
+        }
+    </style>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.183.0/examples/jsm/"
+        }
+    }
+    </script>
+
+</head>
+
+<body>
+
+    <!-- AUDIO -->
+    <audio id="music" loop preload="auto" crossorigin="anonymous">
+        <source
+            src="https://threejs.org/examples/sounds/376737_Skullbeatz___Bad_Cat_Maste.ogg"
+            type="audio/ogg">
+
+        <source
+            src="https://threejs.org/examples/sounds/376737_Skullbeatz___Bad_Cat_Maste.mp3"
+            type="audio/mpeg">
+    </audio>
+
+
+    <!-- START OVERLAY -->
+    <div id="overlay">
+        <button id="startButton">Play</button>
+    </div>
+
+
+    <!-- THREE.JS CONTAINER -->
+    <div id="container"></div>
+
+
+    <!-- INFORMATION -->
+    <div id="info">
+        <a href="https://threejs.org/" target="_blank" rel="noopener noreferrer">
+            three.js
+        </a>
+        WebAudio - Orientation
+        <br>
+        Music by
+        <a href="https://www.newgrounds.com/audio/listen/376737"
+           target="_blank"
+           rel="noopener noreferrer">
+            skullbeatz
+        </a>
+    </div>
+
+
+    <div id="status">Click Play to start positional audio.</div>
+    <div id="error"></div>
+
+
+    <script type="module">
+
+        import * as THREE from 'three';
+
+        import { OrbitControls } from
+            'three/addons/controls/OrbitControls.js';
+
+        import { PositionalAudioHelper } from
+            'three/addons/helpers/PositionalAudioHelper.js';
+
+        import { GLTFLoader } from
+            'three/addons/loaders/GLTFLoader.js';
+
+
+        // ==================================================
+        // GLOBAL VARIABLES
+        // ==================================================
+
+        let scene;
+        let camera;
+        let renderer;
+        let controls;
+
+        let listener;
+        let positionalAudio;
+
+        let audioElement;
+        let isInitialized = false;
+
+        const container = document.getElementById('container');
+        const overlay = document.getElementById('overlay');
+        const startButton = document.getElementById('startButton');
+        const statusElement = document.getElementById('status');
+        const errorElement = document.getElementById('error');
+
+
+        // ==================================================
+        // ASSET URLS
+        // ==================================================
+
+        const BASE_URL = 'https://threejs.org/examples/';
+
+        const ASSETS = {
+            model: BASE_URL + 'models/gltf/BoomBox.glb',
+
+            reflection: BASE_URL + 'textures/cube/SwedishRoyalCastle/',
+
+            audioOGG: BASE_URL + 'sounds/376737_Skullbeatz___Bad_Cat_Maste.ogg',
+
+            audioMP3: BASE_URL + 'sounds/376737_Skullbeatz___Bad_Cat_Maste.mp3'
+        };
+
+
+        // ==================================================
+        // START BUTTON
+        // ==================================================
+
+        startButton.addEventListener('click', startApplication);
+
+
+        async function startApplication() {
+
+            if (isInitialized) return;
+
+            startButton.disabled = true;
+            startButton.textContent = 'Loading...';
+
+            try {
+
+                await init();
+
+                isInitialized = true;
+
+                overlay.remove();
+
+                statusElement.textContent =
+                    'Positional audio active. Move the camera around the Boombox.';
+
+            } catch (error) {
+
+                showError(error);
+
+                startButton.disabled = false;
+                startButton.textContent = 'Try Again';
+
+            }
+
+        }
+
+
+        // ==================================================
+        // INITIALIZATION
+        // ==================================================
+
+        async function init() {
+
+
+            // ----------------------------------------------
+            // CAMERA
+            // ----------------------------------------------
+
+            camera = new THREE.PerspectiveCamera(
+                45,
+                window.innerWidth / window.innerHeight,
+                0.1,
+                100
+            );
+
+            camera.position.set(3, 2, 3);
+
+
+            // ----------------------------------------------
+            // SCENE
+            // ----------------------------------------------
+
+            scene = new THREE.Scene();
+
+            scene.background = new THREE.Color(0xa0a0a0);
+
+            scene.fog = new THREE.Fog(
+                0xa0a0a0,
+                2,
+                20
+            );
+
+
+            // ----------------------------------------------
+            // REFLECTION CUBE TEXTURE
+            // ----------------------------------------------
+
+            const reflectionCube = new THREE.CubeTextureLoader()
+                .setPath(ASSETS.reflection)
+                .load([
+                    'px.jpg',
+                    'nx.jpg',
+                    'py.jpg',
+                    'ny.jpg',
+                    'pz.jpg',
+                    'nz.jpg'
+                ]);
+
+
+            // ----------------------------------------------
+            // LIGHTING
+            // ----------------------------------------------
+
+            const hemiLight = new THREE.HemisphereLight(
+                0xffffff,
+                0x8d8d8d,
+                3
+            );
+
+            hemiLight.position.set(0, 20, 0);
+
+            scene.add(hemiLight);
+
+
+            const dirLight = new THREE.DirectionalLight(
+                0xffffff,
+                3
+            );
+
+            dirLight.position.set(5, 5, 0);
+
+            dirLight.castShadow = true;
+
+            dirLight.shadow.camera.top = 1;
+            dirLight.shadow.camera.bottom = -1;
+            dirLight.shadow.camera.left = -1;
+            dirLight.shadow.camera.right = 1;
+
+            dirLight.shadow.camera.near = 0.1;
+            dirLight.shadow.camera.far = 20;
+
+            dirLight.shadow.mapSize.set(1024, 1024);
+
+            scene.add(dirLight);
+
+
+            // ----------------------------------------------
+            // FLOOR
+            // ----------------------------------------------
+
+            const floorGeometry = new THREE.PlaneGeometry(
+                50,
+                50
+            );
+
+            const floorMaterial = new THREE.MeshPhongMaterial({
+                color: 0xcbcbcb,
+                depthWrite: false
+            });
+
+            const floor = new THREE.Mesh(
+                floorGeometry,
+                floorMaterial
+            );
+
+            floor.rotation.x = -Math.PI / 2;
+
+            floor.receiveShadow = true;
+
+            scene.add(floor);
+
+
+            // ----------------------------------------------
+            // GRID
+            // ----------------------------------------------
+
+            const grid = new THREE.GridHelper(
+                50,
+                50,
+                0xc1c1c1,
+                0xc1c1c1
+            );
+
+            scene.add(grid);
+
+
+            // ----------------------------------------------
+            // AUDIO LISTENER
+            // ----------------------------------------------
+
+            listener = new THREE.AudioListener();
+
+            camera.add(listener);
+
+
+            // ----------------------------------------------
+            // HTML AUDIO ELEMENT
+            // ----------------------------------------------
+
+            audioElement = document.getElementById('music');
+
+
+            // ----------------------------------------------
+            // POSITIONAL AUDIO
+            // ----------------------------------------------
+
+            positionalAudio = new THREE.PositionalAudio(listener);
+
+            positionalAudio.setMediaElementSource(audioElement);
+
+            positionalAudio.setRefDistance(1);
+
+            positionalAudio.setDirectionalCone(
+                180,
+                230,
+                0.1
+            );
+
+
+            // ----------------------------------------------
+            // POSITIONAL AUDIO HELPER
+            // ----------------------------------------------
+
+            const helper = new PositionalAudioHelper(
+                positionalAudio,
+                0.1
+            );
+
+            positionalAudio.add(helper);
+
+
+            // ----------------------------------------------
+            // WEBGL RENDERER
+            // ----------------------------------------------
+
+            renderer = new THREE.WebGLRenderer({
+                antialias: true
+            });
+
+            renderer.setPixelRatio(
+                Math.min(window.devicePixelRatio, 1.5)
+            );
+
+            renderer.setSize(
+                window.innerWidth,
+                window.innerHeight
+            );
+
+            renderer.shadowMap.enabled = true;
+
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+            container.appendChild(renderer.domElement);
+
+
+            // ----------------------------------------------
+            // ORBIT CONTROLS
+            // ----------------------------------------------
+
+            controls = new OrbitControls(
+                camera,
+                renderer.domElement
+            );
+
+            controls.target.set(0, 0.1, 0);
+
+            controls.update();
+
+            controls.minDistance = 0.5;
+
+            controls.maxDistance = 10;
+
+            controls.maxPolarAngle = 0.5 * Math.PI;
+
+
+            // ----------------------------------------------
+            // WALL - SOUND OCCLUSION DEMONSTRATION
+            // ----------------------------------------------
+
+            const wallGeometry = new THREE.BoxGeometry(
+                2,
+                1,
+                0.1
+            );
+
+            const wallMaterial = new THREE.MeshBasicMaterial({
+                color: 0xff0000,
+                transparent: true,
+                opacity: 0.5
+            });
+
+            const wall = new THREE.Mesh(
+                wallGeometry,
+                wallMaterial
+            );
+
+            wall.position.set(0, 0.5, -0.5);
+
+            scene.add(wall);
+
+
+            // ----------------------------------------------
+            // LOAD GLTF MODEL
+            // ----------------------------------------------
+
+            const gltfLoader = new GLTFLoader();
+
+            const boomBox = await new Promise((resolve, reject) => {
+
+                gltfLoader.load(
+                    ASSETS.model,
+
+                    (gltf) => resolve(gltf.scene),
+
+                    undefined,
+
+                    (error) => reject(
+                        new Error('Failed to load BoomBox.glb: ' + error)
+                    )
+                );
+
+            });
+
+
+            // ----------------------------------------------
+            // MODEL TRANSFORM
+            // ----------------------------------------------
+
+            boomBox.position.set(0, 0.2, 0);
+
+            boomBox.scale.set(20, 20, 20);
+
+
+            // ----------------------------------------------
+            // MODEL MATERIAL AND SHADOWS
+            // ----------------------------------------------
+
+            boomBox.traverse((object) => {
+
+                if (object.isMesh) {
+
+                    object.material.envMap = reflectionCube;
+
+                    object.material.needsUpdate = true;
+
+                    object.geometry.rotateY(-Math.PI);
+
+                    object.castShadow = true;
+
+                    object.receiveShadow = true;
+
+                }
+
+            });
+
+
+            // ----------------------------------------------
+            // ATTACH POSITIONAL AUDIO
+            // ----------------------------------------------
+
+            boomBox.add(positionalAudio);
+
+            scene.add(boomBox);
+
+
+            // ----------------------------------------------
+            // RESUME AUDIO CONTEXT
+            // ----------------------------------------------
+
+            await listener.context.resume();
+
+
+            // ----------------------------------------------
+            // PLAY AUDIO
+            // ----------------------------------------------
+
+            await audioElement.play();
+
+
+            // ----------------------------------------------
+            // RESIZE EVENT
+            // ----------------------------------------------
+
+            window.addEventListener(
+                'resize',
+                onWindowResize
+            );
+
+
+            // ----------------------------------------------
+            // START ANIMATION
+            // ----------------------------------------------
+
+            renderer.setAnimationLoop(animate);
+
+        }
+
+
+        // ==================================================
+        // WINDOW RESIZE
+        // ==================================================
+
+        function onWindowResize() {
+
+            camera.aspect =
+                window.innerWidth / window.innerHeight;
+
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(
+                window.innerWidth,
+                window.innerHeight
+            );
+
+        }
+
+
+        // ==================================================
+        // ANIMATION LOOP
+        // ==================================================
+
+        function animate() {
+
+            controls.update();
+
+            renderer.render(scene, camera);
+
+        }
+
+
+        // ==================================================
+        // ERROR HANDLING
+        // ==================================================
+
+        function showError(error) {
+
+            console.error(error);
+
+            errorElement.style.display = 'flex';
+
+            errorElement.textContent =
+                'Application Error\n\n' +
+                (error.stack || error.message || String(error));
+
+        }
+
+    </script>
+
+</body>
+</html>

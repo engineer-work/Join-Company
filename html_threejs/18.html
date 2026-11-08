@@ -1,0 +1,711 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Three.js - Multiple Views</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="icon" href="data:,">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+            font-family: Arial, sans-serif;
+        }
+
+        #container {
+            position: fixed;
+            inset: 0;
+        }
+
+        #container canvas {
+            display: block;
+        }
+
+        #info {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            z-index: 10;
+            color: white;
+            font-size: 14px;
+            pointer-events: none;
+            text-shadow: 0 1px 4px #000;
+        }
+
+        #info a {
+            color: #00aeef;
+            text-decoration: none;
+            pointer-events: auto;
+        }
+
+        .view-label {
+            position: fixed;
+            z-index: 5;
+            color: white;
+            font-size: 12px;
+            padding: 6px 9px;
+            background: rgba(0, 0, 0, 0.45);
+            pointer-events: none;
+        }
+
+        #label1 {
+            left: 10px;
+            bottom: 10px;
+        }
+
+        #label2 {
+            right: 10px;
+            bottom: 10px;
+        }
+
+        #label3 {
+            right: 10px;
+            top: 10px;
+        }
+    </style>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.183.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+
+<body>
+
+<div id="container"></div>
+
+<div id="info">
+    <a href="https://threejs.org" target="_blank" rel="noopener">
+        three.js
+    </a>
+    - Multiple Views
+</div>
+
+<div class="view-label" id="label1">Front / Perspective View</div>
+<div class="view-label" id="label2">Top View</div>
+<div class="view-label" id="label3">Side / Perspective View</div>
+
+<script type="module">
+
+import * as THREE from "three";
+import Stats from "three/addons/libs/stats.module.js";
+
+/* =========================================================
+   GLOBAL VARIABLES
+========================================================= */
+
+let scene;
+let renderer;
+let stats;
+
+let windowWidth = window.innerWidth;
+let windowHeight = window.innerHeight;
+
+let mouseX = 0;
+
+const container = document.getElementById("container");
+
+/* =========================================================
+   VIEW CONFIGURATION
+========================================================= */
+
+const views = [
+
+    // LEFT: Main perspective view
+    {
+        left: 0,
+        bottom: 0,
+        width: 0.5,
+        height: 1.0,
+
+        background: new THREE.Color(0x8080b3),
+
+        eye: [0, 300, 1800],
+        up: [0, 1, 0],
+        fov: 30,
+
+        updateCamera(camera, scene, mouseX) {
+
+            camera.position.x += mouseX * 0.0005;
+
+            camera.position.x = THREE.MathUtils.clamp(
+                camera.position.x,
+                -2000,
+                2000
+            );
+
+            camera.lookAt(scene.position);
+        }
+    },
+
+    // BOTTOM RIGHT: Top view
+    {
+        left: 0.5,
+        bottom: 0,
+        width: 0.5,
+        height: 0.5,
+
+        background: new THREE.Color(0xb38080),
+
+        eye: [0, 1800, 0],
+        up: [0, 0, 1],
+        fov: 45,
+
+        updateCamera(camera, scene, mouseX) {
+
+            camera.position.x -= mouseX * 0.0005;
+
+            camera.position.x = THREE.MathUtils.clamp(
+                camera.position.x,
+                -2000,
+                2000
+            );
+
+            camera.lookAt(
+                camera.position.x,
+                0,
+                0
+            );
+        }
+    },
+
+    // TOP RIGHT: Third perspective view
+    {
+        left: 0.5,
+        bottom: 0.5,
+        width: 0.5,
+        height: 0.5,
+
+        background: new THREE.Color(0x80b3b3),
+
+        eye: [1400, 800, 1400],
+        up: [0, 1, 0],
+        fov: 60,
+
+        updateCamera(camera, scene, mouseX) {
+
+            camera.position.y -= mouseX * 0.0005;
+
+            camera.position.y = THREE.MathUtils.clamp(
+                camera.position.y,
+                -1600,
+                1600
+            );
+
+            camera.lookAt(scene.position);
+        }
+    }
+
+];
+
+/* =========================================================
+   INITIALIZATION
+========================================================= */
+
+init();
+
+function init() {
+
+    createCameras();
+
+    createScene();
+
+    createLights();
+
+    createShadows();
+
+    createObjects();
+
+    createRenderer();
+
+    createStats();
+
+    window.addEventListener(
+        "mousemove",
+        onDocumentMouseMove
+    );
+
+    window.addEventListener(
+        "resize",
+        onWindowResize
+    );
+
+}
+
+/* =========================================================
+   CAMERAS
+========================================================= */
+
+function createCameras() {
+
+    for (let i = 0; i < views.length; i++) {
+
+        const view = views[i];
+
+        const camera = new THREE.PerspectiveCamera(
+            view.fov,
+            windowWidth / windowHeight,
+            1,
+            10000
+        );
+
+        camera.position.fromArray(view.eye);
+        camera.up.fromArray(view.up);
+
+        camera.lookAt(0, 0, 0);
+
+        view.camera = camera;
+    }
+
+}
+
+/* =========================================================
+   SCENE
+========================================================= */
+
+function createScene() {
+
+    scene = new THREE.Scene();
+
+}
+
+/* =========================================================
+   LIGHTS
+========================================================= */
+
+function createLights() {
+
+    const directionalLight = new THREE.DirectionalLight(
+        0xffffff,
+        3
+    );
+
+    directionalLight.position.set(0, 0, 1);
+
+    scene.add(directionalLight);
+
+    const ambientLight = new THREE.AmbientLight(
+        0xffffff,
+        1
+    );
+
+    scene.add(ambientLight);
+
+}
+
+/* =========================================================
+   SHADOW TEXTURE
+========================================================= */
+
+function createShadowTexture() {
+
+    const canvas = document.createElement("canvas");
+
+    canvas.width = 128;
+    canvas.height = 128;
+
+    const context = canvas.getContext("2d");
+
+    const gradient = context.createRadialGradient(
+        64, 64, 0,
+        64, 64, 64
+    );
+
+    gradient.addColorStop(
+        0.1,
+        "rgba(0,0,0,0.15)"
+    );
+
+    gradient.addColorStop(
+        1,
+        "rgba(0,0,0,0)"
+    );
+
+    context.fillStyle = gradient;
+
+    context.fillRect(
+        0, 0,
+        128, 128
+    );
+
+    return new THREE.CanvasTexture(canvas);
+
+}
+
+/* =========================================================
+   SHADOWS
+========================================================= */
+
+function createShadows() {
+
+    const shadowTexture = createShadowTexture();
+
+    const shadowMaterial = new THREE.MeshBasicMaterial({
+        map: shadowTexture,
+        transparent: true,
+        depthWrite: false
+    });
+
+    const shadowGeometry = new THREE.PlaneGeometry(
+        300,
+        300
+    );
+
+    const positions = [-400, 0, 400];
+
+    for (const x of positions) {
+
+        const shadowMesh = new THREE.Mesh(
+            shadowGeometry,
+            shadowMaterial
+        );
+
+        shadowMesh.position.set(x, -250, 0);
+
+        shadowMesh.rotation.x = -Math.PI / 2;
+
+        scene.add(shadowMesh);
+
+    }
+
+}
+
+/* =========================================================
+   GEOMETRY AND OBJECTS
+========================================================= */
+
+function createObjects() {
+
+    const radius = 200;
+
+    const geometry1 = new THREE.IcosahedronGeometry(
+        radius,
+        1
+    );
+
+    const count = geometry1.attributes.position.count;
+
+    geometry1.setAttribute(
+        "color",
+        new THREE.BufferAttribute(
+            new Float32Array(count * 3),
+            3
+        )
+    );
+
+    const geometry2 = geometry1.clone();
+    const geometry3 = geometry1.clone();
+
+    const color = new THREE.Color();
+
+    const geometries = [
+        geometry1,
+        geometry2,
+        geometry3
+    ];
+
+    /* -----------------------------------------
+       CREATE VERTEX COLORS
+    ----------------------------------------- */
+
+    for (let i = 0; i < count; i++) {
+
+        const y1 = geometry1.attributes.position.getY(i);
+        const y2 = geometry2.attributes.position.getY(i);
+        const y3 = geometry3.attributes.position.getY(i);
+
+        // Object 1: Rainbow
+        color.setHSL(
+            (y1 / radius + 1) / 2,
+            1.0,
+            0.5
+        );
+
+        geometry1.attributes.color.setXYZ(
+            i,
+            color.r,
+            color.g,
+            color.b
+        );
+
+        // Object 2: Red variation
+        color.setHSL(
+            0,
+            (y2 / radius + 1) / 2,
+            0.5
+        );
+
+        geometry2.attributes.color.setXYZ(
+            i,
+            color.r,
+            color.g,
+            color.b
+        );
+
+        // Object 3: Orange variation
+        color.setRGB(
+            1,
+            0.8 - (y3 / radius + 1) / 2,
+            0
+        );
+
+        geometry3.attributes.color.setXYZ(
+            i,
+            color.r,
+            color.g,
+            color.b
+        );
+
+    }
+
+    for (const geometry of geometries) {
+        geometry.attributes.color.needsUpdate = true;
+    }
+
+    /* -----------------------------------------
+       MATERIALS
+    ----------------------------------------- */
+
+    const material = new THREE.MeshPhongMaterial({
+
+        color: 0xffffff,
+
+        flatShading: true,
+
+        vertexColors: true,
+
+        shininess: 0
+
+    });
+
+    const wireframeMaterial = new THREE.MeshBasicMaterial({
+
+        color: 0x000000,
+
+        wireframe: true,
+
+        transparent: true,
+
+        opacity: 0.6
+
+    });
+
+    /* -----------------------------------------
+       CREATE OBJECTS
+    ----------------------------------------- */
+
+    const positions = [
+        [-400, -1.87, 0],
+        [400, 0, 0],
+        [0, 0, 0]
+    ];
+
+    geometries.forEach((geometry, index) => {
+
+        const mesh = new THREE.Mesh(
+            geometry,
+            material
+        );
+
+        const wireframe = new THREE.Mesh(
+            geometry,
+            wireframeMaterial
+        );
+
+        mesh.add(wireframe);
+
+        mesh.position.x = positions[index][0];
+
+        mesh.rotation.x = positions[index][1];
+
+        scene.add(mesh);
+
+    });
+
+}
+
+/* =========================================================
+   RENDERER
+========================================================= */
+
+function createRenderer() {
+
+    renderer = new THREE.WebGLRenderer({
+
+        antialias: true,
+
+        alpha: false
+
+    });
+
+    renderer.setPixelRatio(
+        Math.min(window.devicePixelRatio, 2)
+    );
+
+    renderer.setSize(
+        windowWidth,
+        windowHeight
+    );
+
+    renderer.setScissorTest(true);
+
+    renderer.setAnimationLoop(animate);
+
+    container.appendChild(renderer.domElement);
+
+}
+
+/* =========================================================
+   STATS
+========================================================= */
+
+function createStats() {
+
+    stats = new Stats();
+
+    container.appendChild(stats.dom);
+
+}
+
+/* =========================================================
+   MOUSE
+========================================================= */
+
+function onDocumentMouseMove(event) {
+
+    mouseX = event.clientX - windowWidth / 2;
+
+}
+
+/* =========================================================
+   WINDOW RESIZE
+========================================================= */
+
+function onWindowResize() {
+
+    windowWidth = window.innerWidth;
+    windowHeight = window.innerHeight;
+
+    renderer.setSize(
+        windowWidth,
+        windowHeight
+    );
+
+    for (const view of views) {
+
+        const width = windowWidth * view.width;
+        const height = windowHeight * view.height;
+
+        view.camera.aspect = width / height;
+
+        view.camera.updateProjectionMatrix();
+
+    }
+
+}
+
+/* =========================================================
+   ANIMATION
+========================================================= */
+
+function animate() {
+
+    render();
+
+    stats.update();
+
+}
+
+/* =========================================================
+   MULTIPLE VIEW RENDERING
+========================================================= */
+
+function render() {
+
+    for (let i = 0; i < views.length; i++) {
+
+        const view = views[i];
+
+        const camera = view.camera;
+
+        // Update camera
+        view.updateCamera(
+            camera,
+            scene,
+            mouseX
+        );
+
+        // Calculate viewport dimensions
+        const left = Math.floor(
+            windowWidth * view.left
+        );
+
+        const bottom = Math.floor(
+            windowHeight * view.bottom
+        );
+
+        const width = Math.floor(
+            windowWidth * view.width
+        );
+
+        const height = Math.floor(
+            windowHeight * view.height
+        );
+
+        // Set viewport and scissor
+        renderer.setViewport(
+            left,
+            bottom,
+            width,
+            height
+        );
+
+        renderer.setScissor(
+            left,
+            bottom,
+            width,
+            height
+        );
+
+        renderer.setScissorTest(true);
+
+        // Background color
+        renderer.setClearColor(
+            view.background,
+            1
+        );
+
+        // Update camera aspect
+        camera.aspect = width / height;
+
+        camera.updateProjectionMatrix();
+
+        // Render this view
+        renderer.render(
+            scene,
+            camera
+        );
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>

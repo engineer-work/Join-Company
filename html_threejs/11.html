@@ -1,0 +1,606 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Three.js - Opacity Shadow Map</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #9e9eff;
+            font-family: Arial, sans-serif;
+        }
+
+        #info {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            z-index: 10;
+            padding: 12px 16px;
+            color: white;
+            background: rgba(15, 15, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            pointer-events: none;
+        }
+
+        #info a {
+            color: #9bcaff;
+            text-decoration: none;
+        }
+
+        .title-wrapper {
+            display: flex;
+            gap: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        #info small {
+            display: block;
+            margin-top: 8px;
+            color: #ddddff;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.webgpu.js",
+            "three/webgpu": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.webgpu.js",
+            "three/tsl": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.tsl.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.183.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+
+<body>
+
+    <div id="info">
+
+        <div class="title-wrapper">
+            <a href="https://threejs.org/" target="_blank">
+                three.js
+            </a>
+
+            <span>Opacity Shadow Map</span>
+        </div>
+
+        <small>
+            Shadow map with custom color and opacity by material.
+        </small>
+
+    </div>
+
+
+    <script type="module">
+
+        import * as THREE from 'three/webgpu';
+
+        import {
+            Fn,
+            mix
+        } from 'three/tsl';
+
+        import { Inspector } from
+            'three/addons/inspector/Inspector.js';
+
+        import { OrbitControls } from
+            'three/addons/controls/OrbitControls.js';
+
+        import { GLTFLoader } from
+            'three/addons/loaders/GLTFLoader.js';
+
+
+        /* =====================================================
+           GLOBAL VARIABLES
+        ===================================================== */
+
+        let camera;
+        let scene;
+        let renderer;
+
+        let controls;
+
+        let dragon;
+        let dragon2;
+
+        let directionalLight;
+
+        let animationStarted = false;
+
+
+        /* =====================================================
+           MODEL URL
+        ===================================================== */
+
+        const MODEL_URL =
+            'https://threejs.org/examples/models/gltf/DragonAttenuation.glb';
+
+
+        /* =====================================================
+           INITIALIZATION
+        ===================================================== */
+
+        init();
+
+
+        async function init() {
+
+            try {
+
+                /* ---------------------------------------------
+                   Container
+                --------------------------------------------- */
+
+                const container = document.createElement('div');
+
+                document.body.appendChild(container);
+
+
+                /* ---------------------------------------------
+                   Camera
+                --------------------------------------------- */
+
+                camera = new THREE.PerspectiveCamera(
+                    45,
+                    window.innerWidth / window.innerHeight,
+                    0.1,
+                    40
+                );
+
+                camera.position.set(
+                    -4,
+                    2,
+                    6
+                );
+
+
+                /* ---------------------------------------------
+                   Renderer
+                --------------------------------------------- */
+
+                renderer = new THREE.WebGPURenderer({
+                    antialias: false,
+                    powerPreference: 'high-performance'
+                });
+
+                renderer.setPixelRatio(
+                    Math.min(window.devicePixelRatio, 1.25)
+                );
+
+                renderer.setSize(
+                    window.innerWidth,
+                    window.innerHeight
+                );
+
+                renderer.toneMapping =
+                    THREE.AgXToneMapping;
+
+                renderer.toneMappingExposure = 1.5;
+
+                renderer.shadowMap.enabled = true;
+
+                renderer.shadowMap.transmitted = true;
+
+                renderer.inspector = new Inspector();
+
+                container.appendChild(
+                    renderer.domElement
+                );
+
+
+                // Initialize WebGPU before rendering.
+                await renderer.init();
+
+
+                /* ---------------------------------------------
+                   Scene
+                --------------------------------------------- */
+
+                scene = new THREE.Scene();
+
+                scene.background = new THREE.Color(
+                    0x9e9eff
+                );
+
+
+                /* ---------------------------------------------
+                   Lighting
+                --------------------------------------------- */
+
+                createLighting();
+
+
+                /* ---------------------------------------------
+                   Load GLTF model
+                --------------------------------------------- */
+
+                await loadModel();
+
+
+                /* ---------------------------------------------
+                   Shadow Nodes
+                --------------------------------------------- */
+
+                createCustomShadow();
+
+
+                /* ---------------------------------------------
+                   Controls
+                --------------------------------------------- */
+
+                controls = new OrbitControls(
+                    camera,
+                    renderer.domElement
+                );
+
+                controls.minDistance = 0.1;
+
+                controls.maxDistance = 10;
+
+                controls.target.set(0, 0, 0);
+
+                controls.enableDamping = true;
+
+                controls.update();
+
+
+                /* ---------------------------------------------
+                   Events
+                --------------------------------------------- */
+
+                window.addEventListener(
+                    'resize',
+                    onWindowResize
+                );
+
+
+                /* ---------------------------------------------
+                   Start animation
+                --------------------------------------------- */
+
+                animationStarted = true;
+
+                renderer.setAnimationLoop(render);
+
+
+                console.log(
+                    'Opacity Shadow Map initialized.'
+                );
+
+                console.log(
+                    'Three.js revision:',
+                    THREE.REVISION
+                );
+
+            } catch (error) {
+
+                console.error(
+                    'Initialization failed:',
+                    error
+                );
+
+                showError(error);
+
+            }
+
+        }
+
+
+        /* =====================================================
+           1. LIGHTING
+        ===================================================== */
+
+        function createLighting() {
+
+            /* Ambient light */
+
+            const hemi = new THREE.AmbientLight(
+                0xffffff,
+                0.5
+            );
+
+            scene.add(hemi);
+
+
+            /* Directional light */
+
+            directionalLight = new THREE.DirectionalLight(
+                0x6666ff,
+                10
+            );
+
+            directionalLight.position.set(
+                3,
+                5,
+                17
+            );
+
+            directionalLight.castShadow = true;
+
+
+            /* Shadow camera */
+
+            directionalLight.shadow.camera.near = 0.1;
+
+            directionalLight.shadow.camera.far = 50;
+
+            directionalLight.shadow.camera.right = 5;
+
+            directionalLight.shadow.camera.left = -5;
+
+            directionalLight.shadow.camera.top = 5;
+
+            directionalLight.shadow.camera.bottom = -5;
+
+
+            /* Shadow map resolution */
+
+            directionalLight.shadow.mapSize.set(
+                1024,
+                1024
+            );
+
+            directionalLight.shadow.radius = 4;
+
+
+            /* Static shadow optimization */
+
+            directionalLight.shadow.autoUpdate = false;
+
+            directionalLight.shadow.needsUpdate = true;
+
+
+            scene.add(directionalLight);
+
+        }
+
+
+        /* =====================================================
+           2. LOAD GLTF MODEL
+        ===================================================== */
+
+        async function loadModel() {
+
+            const loader = new GLTFLoader();
+
+            console.log('Loading dragon model...');
+
+
+            const gltf = await loader.loadAsync(
+                MODEL_URL
+            );
+
+
+            const model = gltf.scene;
+
+            model.position.set(
+                0,
+                0,
+                -0.5
+            );
+
+
+            /*
+                The original Three.js example expects:
+                child 0 = floor
+                child 1 = dragon
+            */
+
+            const floor = model.children[0];
+
+            dragon = model.children[1];
+
+
+            if (!floor || !dragon) {
+
+                throw new Error(
+                    'Unexpected GLTF structure: floor or dragon mesh is missing.'
+                );
+
+            }
+
+
+            /* Floor */
+
+            floor.scale.x += 4;
+
+            floor.scale.y += 4;
+
+            floor.receiveShadow = true;
+
+
+            /* First dragon */
+
+            dragon.position.set(
+                -1.5,
+                -0.8,
+                1
+            );
+
+
+            /*
+                Second dragon:
+                Clone geometry and create an independent material.
+            */
+
+            dragon2 = dragon.clone();
+
+            dragon2.material =
+                dragon.material.clone();
+
+
+            /* Change attenuation color to red */
+
+            dragon2.material.attenuationColor =
+                new THREE.Color(0xff0000);
+
+
+            dragon2.position.x += 4;
+
+
+            model.add(dragon2);
+
+
+            /* Add model to scene */
+
+            scene.add(model);
+
+
+            console.log('Dragon model loaded.');
+
+        }
+
+
+        /* =====================================================
+           3. CUSTOM SHADOW NODE
+        ===================================================== */
+
+        function createCustomShadow() {
+
+            /*
+                Custom shadow function.
+
+                color:
+                    Shadow color from the material.
+
+                opacity:
+                    Shadow opacity.
+
+                mix(1, color, opacity):
+                    Blends white with the shadow color.
+            */
+
+            const customShadow = Fn(
+                ([color, opacity = 1]) => {
+
+                    return mix(
+                        1,
+                        color,
+                        opacity
+                    );
+
+                }
+            );
+
+
+            /* First dragon */
+
+            dragon.castShadow = true;
+
+            dragon.receiveShadow = true;
+
+
+            /* Second dragon */
+
+            dragon2.castShadow = true;
+
+            dragon2.receiveShadow = true;
+
+
+            /* Apply custom shadow nodes */
+
+            dragon.material.castShadowNode =
+                customShadow(
+                    dragon.material.attenuationColor
+                );
+
+
+            dragon2.material.castShadowNode =
+                customShadow(
+                    dragon2.material.attenuationColor
+                );
+
+        }
+
+
+        /* =====================================================
+           4. RESIZE
+        ===================================================== */
+
+        function onWindowResize() {
+
+            if (!camera || !renderer) return;
+
+
+            camera.aspect =
+                window.innerWidth / window.innerHeight;
+
+            camera.updateProjectionMatrix();
+
+
+            renderer.setSize(
+                window.innerWidth,
+                window.innerHeight
+            );
+
+        }
+
+
+        /* =====================================================
+           5. RENDER
+        ===================================================== */
+
+        function render() {
+
+            if (!animationStarted) return;
+
+            controls.update();
+
+            renderer.render(
+                scene,
+                camera
+            );
+
+        }
+
+
+        /* =====================================================
+           6. ERROR DISPLAY
+        ===================================================== */
+
+        function showError(error) {
+
+            const message = document.createElement('div');
+
+            message.style.cssText = `
+                position: fixed;
+                bottom: 12px;
+                left: 12px;
+                right: 12px;
+                z-index: 100;
+                padding: 14px;
+                color: white;
+                background: #791f1f;
+                border-radius: 6px;
+                font: 13px monospace;
+                overflow-wrap: anywhere;
+            `;
+
+            message.textContent =
+                'Initialization failed: ' +
+                (error.message || error);
+
+            document.body.appendChild(message);
+
+        }
+
+    </script>
+
+</body>
+</html>

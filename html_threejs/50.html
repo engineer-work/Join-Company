@@ -1,0 +1,936 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js - Skeletal Additive Animation Blending</title>
+    <link rel="icon" href="data:,">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background: #a0a0a0;
+        }
+
+        #container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        #info {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            z-index: 10;
+            color: white;
+            background: rgba(0, 0, 0, 0.45);
+            padding: 10px 14px;
+            border-radius: 5px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        #info a {
+            color: #8bbcff;
+            text-decoration: none;
+        }
+
+        #info a:hover {
+            text-decoration: underline;
+        }
+
+        #loading, #error {
+            position: absolute;
+            z-index: 20;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            padding: 16px 20px;
+            border-radius: 8px;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        #loading {
+            color: white;
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        #error {
+            display: none;
+            width: min(90%, 600px);
+            color: white;
+            background: #600;
+            white-space: pre-wrap;
+        }
+
+        .control-inactive button {
+            color: #888;
+        }
+
+        .lil-gui {
+            --width: 310px;
+            --background-color: rgba(25, 25, 25, 0.92);
+        }
+    </style>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.183.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+
+<body>
+
+<div id="container">
+    <div id="loading">Loading Xbot model...</div>
+    <div id="error"></div>
+</div>
+
+<div id="info">
+    <a href="https://threejs.org/" target="_blank" rel="noopener">three.js</a>
+    - Skeletal Additive Animation Blending<br>
+    Model from
+    <a href="https://www.mixamo.com/" target="_blank" rel="noopener">Mixamo</a>
+</div>
+
+<script type="module">
+
+import * as THREE from 'three';
+
+import Stats from 'three/addons/libs/stats.module.js';
+import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+// --------------------------------------------------
+// GLOBAL VARIABLES
+// --------------------------------------------------
+
+let scene;
+let renderer;
+let camera;
+let stats;
+let controls;
+
+let model;
+let skeleton;
+let mixer;
+let timer;
+
+let numAnimations = 0;
+
+let currentBaseAction = 'idle';
+
+const allActions = [];
+
+const crossFadeControls = [];
+
+const baseActions = {
+    idle: { weight: 1 },
+    walk: { weight: 0 },
+    run: { weight: 0 }
+};
+
+const additiveActions = {
+    sneak_pose: { weight: 0 },
+    sad_pose: { weight: 0 },
+    agree: { weight: 0 },
+    headShake: { weight: 0 }
+};
+
+let panelSettings;
+
+const container = document.getElementById('container');
+const loadingElement = document.getElementById('loading');
+const errorElement = document.getElementById('error');
+
+// --------------------------------------------------
+// INITIALIZATION
+// --------------------------------------------------
+
+init();
+
+function init() {
+
+    // Timer
+    timer = new THREE.Timer();
+    timer.connect(document);
+
+    // Scene
+    scene = new THREE.Scene();
+
+    scene.background = new THREE.Color(0xa0a0a0);
+    scene.fog = new THREE.Fog(0xa0a0a0, 10, 50);
+
+    // Camera
+    camera = new THREE.PerspectiveCamera(
+        45,
+        window.innerWidth / window.innerHeight,
+        1,
+        100
+    );
+
+    camera.position.set(-1, 2, 3);
+
+    // --------------------------------------------------
+    // LIGHTING
+    // --------------------------------------------------
+
+    const hemiLight = new THREE.HemisphereLight(
+        0xffffff,
+        0x8d8d8d,
+        3
+    );
+
+    hemiLight.position.set(0, 20, 0);
+    scene.add(hemiLight);
+
+    const dirLight = new THREE.DirectionalLight(
+        0xffffff,
+        3
+    );
+
+    dirLight.position.set(3, 10, 10);
+    dirLight.castShadow = true;
+
+    dirLight.shadow.camera.top = 2;
+    dirLight.shadow.camera.bottom = -2;
+    dirLight.shadow.camera.left = -2;
+    dirLight.shadow.camera.right = 2;
+    dirLight.shadow.camera.near = 0.1;
+    dirLight.shadow.camera.far = 40;
+
+    dirLight.shadow.mapSize.set(1024, 1024);
+
+    scene.add(dirLight);
+
+    // --------------------------------------------------
+    // GROUND
+    // --------------------------------------------------
+
+    const ground = new THREE.Mesh(
+        new THREE.PlaneGeometry(100, 100),
+        new THREE.MeshPhongMaterial({
+            color: 0xcbcbcb,
+            depthWrite: false
+        })
+    );
+
+    ground.rotation.x = -Math.PI / 2;
+    ground.receiveShadow = true;
+
+    scene.add(ground);
+
+    // --------------------------------------------------
+    // RENDERER
+    // --------------------------------------------------
+
+    renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        powerPreference: 'high-performance'
+    });
+
+    renderer.setPixelRatio(
+        Math.min(window.devicePixelRatio, 1.5)
+    );
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+    container.appendChild(renderer.domElement);
+
+    // --------------------------------------------------
+    // ORBIT CONTROLS
+    // --------------------------------------------------
+
+    controls = new OrbitControls(
+        camera,
+        renderer.domElement
+    );
+
+    controls.enablePan = false;
+    controls.enableZoom = false;
+    controls.target.set(0, 1, 0);
+    controls.update();
+
+    // --------------------------------------------------
+    // STATS
+    // --------------------------------------------------
+
+    stats = new Stats();
+    container.appendChild(stats.dom);
+
+    // Resize
+    window.addEventListener('resize', onWindowResize);
+
+    // --------------------------------------------------
+    // LOAD XBOT MODEL
+    // --------------------------------------------------
+
+    loadModel();
+
+}
+
+// --------------------------------------------------
+// MODEL LOADER
+// --------------------------------------------------
+
+function loadModel() {
+
+    const loader = new GLTFLoader();
+
+    const modelURL =
+        'https://threejs.org/examples/models/gltf/Xbot.glb';
+
+    loader.load(
+
+        modelURL,
+
+        function (gltf) {
+
+            model = gltf.scene;
+
+            scene.add(model);
+
+            // Enable shadows
+            model.traverse(function (object) {
+
+                if (object.isMesh) {
+                    object.castShadow = true;
+                    object.receiveShadow = true;
+                }
+
+            });
+
+            // Skeleton helper
+            skeleton = new THREE.SkeletonHelper(model);
+            skeleton.visible = false;
+
+            scene.add(skeleton);
+
+            // Animation mixer
+            mixer = new THREE.AnimationMixer(model);
+
+            const animations = gltf.animations;
+
+            numAnimations = animations.length;
+
+            console.log('Available Xbot animations:');
+
+            animations.forEach(function (clip, index) {
+                console.log(
+                    index,
+                    clip.name,
+                    clip.duration
+                );
+            });
+
+            // Load base and additive actions
+            setupAnimations(animations);
+
+            // Create GUI
+            createPanel();
+
+            // Hide loading message
+            loadingElement.style.display = 'none';
+
+            // Start animation
+            renderer.setAnimationLoop(animate);
+
+        },
+
+        function (xhr) {
+
+            if (xhr.total > 0) {
+
+                const percent = (
+                    xhr.loaded / xhr.total * 100
+                ).toFixed(0);
+
+                loadingElement.textContent =
+                    'Loading Xbot model... ' + percent + '%';
+
+            }
+
+        },
+
+        function (error) {
+
+            console.error('Xbot loading error:', error);
+
+            loadingElement.style.display = 'none';
+            errorElement.style.display = 'block';
+
+            errorElement.textContent =
+                'Unable to load Xbot.glb.\n\n' +
+                'Check your internet connection and browser console.\n\n' +
+                'Model URL:\n' + modelURL;
+
+        }
+
+    );
+
+}
+
+// --------------------------------------------------
+// SETUP ANIMATIONS
+// --------------------------------------------------
+
+function setupAnimations(animations) {
+
+    // Clear previous action data
+    allActions.length = 0;
+
+    const availableNames = new Set(
+        animations.map(clip => clip.name)
+    );
+
+    // Check required base animations
+    for (const name of Object.keys(baseActions)) {
+
+        if (!availableNames.has(name)) {
+
+            console.warn(
+                'Base animation not found:',
+                name
+            );
+
+        }
+
+    }
+
+    // Process animation clips
+    for (let i = 0; i < animations.length; i++) {
+
+        let clip = animations[i];
+
+        const name = clip.name;
+
+        // ------------------------------------------
+        // BASE ANIMATIONS
+        // ------------------------------------------
+
+        if (baseActions[name]) {
+
+            const action = mixer.clipAction(clip);
+
+            activateAction(action);
+
+            baseActions[name].action = action;
+
+            allActions.push(action);
+
+        }
+
+        // ------------------------------------------
+        // ADDITIVE ANIMATIONS
+        // ------------------------------------------
+
+        else if (additiveActions[name]) {
+
+            // Make animation additive
+            THREE.AnimationUtils.makeClipAdditive(clip);
+
+            // Extract a short reference pose
+            if (clip.name.endsWith('_pose')) {
+
+                clip = THREE.AnimationUtils.subclip(
+                    clip,
+                    clip.name,
+                    2,
+                    3,
+                    30
+                );
+
+            }
+
+            const action = mixer.clipAction(clip);
+
+            activateAction(action);
+
+            additiveActions[name].action = action;
+
+            allActions.push(action);
+
+        }
+
+    }
+
+    // Check required base action
+    if (!baseActions.idle.action) {
+
+        throw new Error(
+            'The Xbot model does not contain an animation named "idle".'
+        );
+
+    }
+
+    // If a base animation is missing, disable its GUI option.
+    for (const name of Object.keys(baseActions)) {
+
+        if (!baseActions[name].action) {
+            console.warn('Unavailable base action:', name);
+        }
+
+    }
+
+}
+
+// --------------------------------------------------
+// CREATE GUI PANEL
+// --------------------------------------------------
+
+function createPanel() {
+
+    const panel = new GUI({
+        width: 310
+    });
+
+    const folder1 = panel.addFolder('Base Actions');
+    const folder2 = panel.addFolder('Additive Action Weights');
+    const folder3 = panel.addFolder('General Speed');
+
+    panelSettings = {
+        'modify time scale': 1.0
+    };
+
+    // ------------------------------------------
+    // BASE ACTION CONTROLS
+    // ------------------------------------------
+
+    const baseNames = [
+        'None',
+        ...Object.keys(baseActions)
+    ];
+
+    for (let i = 0; i < baseNames.length; i++) {
+
+        const name = baseNames[i];
+
+        const settings = baseActions[name];
+
+        panelSettings[name] = function () {
+
+            const currentSettings =
+                baseActions[currentBaseAction];
+
+            const currentAction =
+                currentSettings ? currentSettings.action : null;
+
+            const action =
+                settings ? settings.action : null;
+
+            if (currentAction !== action) {
+
+                prepareCrossFade(
+                    currentAction,
+                    action,
+                    0.35
+                );
+
+            }
+
+        };
+
+        const control = folder1.add(
+            panelSettings,
+            name
+        );
+
+        crossFadeControls.push(control);
+
+    }
+
+    // ------------------------------------------
+    // ADDITIVE ACTION WEIGHTS
+    // ------------------------------------------
+
+    for (const name of Object.keys(additiveActions)) {
+
+        const settings = additiveActions[name];
+
+        panelSettings[name] = settings.weight;
+
+        const control = folder2.add(
+            panelSettings,
+            name,
+            0.0,
+            1.0,
+            0.01
+        );
+
+        control
+            .listen()
+            .onChange(function (weight) {
+
+                if (settings.action) {
+
+                    setWeight(
+                        settings.action,
+                        weight
+                    );
+
+                }
+
+                settings.weight = weight;
+
+            });
+
+        // Disable unavailable animation controls
+        if (!settings.action) {
+            control.disable();
+        }
+
+    }
+
+    // ------------------------------------------
+    // GENERAL SPEED
+    // ------------------------------------------
+
+    folder3.add(
+        panelSettings,
+        'modify time scale',
+        0.0,
+        1.5,
+        0.01
+    ).onChange(modifyTimeScale);
+
+    folder1.open();
+    folder2.open();
+    folder3.open();
+
+    // ------------------------------------------
+    // BASE ACTION BUTTON STYLES
+    // ------------------------------------------
+
+    crossFadeControls.forEach(function (control) {
+
+        control.setInactive = function () {
+            control.domElement.classList.add(
+                'control-inactive'
+            );
+        };
+
+        control.setActive = function () {
+            control.domElement.classList.remove(
+                'control-inactive'
+            );
+        };
+
+        const settings = baseActions[control.property];
+
+        if (!settings || !settings.action || !settings.weight) {
+            control.setInactive();
+        }
+
+        if (settings && !settings.action) {
+            control.disable();
+        }
+
+    });
+
+    // Set initial active button
+    updateBaseActionControls();
+
+}
+
+// --------------------------------------------------
+// UPDATE BASE ACTION BUTTONS
+// --------------------------------------------------
+
+function updateBaseActionControls() {
+
+    crossFadeControls.forEach(function (control) {
+
+        if (control.property === currentBaseAction) {
+            control.setActive();
+        } else {
+            control.setInactive();
+        }
+
+    });
+
+}
+
+// --------------------------------------------------
+// ACTIVATE ACTION
+// --------------------------------------------------
+
+function activateAction(action) {
+
+    const clip = action.getClip();
+
+    const settings =
+        baseActions[clip.name] ||
+        additiveActions[clip.name];
+
+    if (!settings) return;
+
+    setWeight(action, settings.weight);
+
+    action.play();
+
+}
+
+// --------------------------------------------------
+// MODIFY TIME SCALE
+// --------------------------------------------------
+
+function modifyTimeScale(speed) {
+
+    if (mixer) {
+        mixer.timeScale = speed;
+    }
+
+}
+
+// --------------------------------------------------
+// PREPARE CROSSFADE
+// --------------------------------------------------
+
+function prepareCrossFade(
+    startAction,
+    endAction,
+    duration
+) {
+
+    if (
+        currentBaseAction === 'idle' ||
+        !startAction ||
+        !endAction
+    ) {
+
+        executeCrossFade(
+            startAction,
+            endAction,
+            duration
+        );
+
+    } else {
+
+        synchronizeCrossFade(
+            startAction,
+            endAction,
+            duration
+        );
+
+    }
+
+    // Update current base action
+    if (endAction) {
+
+        currentBaseAction = endAction.getClip().name;
+
+    } else {
+
+        currentBaseAction = 'None';
+
+    }
+
+    updateBaseActionControls();
+
+}
+
+// --------------------------------------------------
+// SYNCHRONIZED CROSSFADE
+// --------------------------------------------------
+
+function synchronizeCrossFade(
+    startAction,
+    endAction,
+    duration
+) {
+
+    function onLoopFinished(event) {
+
+        if (event.action === startAction) {
+
+            mixer.removeEventListener(
+                'loop',
+                onLoopFinished
+            );
+
+            executeCrossFade(
+                startAction,
+                endAction,
+                duration
+            );
+
+        }
+
+    }
+
+    mixer.addEventListener(
+        'loop',
+        onLoopFinished
+    );
+
+}
+
+// --------------------------------------------------
+// EXECUTE CROSSFADE
+// --------------------------------------------------
+
+function executeCrossFade(
+    startAction,
+    endAction,
+    duration
+) {
+
+    if (endAction) {
+
+        setWeight(endAction, 1);
+
+        endAction.time = 0;
+
+        if (startAction) {
+
+            // Crossfade with warping
+            startAction.crossFadeTo(
+                endAction,
+                duration,
+                true
+            );
+
+        } else {
+
+            // Fade in
+            endAction.fadeIn(duration);
+
+        }
+
+    } else if (startAction) {
+
+        // Fade out
+        startAction.fadeOut(duration);
+
+    }
+
+}
+
+// --------------------------------------------------
+// SET ANIMATION WEIGHT
+// --------------------------------------------------
+
+function setWeight(action, weight) {
+
+    if (!action) return;
+
+    action.enabled = true;
+
+    action.setEffectiveTimeScale(1);
+
+    action.setEffectiveWeight(weight);
+
+}
+
+// --------------------------------------------------
+// WINDOW RESIZE
+// --------------------------------------------------
+
+function onWindowResize() {
+
+    camera.aspect =
+        window.innerWidth / window.innerHeight;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+
+    renderer.setPixelRatio(
+        Math.min(window.devicePixelRatio, 1.5)
+    );
+
+}
+
+// --------------------------------------------------
+// ANIMATION LOOP
+// --------------------------------------------------
+
+function animate() {
+
+    timer.update();
+
+    if (!mixer) return;
+
+    // Update actual action weights
+    for (let i = 0; i < allActions.length; i++) {
+
+        const action = allActions[i];
+
+        const clip = action.getClip();
+
+        const settings =
+            baseActions[clip.name] ||
+            additiveActions[clip.name];
+
+        if (settings) {
+
+            settings.weight =
+                action.getEffectiveWeight();
+
+            if (additiveActions[clip.name]) {
+
+                panelSettings[clip.name] =
+                    settings.weight;
+
+            }
+
+        }
+
+    }
+
+    // Time since last frame
+    const mixerUpdateDelta = timer.getDelta();
+
+    // Update mixer
+    mixer.update(mixerUpdateDelta);
+
+    // Render
+    controls.update();
+
+    renderer.render(scene, camera);
+
+    stats.update();
+
+}
+
+// --------------------------------------------------
+// ERROR HANDLING
+// --------------------------------------------------
+
+window.addEventListener('error', function (event) {
+
+    console.error('JavaScript error:', event.error);
+
+});
+
+</script>
+
+</body>
+</html>

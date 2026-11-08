@@ -1,0 +1,770 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Three.js - Selective Unreal Bloom</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:,">
+
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #000;
+            font-family: Arial, sans-serif;
+        }
+
+        #info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 10;
+            color: white;
+            font-size: 13px;
+            line-height: 1.6;
+            pointer-events: none;
+        }
+
+        #info a {
+            color: white;
+            pointer-events: auto;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.183.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+
+<body>
+
+<div id="info">
+    <a href="https://threejs.org" target="_blank" rel="noopener">three.js</a>
+    - Selective Unreal Bloom
+    <br>
+    Click a sphere to toggle bloom
+    <br>
+    Left mouse: Rotate | Right mouse: Pan | Wheel: Zoom
+</div>
+
+<script type="x-shader/x-vertex" id="vertexshader">
+
+    varying vec2 vUv;
+
+    void main() {
+
+        vUv = uv;
+
+        gl_Position =
+            projectionMatrix *
+            modelViewMatrix *
+            vec4(position, 1.0);
+
+    }
+
+</script>
+
+<script type="x-shader/x-fragment" id="fragmentshader">
+
+    uniform sampler2D baseTexture;
+    uniform sampler2D bloomTexture;
+    uniform float bloomStrength;
+
+    varying vec2 vUv;
+
+    void main() {
+
+        vec4 base = texture2D(baseTexture, vUv);
+        vec4 bloom = texture2D(bloomTexture, vUv);
+
+        gl_FragColor = base + bloom * bloomStrength;
+
+    }
+
+</script>
+
+<script type="module">
+
+import * as THREE from 'three';
+
+import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+// ==================================================
+// CONFIGURATION
+// ==================================================
+
+const BLOOM_SCENE = 1;
+
+const params = {
+    threshold: 0,
+    strength: 1,
+    radius: 0.5,
+    exposure: 1
+};
+
+const bloomLayer = new THREE.Layers();
+bloomLayer.set(BLOOM_SCENE);
+
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
+const darkMaterial = new THREE.MeshBasicMaterial({
+    color: 0x000000
+});
+
+const materials = new Map();
+
+// ==================================================
+// GLOBAL VARIABLES
+// ==================================================
+
+let camera;
+let scene;
+let renderer;
+let controls;
+let gui;
+
+let bloomComposer;
+let finalComposer;
+let bloomPass;
+let mixPass;
+
+let environmentTarget;
+
+// ==================================================
+// INITIALIZE
+// ==================================================
+
+init();
+
+function init() {
+
+    // --------------------------------------------------
+    // RENDERER
+    // --------------------------------------------------
+
+    renderer = new THREE.WebGLRenderer({
+        antialias: false,
+        powerPreference: 'high-performance'
+    });
+
+    renderer.setPixelRatio(
+        Math.min(window.devicePixelRatio, 1.25)
+    );
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+
+    renderer.toneMapping = THREE.NeutralToneMapping;
+
+    renderer.toneMappingExposure = Math.pow(
+        params.exposure,
+        4.0
+    );
+
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+    document.body.appendChild(renderer.domElement);
+
+    // --------------------------------------------------
+    // SCENE
+    // --------------------------------------------------
+
+    scene = new THREE.Scene();
+
+    scene.background = new THREE.Color(0x000000);
+
+    // --------------------------------------------------
+    // ENVIRONMENT
+    // --------------------------------------------------
+
+    const pmremGenerator = new THREE.PMREMGenerator(renderer);
+
+    const roomEnvironment = new RoomEnvironment();
+
+    environmentTarget = pmremGenerator.fromScene(
+        roomEnvironment,
+        0.04
+    );
+
+    scene.environment = environmentTarget.texture;
+
+    pmremGenerator.dispose();
+
+    // --------------------------------------------------
+    // CAMERA
+    // --------------------------------------------------
+
+    camera = new THREE.PerspectiveCamera(
+        40,
+        window.innerWidth / window.innerHeight,
+        1,
+        200
+    );
+
+    camera.position.set(0, 0, 20);
+
+    camera.lookAt(0, 0, 0);
+
+    // --------------------------------------------------
+    // CONTROLS
+    // --------------------------------------------------
+
+    controls = new OrbitControls(
+        camera,
+        renderer.domElement
+    );
+
+    controls.maxPolarAngle = Math.PI * 0.5;
+
+    controls.minDistance = 1;
+
+    controls.maxDistance = 100;
+
+    controls.enableDamping = false;
+
+    // --------------------------------------------------
+    // SCENE OBJECTS
+    // --------------------------------------------------
+
+    setupScene();
+
+    // --------------------------------------------------
+    // POST PROCESSING
+    // --------------------------------------------------
+
+    initPostProcessing();
+
+    // --------------------------------------------------
+    // GUI
+    // --------------------------------------------------
+
+    initGUI();
+
+    // --------------------------------------------------
+    // MOUSE
+    // --------------------------------------------------
+
+    setupMouseInteraction();
+
+    // --------------------------------------------------
+    // RESIZE
+    // --------------------------------------------------
+
+    window.addEventListener('resize', onWindowResize);
+
+    // Initial rendering
+
+    render();
+
+}
+
+// ==================================================
+// POST PROCESSING
+// ==================================================
+
+function initPostProcessing() {
+
+    const renderScene = new RenderPass(
+        scene,
+        camera
+    );
+
+    // --------------------------------------------------
+    // BLOOM PASS
+    // --------------------------------------------------
+
+    bloomPass = new UnrealBloomPass(
+        new THREE.Vector2(
+            window.innerWidth,
+            window.innerHeight
+        ),
+        1.5,
+        0.4,
+        0.85
+    );
+
+    bloomPass.threshold = params.threshold;
+
+    bloomPass.strength = params.strength;
+
+    bloomPass.radius = params.radius;
+
+    // --------------------------------------------------
+    // BLOOM RENDER TARGET
+    // --------------------------------------------------
+
+    const bloomRenderTarget = new THREE.WebGLRenderTarget(
+        window.innerWidth,
+        window.innerHeight,
+        {
+            type: THREE.HalfFloatType,
+            depthBuffer: true
+        }
+    );
+
+    bloomComposer = new EffectComposer(
+        renderer,
+        bloomRenderTarget
+    );
+
+    bloomComposer.renderToScreen = false;
+
+    bloomComposer.addPass(renderScene);
+
+    bloomComposer.addPass(bloomPass);
+
+    // --------------------------------------------------
+    // MIX SHADER
+    // --------------------------------------------------
+
+    const mixMaterial = new THREE.ShaderMaterial({
+
+        uniforms: {
+
+            baseTexture: {
+                value: null
+            },
+
+            bloomTexture: {
+                value: bloomComposer.renderTarget2.texture
+            },
+
+            bloomStrength: {
+                value: params.strength
+            }
+
+        },
+
+        vertexShader:
+            document.getElementById('vertexshader').textContent,
+
+        fragmentShader:
+            document.getElementById('fragmentshader').textContent
+
+    });
+
+    mixPass = new ShaderPass(
+        mixMaterial,
+        'baseTexture'
+    );
+
+    mixPass.needsSwap = true;
+
+    // --------------------------------------------------
+    // FINAL COMPOSER
+    // --------------------------------------------------
+
+    const finalRenderTarget = new THREE.WebGLRenderTarget(
+        window.innerWidth,
+        window.innerHeight,
+        {
+            type: THREE.HalfFloatType,
+            depthBuffer: true
+        }
+    );
+
+    finalComposer = new EffectComposer(
+        renderer,
+        finalRenderTarget
+    );
+
+    finalComposer.addPass(renderScene);
+
+    finalComposer.addPass(mixPass);
+
+    finalComposer.addPass(new OutputPass());
+
+}
+
+// ==================================================
+// SCENE SETUP
+// ==================================================
+
+function setupScene() {
+
+    // Original example uses icosahedron geometry.
+
+    const geometry = new THREE.IcosahedronGeometry(1, 2);
+
+    for (let i = 0; i < 50; i++) {
+
+        const color = new THREE.Color();
+
+        color.setHSL(
+            Math.random(),
+            0.7,
+            Math.random() * 0.2 + 0.05
+        );
+
+        const material = new THREE.MeshStandardMaterial({
+
+            color: color,
+
+            roughness: 1,
+
+            metalness: 1
+
+        });
+
+        const sphere = new THREE.Mesh(
+            geometry,
+            material
+        );
+
+        sphere.position.set(
+            Math.random() * 10 - 5,
+            Math.random() * 10 - 5,
+            Math.random() * 10 - 5
+        );
+
+        sphere.position.normalize().multiplyScalar(
+            Math.random() * 4 + 2
+        );
+
+        sphere.scale.setScalar(
+            Math.random() * Math.random() + 0.5
+        );
+
+        scene.add(sphere);
+
+        // Randomly enable bloom for 25% of spheres.
+
+        if (Math.random() < 0.25) {
+
+            sphere.layers.enable(BLOOM_SCENE);
+
+        }
+
+    }
+
+}
+
+// ==================================================
+// GUI
+// ==================================================
+
+function initGUI() {
+
+    gui = new GUI();
+
+    const bloomFolder = gui.addFolder('Bloom');
+
+    bloomFolder.add(
+        params,
+        'threshold',
+        0,
+        1
+    ).onChange(function(value) {
+
+        bloomPass.threshold = Number(value);
+
+        render();
+
+    });
+
+    bloomFolder.add(
+        params,
+        'strength',
+        0,
+        3
+    ).onChange(function(value) {
+
+        bloomPass.strength = Number(value);
+
+        mixPass.material.uniforms.bloomStrength.value =
+            bloomPass.strength;
+
+        render();
+
+    });
+
+    bloomFolder.add(
+        params,
+        'radius',
+        0,
+        1
+    ).step(0.01).onChange(function(value) {
+
+        bloomPass.radius = Number(value);
+
+        render();
+
+    });
+
+    bloomFolder.open();
+
+    const toneMappingFolder = gui.addFolder('Tone Mapping');
+
+    toneMappingFolder.add(
+        params,
+        'exposure',
+        0.1,
+        2
+    ).onChange(function(value) {
+
+        renderer.toneMappingExposure =
+            Math.pow(Number(value), 4.0);
+
+        render();
+
+    });
+
+}
+
+// ==================================================
+// MOUSE INTERACTION
+// ==================================================
+
+function setupMouseInteraction() {
+
+    let pointerDownX = 0;
+    let pointerDownY = 0;
+    let pointerMoved = false;
+
+    renderer.domElement.addEventListener(
+        'pointerdown',
+        function(event) {
+
+            pointerDownX = event.clientX;
+            pointerDownY = event.clientY;
+
+            pointerMoved = false;
+
+        }
+    );
+
+    renderer.domElement.addEventListener(
+        'pointermove',
+        function(event) {
+
+            const dx = event.clientX - pointerDownX;
+            const dy = event.clientY - pointerDownY;
+
+            if (Math.hypot(dx, dy) > 5) {
+                pointerMoved = true;
+            }
+
+        }
+    );
+
+    renderer.domElement.addEventListener(
+        'pointerup',
+        function(event) {
+
+            if (pointerMoved) return;
+
+            if (
+                event.pointerType === 'mouse' &&
+                event.button !== 0
+            ) {
+                return;
+            }
+
+            onPointerClick(event);
+
+        }
+    );
+
+}
+
+// ==================================================
+// RAYCASTING
+// ==================================================
+
+function onPointerClick(event) {
+
+    const rect = renderer.domElement.getBoundingClientRect();
+
+    mouse.x =
+        ((event.clientX - rect.left) / rect.width) * 2 - 1;
+
+    mouse.y =
+        -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+
+    const intersects = raycaster.intersectObjects(
+        scene.children,
+        false
+    );
+
+    if (intersects.length === 0) return;
+
+    const object = intersects[0].object;
+
+    if (!object.isMesh) return;
+
+    // Toggle bloom layer.
+
+    object.layers.toggle(BLOOM_SCENE);
+
+    render();
+
+}
+
+// ==================================================
+// DARKEN NON-BLOOM OBJECTS
+// ==================================================
+
+function darkenNonBloomed(object) {
+
+    if (
+        object.isMesh &&
+        bloomLayer.test(object.layers) === false
+    ) {
+
+        materials.set(
+            object.uuid,
+            object.material
+        );
+
+        object.material = darkMaterial;
+
+    }
+
+}
+
+// ==================================================
+// RESTORE ORIGINAL MATERIALS
+// ==================================================
+
+function restoreMaterial(object) {
+
+    if (materials.has(object.uuid)) {
+
+        object.material = materials.get(object.uuid);
+
+        materials.delete(object.uuid);
+
+    }
+
+}
+
+// ==================================================
+// RENDER
+// ==================================================
+
+function render() {
+
+    if (!renderer || !bloomComposer || !finalComposer) {
+        return;
+    }
+
+    // 1. Darken objects that do not have bloom enabled.
+
+    scene.traverse(darkenNonBloomed);
+
+    // 2. Render the bloom layer.
+
+    bloomComposer.render();
+
+    // 3. Restore original materials.
+
+    scene.traverse(restoreMaterial);
+
+    // 4. Render the complete scene and combine bloom.
+
+    finalComposer.render();
+
+}
+
+// ==================================================
+// WINDOW RESIZE
+// ==================================================
+
+function onWindowResize() {
+
+    const width = window.innerWidth;
+
+    const height = window.innerHeight;
+
+    camera.aspect = width / height;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(width, height);
+
+    bloomComposer.setSize(width, height);
+
+    finalComposer.setSize(width, height);
+
+    render();
+
+}
+
+// ==================================================
+// CLEANUP
+// ==================================================
+
+window.addEventListener('pagehide', function() {
+
+    window.removeEventListener('resize', onWindowResize);
+
+    controls.dispose();
+
+    gui.destroy();
+
+    bloomComposer.dispose();
+
+    finalComposer.dispose();
+
+    environmentTarget.dispose();
+
+    scene.traverse(function(object) {
+
+        if (object.isMesh) {
+
+            object.geometry.dispose();
+
+            if (Array.isArray(object.material)) {
+
+                object.material.forEach(
+                    material => material.dispose()
+                );
+
+            } else if (object.material) {
+
+                object.material.dispose();
+
+            }
+
+        }
+
+    });
+
+    darkMaterial.dispose();
+
+});
+
+</script>
+
+</body>
+</html>

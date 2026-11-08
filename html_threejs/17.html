@@ -1,0 +1,881 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js Audio Lip Sync</title>
+    <link rel="icon" href="data:,">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #10131a;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        #viewer {
+            position: fixed;
+            inset: 0;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        #panel {
+            position: fixed;
+            left: 20px;
+            bottom: 20px;
+            width: min(440px, calc(100% - 40px));
+            padding: 18px;
+            border: 1px solid #3b4658;
+            border-radius: 12px;
+            background: rgba(15, 20, 30, 0.94);
+            z-index: 10;
+        }
+
+        h2 {
+            margin: 0 0 14px;
+            font-size: 18px;
+        }
+
+        .file-row {
+            margin: 10px 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #b8c4d8;
+            font-size: 12px;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            color: #ddd;
+            font-size: 12px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        button {
+            flex: 1;
+            padding: 10px;
+            border: 0;
+            border-radius: 6px;
+            background: #2878e8;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            background: #424957;
+            cursor: not-allowed;
+        }
+
+        #progress {
+            width: 100%;
+            margin-top: 14px;
+            cursor: pointer;
+        }
+
+        #time {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            color: #aab6c8;
+            font-size: 12px;
+        }
+
+        #currentWord {
+            min-height: 35px;
+            margin-top: 14px;
+            color: #64b5ff;
+            font-size: 22px;
+            font-weight: bold;
+            overflow-wrap: anywhere;
+        }
+
+        #status {
+            margin-top: 10px;
+            color: #aab6c8;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        #debug {
+            margin-top: 8px;
+            color: #8fa2bd;
+            font-size: 11px;
+        }
+
+        #volumeBar {
+            width: 100%;
+            height: 5px;
+            margin-top: 8px;
+            border-radius: 5px;
+            background: #343c4b;
+            overflow: hidden;
+        }
+
+        #volumeLevel {
+            width: 0%;
+            height: 100%;
+            background: #35d07f;
+        }
+    </style>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.183.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+
+<body>
+
+<div id="viewer"></div>
+
+<div id="panel">
+    <h2>🎙️ Audio Lip Sync</h2>
+
+    <div class="file-row">
+        <label for="audioFile">Select REAWL audio file</label>
+        <input id="audioFile" type="file" accept="audio/*">
+    </div>
+
+    <div class="file-row">
+        <label for="jsonFile">Select REAWL word-timing JSON</label>
+        <input id="jsonFile" type="file" accept=".json,application/json">
+    </div>
+
+    <div class="buttons">
+        <button id="playButton" disabled>▶ Play</button>
+        <button id="pauseButton" disabled>Ⅱ Pause</button>
+        <button id="resetButton" disabled>↺ Reset</button>
+    </div>
+
+    <input id="progress" type="range" min="0" max="100" value="0">
+
+    <div id="time">
+        <span id="currentTime">00:00</span>
+        <span id="duration">00:00</span>
+    </div>
+
+    <div id="currentWord">Waiting for audio...</div>
+
+    <div id="volumeBar">
+        <div id="volumeLevel"></div>
+    </div>
+
+    <div id="status">Loading 3D face model...</div>
+    <div id="debug"></div>
+</div>
+
+<audio id="audio" preload="metadata"></audio>
+
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { KTX2Loader } from "three/addons/loaders/KTX2Loader.js";
+import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
+
+/* =========================================================
+   HTML ELEMENTS
+========================================================= */
+
+const viewer = document.getElementById("viewer");
+const audio = document.getElementById("audio");
+
+const audioFileInput = document.getElementById("audioFile");
+const jsonFileInput = document.getElementById("jsonFile");
+
+const playButton = document.getElementById("playButton");
+const pauseButton = document.getElementById("pauseButton");
+const resetButton = document.getElementById("resetButton");
+
+const progress = document.getElementById("progress");
+const currentTimeText = document.getElementById("currentTime");
+const durationText = document.getElementById("duration");
+
+const currentWord = document.getElementById("currentWord");
+const status = document.getElementById("status");
+const debug = document.getElementById("debug");
+const volumeLevel = document.getElementById("volumeLevel");
+
+/* =========================================================
+   THREE.JS SCENE
+========================================================= */
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x10131a);
+
+const camera = new THREE.PerspectiveCamera(
+    35,
+    window.innerWidth / window.innerHeight,
+    0.01,
+    100
+);
+
+camera.position.set(0, 0, 2);
+
+const renderer = new THREE.WebGLRenderer({
+    antialias: true,
+    alpha: false
+});
+
+renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio, 2)
+);
+
+renderer.setSize(
+    window.innerWidth,
+    window.innerHeight
+);
+
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+viewer.appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.target.set(0, 0, 0);
+
+/* =========================================================
+   LIGHTING
+========================================================= */
+
+scene.add(new THREE.HemisphereLight(
+    0xffffff,
+    0x343b50,
+    2
+));
+
+const keyLight = new THREE.DirectionalLight(0xffffff, 3);
+keyLight.position.set(2, 3, 4);
+scene.add(keyLight);
+
+const fillLight = new THREE.DirectionalLight(0x8bbcff, 1.5);
+fillLight.position.set(-3, 1, 2);
+scene.add(fillLight);
+
+/* =========================================================
+   LOAD FACE MODEL
+========================================================= */
+
+let faceModel = null;
+let morphMeshes = [];
+let jawMorph = null;
+
+const BASIS_PATH =
+    "https://cdn.jsdelivr.net/npm/three@0.183.0/examples/jsm/libs/basis/";
+
+const ktx2Loader = new KTX2Loader();
+ktx2Loader.setTranscoderPath(BASIS_PATH);
+ktx2Loader.detectSupport(renderer);
+
+const loader = new GLTFLoader();
+loader.setKTX2Loader(ktx2Loader);
+loader.setMeshoptDecoder(MeshoptDecoder);
+
+loader.load(
+    "https://threejs.org/examples/models/gltf/facecap.glb",
+
+    (gltf) => {
+        faceModel = gltf.scene;
+        scene.add(faceModel);
+
+        faceModel.updateMatrixWorld(true);
+
+        morphMeshes = [];
+
+        faceModel.traverse((object) => {
+            if (
+                object.isMesh &&
+                object.morphTargetDictionary &&
+                object.morphTargetInfluences
+            ) {
+                morphMeshes.push(object);
+
+                console.log("Face mesh:", object.name);
+                console.log(
+                    "Morph target dictionary:",
+                    object.morphTargetDictionary
+                );
+            }
+        });
+
+        if (morphMeshes.length === 0) {
+            status.textContent =
+                "Model loaded, but no morph targets were found.";
+            return;
+        }
+
+        // Find the jaw-open morph target.
+        jawMorph = findMorph([
+            "jawOpen",
+            "mouthOpen"
+        ]);
+
+        if (jawMorph) {
+            debug.textContent =
+                "Jaw morph found: " + jawMorph.name;
+        } else {
+            debug.textContent =
+                "Warning: jawOpen morph target not found.";
+        }
+
+        // Fit the camera to the face.
+        const box = new THREE.Box3().setFromObject(faceModel);
+        const size = box.getSize(new THREE.Vector3());
+        const center = box.getCenter(new THREE.Vector3());
+
+        faceModel.position.sub(center);
+        faceModel.updateMatrixWorld(true);
+
+        const maxDimension = Math.max(
+            size.x,
+            size.y,
+            size.z
+        );
+
+        const distance =
+            (maxDimension / 2) /
+            Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+
+        camera.position.set(
+            0,
+            0,
+            Math.max(distance * 1.8, 0.5)
+        );
+
+        controls.target.set(0, 0, 0);
+        controls.update();
+
+        status.textContent =
+            "3D face model loaded. Select your audio and JSON.";
+    },
+
+    undefined,
+
+    (error) => {
+        console.error("Model loading error:", error);
+        status.textContent =
+            "Could not load the 3D model. Check your internet connection.";
+    }
+);
+
+/* =========================================================
+   MORPH TARGET FUNCTIONS
+========================================================= */
+
+function normalizeName(name) {
+    return String(name)
+        .replace(/^blendShape[._]*/i, "")
+        .replace(/[^a-z0-9]/gi, "")
+        .toLowerCase();
+}
+
+function findMorph(possibleNames) {
+    const wanted = possibleNames.map(normalizeName);
+
+    for (const mesh of morphMeshes) {
+        const dictionary = mesh.morphTargetDictionary;
+
+        for (const [name, index] of Object.entries(dictionary)) {
+            if (wanted.includes(normalizeName(name))) {
+                return {
+                    mesh,
+                    name,
+                    index
+                };
+            }
+        }
+    }
+
+    return null;
+}
+
+function setJaw(amount) {
+    if (!jawMorph) return;
+
+    jawMorph.mesh.morphTargetInfluences[jawMorph.index] =
+        THREE.MathUtils.clamp(amount, 0, 1);
+}
+
+function resetMorphs() {
+    for (const mesh of morphMeshes) {
+        mesh.morphTargetInfluences.fill(0);
+    }
+}
+
+/* =========================================================
+   AUDIO + WEB AUDIO API
+========================================================= */
+
+let audioContext = null;
+let analyser = null;
+let audioSource = null;
+let audioData = null;
+
+let audioObjectURL = null;
+
+let audioLoaded = false;
+let timingLoaded = false;
+
+let currentJaw = 0;
+let targetJaw = 0;
+
+function setupAudioAnalyser() {
+    if (audioContext) return;
+
+    const AudioContextClass =
+        window.AudioContext || window.webkitAudioContext;
+
+    if (!AudioContextClass) {
+        throw new Error("Web Audio API is not supported by this browser.");
+    }
+
+    audioContext = new AudioContextClass();
+
+    analyser = audioContext.createAnalyser();
+    analyser.fftSize = 1024;
+    analyser.smoothingTimeConstant = 0.65;
+
+    audioData = new Uint8Array(analyser.fftSize);
+
+    // Create only ONE media source for this audio element.
+    audioSource = audioContext.createMediaElementSource(audio);
+
+    audioSource.connect(analyser);
+    analyser.connect(audioContext.destination);
+}
+
+function calculateAudioVolume() {
+    if (!analyser || audio.paused || audio.ended) {
+        targetJaw = 0;
+        return 0;
+    }
+
+    analyser.getByteTimeDomainData(audioData);
+
+    let sum = 0;
+
+    for (let i = 0; i < audioData.length; i++) {
+        const sample = (audioData[i] - 128) / 128;
+        sum += sample * sample;
+    }
+
+    const rms = Math.sqrt(sum / audioData.length);
+
+    // Convert speech energy into jaw movement.
+    const threshold = 0.018;
+    const gain = 7.0;
+
+    const normalized = Math.max(
+        0,
+        (rms - threshold) * gain
+    );
+
+    targetJaw = THREE.MathUtils.clamp(normalized, 0, 0.85);
+
+    return rms;
+}
+
+/* =========================================================
+   AUDIO FILE
+========================================================= */
+
+audioFileInput.addEventListener("change", () => {
+    const file = audioFileInput.files[0];
+
+    if (!file) return;
+
+    audio.pause();
+    audioLoaded = false;
+
+    if (audioObjectURL) {
+        URL.revokeObjectURL(audioObjectURL);
+    }
+
+    audioObjectURL = URL.createObjectURL(file);
+
+    audio.src = audioObjectURL;
+    audio.load();
+
+    currentWord.textContent = "Loading audio...";
+    status.textContent = "Loading audio file...";
+
+    updateButtons();
+});
+
+audio.addEventListener("loadedmetadata", () => {
+    audioLoaded = true;
+
+    durationText.textContent = formatTime(audio.duration);
+
+    progress.value = 0;
+    currentTimeText.textContent = "00:00";
+
+    status.textContent =
+        "Audio loaded. Load the matching REAWL JSON file.";
+
+    updateButtons();
+});
+
+audio.addEventListener("error", () => {
+    status.textContent =
+        "Audio error: Could not load this audio file.";
+
+    audioLoaded = false;
+    updateButtons();
+});
+
+audio.addEventListener("ended", () => {
+    targetJaw = 0;
+    currentWord.textContent = "Audio finished.";
+});
+
+/* =========================================================
+   REAWL JSON TIMING DATA
+========================================================= */
+
+let timingData = [];
+let jsonDuration = 0;
+
+jsonFileInput.addEventListener("change", async () => {
+    const file = jsonFileInput.files[0];
+
+    if (!file) return;
+
+    timingData = [];
+    timingLoaded = false;
+    jsonDuration = 0;
+
+    updateButtons();
+
+    try {
+        const text = await file.text();
+        const data = JSON.parse(text);
+
+        if (!data || !Array.isArray(data.word_timings)) {
+            throw new Error(
+                "Expected an object containing a word_timings array."
+            );
+        }
+
+        jsonDuration = Number(data.duration);
+
+        let skippedEntries = 0;
+        const invalidEntries = [];
+
+        timingData = data.word_timings.flatMap((item, index) => {
+            const word = String(item?.text ?? "").trim();
+
+            if (
+                item?.start == null ||
+                item?.end == null ||
+                item.start === "" ||
+                item.end === "" ||
+                !word
+            ) {
+                skippedEntries++;
+                invalidEntries.push(index);
+                return [];
+            }
+
+            const start = Number(item.start);
+            const end = Number(item.end);
+
+            if (
+                !Number.isFinite(start) ||
+                !Number.isFinite(end) ||
+                start < 0 ||
+                end <= start
+            ) {
+                skippedEntries++;
+                invalidEntries.push(index);
+                return [];
+            }
+
+            return [{
+                word,
+                start,
+                end
+            }];
+        });
+
+        timingData.sort((a, b) => a.start - b.start);
+
+        if (timingData.length === 0) {
+            throw new Error("No valid word timings found.");
+        }
+
+        timingLoaded = true;
+
+        console.log("REAOWL timing data:", timingData);
+        console.log("Total entries:", data.word_timings.length);
+        console.log("Valid entries:", timingData.length);
+        console.log("Skipped entries:", skippedEntries);
+        console.log("Skipped entry indexes:", invalidEntries);
+        console.log("JSON duration:", jsonDuration);
+        console.log("Sample rate:", data.sample_rate);
+        console.log("Cache signature:", data.cache_signature);
+
+        status.textContent =
+            `Loaded ${timingData.length} valid words. ` +
+            `Skipped ${skippedEntries} invalid entries.`;
+
+        if (
+            audioLoaded &&
+            Number.isFinite(jsonDuration) &&
+            jsonDuration > 0 &&
+            Math.abs(audio.duration - jsonDuration) > 2
+        ) {
+            status.textContent +=
+                ` WARNING: Audio duration (${formatTime(audio.duration)}) ` +
+                `and JSON duration (${formatTime(jsonDuration)}) do not match.`;
+        }
+
+        updateButtons();
+
+    } catch (error) {
+        timingData = [];
+        timingLoaded = false;
+
+        status.textContent = "JSON error: " + error.message;
+
+        console.error("Timing JSON error:", error);
+
+        updateButtons();
+    }
+});
+
+/* =========================================================
+   WORD HIGHLIGHTING
+========================================================= */
+
+function findCurrentWord(time) {
+    if (timingData.length === 0) return null;
+
+    // Binary search for the latest word whose start <= time.
+    let low = 0;
+    let high = timingData.length - 1;
+    let result = -1;
+
+    while (low <= high) {
+        const mid = Math.floor((low + high) / 2);
+
+        if (timingData[mid].start <= time) {
+            result = mid;
+            low = mid + 1;
+        } else {
+            high = mid - 1;
+        }
+    }
+
+    if (result < 0) return null;
+
+    const item = timingData[result];
+
+    if (time >= item.start && time <= item.end) {
+        return item;
+    }
+
+    return null;
+}
+
+function updateWordDisplay() {
+    if (!timingLoaded) {
+        currentWord.textContent = "Load your timing JSON.";
+        return;
+    }
+
+    const item = findCurrentWord(audio.currentTime);
+
+    currentWord.textContent = item
+        ? item.word
+        : "…";
+}
+
+/* =========================================================
+   PLAYBACK CONTROLS
+========================================================= */
+
+playButton.addEventListener("click", async () => {
+    if (!audioLoaded) return;
+
+    try {
+        setupAudioAnalyser();
+
+        if (audioContext.state === "suspended") {
+            await audioContext.resume();
+        }
+
+        await audio.play();
+
+        status.textContent = "Playing audio and tracking jaw movement.";
+
+    } catch (error) {
+        console.error("Playback error:", error);
+        status.textContent = "Playback error: " + error.message;
+    }
+});
+
+pauseButton.addEventListener("click", () => {
+    audio.pause();
+    targetJaw = 0;
+    status.textContent = "Audio paused.";
+});
+
+resetButton.addEventListener("click", () => {
+    audio.pause();
+    audio.currentTime = 0;
+
+    targetJaw = 0;
+    currentJaw = 0;
+
+    setJaw(0);
+
+    progress.value = 0;
+    currentTimeText.textContent = "00:00";
+
+    updateWordDisplay();
+
+    status.textContent = "Audio reset.";
+});
+
+progress.addEventListener("input", () => {
+    if (!audioLoaded || !Number.isFinite(audio.duration)) return;
+
+    const percentage = Number(progress.value) / 100;
+
+    audio.currentTime = percentage * audio.duration;
+
+    updateWordDisplay();
+    currentTimeText.textContent = formatTime(audio.currentTime);
+});
+
+/* =========================================================
+   UI HELPERS
+========================================================= */
+
+function updateButtons() {
+    playButton.disabled = !audioLoaded;
+    pauseButton.disabled = !audioLoaded;
+    resetButton.disabled = !audioLoaded;
+}
+
+function formatTime(seconds) {
+    if (!Number.isFinite(seconds)) return "00:00";
+
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+
+    return (
+        String(minutes).padStart(2, "0") +
+        ":" +
+        String(remainingSeconds).padStart(2, "0")
+    );
+}
+
+/* =========================================================
+   ANIMATION LOOP
+========================================================= */
+
+const clock = new THREE.Clock();
+
+function animate() {
+    const delta = Math.min(clock.getDelta(), 0.05);
+
+    controls.update();
+
+    let rms = 0;
+
+    if (audioLoaded && !audio.paused && !audio.ended) {
+        rms = calculateAudioVolume();
+    } else {
+        targetJaw = 0;
+    }
+
+    // Smooth jaw movement.
+    const smoothingSpeed =
+        targetJaw > currentJaw ? 18 : 10;
+
+    const smoothing =
+        1 - Math.exp(-smoothingSpeed * delta);
+
+    currentJaw += (targetJaw - currentJaw) * smoothing;
+
+    setJaw(currentJaw);
+
+    // Update word highlighting using audio time.
+    if (audioLoaded) {
+        const time = audio.currentTime;
+
+        currentTimeText.textContent = formatTime(time);
+
+        if (Number.isFinite(audio.duration) && audio.duration > 0) {
+            progress.value =
+                (time / audio.duration) * 100;
+        }
+
+        updateWordDisplay();
+    }
+
+    volumeLevel.style.width =
+        Math.min(rms * 400, 100) + "%";
+
+    renderer.render(scene, camera);
+}
+
+renderer.setAnimationLoop(animate);
+
+/* =========================================================
+   RESIZE
+========================================================= */
+
+window.addEventListener("resize", () => {
+    camera.aspect =
+        window.innerWidth / window.innerHeight;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+});
+
+/* =========================================================
+   CLEANUP
+========================================================= */
+
+window.addEventListener("pagehide", () => {
+    renderer.setAnimationLoop(null);
+
+    if (audioObjectURL) {
+        URL.revokeObjectURL(audioObjectURL);
+    }
+
+    ktx2Loader.dispose();
+});
+</script>
+
+</body>
+</html>

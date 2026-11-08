@@ -1,0 +1,618 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Three.js - Rapier Character Controller</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            color: #333;
+            font-family: Arial, sans-serif;
+        }
+
+        #info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 10;
+            background: rgba(255,255,255,0.8);
+            padding: 12px;
+            border-radius: 6px;
+        }
+
+        #info a {
+            color: #049ef4;
+        }
+    </style>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+
+<body>
+
+<div id="info">
+    <strong>Three.js + Rapier Physics</strong>
+    <p>WASD / Arrow keys to move</p>
+    <p>Mouse drag to rotate camera</p>
+</div>
+
+<script type="module">
+
+import * as THREE from 'three';
+
+import { OrbitControls }
+    from 'three/addons/controls/OrbitControls.js';
+
+import { RapierPhysics }
+    from 'three/addons/physics/RapierPhysics.js';
+
+import { RapierHelper }
+    from 'three/addons/helpers/RapierHelper.js';
+
+import Stats
+    from 'three/addons/libs/stats.module.js';
+
+
+// =====================================================
+// GLOBAL VARIABLES
+// =====================================================
+
+let camera, scene, renderer, stats;
+let controls;
+
+let physics;
+let physicsHelper;
+
+let player;
+let characterController;
+
+let movement;
+
+const clock = new THREE.Clock();
+
+const PLAYER_SPEED = 4.0;
+
+
+// =====================================================
+// INITIALIZATION
+// =====================================================
+
+init();
+
+
+async function init() {
+
+    try {
+
+        createScene();
+        createCamera();
+        createLights();
+        createRenderer();
+        createControls();
+
+        createGround();
+        createBodies();
+
+        createStats();
+        createInput();
+
+        // Wait until physics is initialized.
+        await initPhysics();
+
+        onWindowResize();
+
+        window.addEventListener('resize', onWindowResize);
+
+        // Start rendering only after initialization.
+        renderer.setAnimationLoop(animate);
+
+    } catch (error) {
+
+        console.error('Initialization failed:', error);
+
+        document.body.insertAdjacentHTML(
+            'beforeend',
+            '<p style="position:absolute;top:100px;color:red;">' +
+            'Initialization failed. Check the browser console.' +
+            '</p>'
+        );
+
+    }
+
+}
+
+
+// =====================================================
+// SCENE
+// =====================================================
+
+function createScene() {
+
+    scene = new THREE.Scene();
+
+    scene.background = new THREE.Color(0xbfd1e5);
+
+}
+
+
+// =====================================================
+// CAMERA
+// =====================================================
+
+function createCamera() {
+
+    camera = new THREE.PerspectiveCamera(
+        60,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        100
+    );
+
+    camera.position.set(2, 5, 15);
+
+}
+
+
+// =====================================================
+// LIGHTING
+// =====================================================
+
+function createLights() {
+
+    const ambient = new THREE.HemisphereLight(
+        0x555555,
+        0xffffff,
+        2
+    );
+
+    scene.add(ambient);
+
+    const light = new THREE.DirectionalLight(
+        0xffffff,
+        3
+    );
+
+    light.position.set(0, 12.5, 12.5);
+
+    light.castShadow = true;
+
+    light.shadow.mapSize.set(1024, 1024);
+
+    light.shadow.camera.left = -10;
+    light.shadow.camera.right = 10;
+    light.shadow.camera.top = 10;
+    light.shadow.camera.bottom = -10;
+
+    light.shadow.camera.near = 1;
+    light.shadow.camera.far = 50;
+
+    scene.add(light);
+
+}
+
+
+// =====================================================
+// RENDERER
+// =====================================================
+
+function createRenderer() {
+
+    renderer = new THREE.WebGLRenderer({
+        antialias: true
+    });
+
+    renderer.setPixelRatio(
+        Math.min(window.devicePixelRatio, 2)
+    );
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+
+    renderer.shadowMap.enabled = true;
+
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    document.body.appendChild(renderer.domElement);
+
+}
+
+
+// =====================================================
+// CAMERA CONTROLS
+// =====================================================
+
+function createControls() {
+
+    controls = new OrbitControls(
+        camera,
+        renderer.domElement
+    );
+
+    controls.target.set(0, 2, 0);
+
+    controls.enableDamping = true;
+
+    controls.update();
+
+}
+
+
+// =====================================================
+// GROUND
+// =====================================================
+
+function createGround() {
+
+    const geometry = new THREE.BoxGeometry(
+        20,
+        0.5,
+        20
+    );
+
+    const material = new THREE.MeshStandardMaterial({
+        color: 0xffffff
+    });
+
+    const ground = new THREE.Mesh(
+        geometry,
+        material
+    );
+
+    ground.position.y = -0.25;
+
+    ground.receiveShadow = true;
+
+    ground.userData.physics = {
+        mass: 0
+    };
+
+    scene.add(ground);
+
+    const grid = new THREE.GridHelper(
+        20,
+        20,
+        0x555555,
+        0xaaaaaa
+    );
+
+    grid.position.y = 0.005;
+
+    scene.add(grid);
+
+}
+
+
+// =====================================================
+// RANDOM OBJECTS
+// =====================================================
+
+function random(min, max) {
+
+    return Math.random() * (max - min) + min;
+
+}
+
+
+function createBodies() {
+
+    for (let i = 0; i < 10; i++) {
+
+        const fixed = Math.random() > 0.7;
+
+        const geometry = fixed
+            ? new THREE.BoxGeometry(1, 1, 1)
+            : new THREE.SphereGeometry(0.25);
+
+        const material = new THREE.MeshStandardMaterial({
+
+            color: fixed ? 0xff0000 : 0x00ff00
+
+        });
+
+        const mesh = new THREE.Mesh(
+            geometry,
+            material
+        );
+
+        mesh.position.set(
+            random(-9, 9),
+            0.5,
+            random(-9, 9)
+        );
+
+        mesh.castShadow = true;
+
+        mesh.userData.physics = {
+
+            mass: fixed ? 0 : 0.5,
+
+            restitution: fixed ? 0 : 0.3
+
+        };
+
+        scene.add(mesh);
+
+    }
+
+}
+
+
+// =====================================================
+// STATS
+// =====================================================
+
+function createStats() {
+
+    stats = new Stats();
+
+    document.body.appendChild(stats.dom);
+
+}
+
+
+// =====================================================
+// INPUT
+// =====================================================
+
+function createInput() {
+
+    movement = new Set();
+
+    window.addEventListener('keydown', (event) => {
+
+        const key = event.code;
+
+        if (
+            key.startsWith('Arrow') ||
+            ['KeyW', 'KeyA', 'KeyS', 'KeyD'].includes(key)
+        ) {
+
+            event.preventDefault();
+
+            movement.add(key);
+
+        }
+
+    });
+
+    window.addEventListener('keyup', (event) => {
+
+        movement.delete(event.code);
+
+    });
+
+    window.addEventListener('blur', () => {
+
+        movement.clear();
+
+    });
+
+}
+
+
+// =====================================================
+// PHYSICS INITIALIZATION
+// =====================================================
+
+async function initPhysics() {
+
+    physics = await RapierPhysics();
+
+    // Physics debug helper
+    physicsHelper = new RapierHelper(
+        physics.world
+    );
+
+    scene.add(physicsHelper);
+
+    // Register ground and other physical objects.
+    physics.addScene(scene);
+
+    createPlayer();
+
+}
+
+
+// =====================================================
+// PLAYER CHARACTER
+// =====================================================
+
+function createPlayer() {
+
+    const geometry = new THREE.CapsuleGeometry(
+        0.3,
+        1,
+        8,
+        8
+    );
+
+    const material = new THREE.MeshStandardMaterial({
+
+        color: 0x0000ff
+
+    });
+
+    player = new THREE.Mesh(
+        geometry,
+        material
+    );
+
+    player.castShadow = true;
+
+    player.position.set(0, 0.8, 0);
+
+    scene.add(player);
+
+
+    // Character controller
+    characterController =
+        physics.world.createCharacterController(0.01);
+
+    characterController.setApplyImpulsesToDynamicBodies(true);
+
+    characterController.setCharacterMass(3);
+
+
+    // Capsule collider
+    const colliderDesc =
+        physics.RAPIER.ColliderDesc
+            .capsule(0.5, 0.3)
+            .setTranslation(0, 0.8, 0);
+
+    player.userData.collider =
+        physics.world.createCollider(colliderDesc);
+
+}
+
+
+// =====================================================
+// WINDOW RESIZE
+// =====================================================
+
+function onWindowResize() {
+
+    camera.aspect =
+        window.innerWidth / window.innerHeight;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+
+}
+
+
+// =====================================================
+// CHARACTER MOVEMENT
+// =====================================================
+
+function updatePlayer(deltaTime) {
+
+    if (!physics || !characterController || !player) {
+        return;
+    }
+
+    let forward = 0;
+    let right = 0;
+
+    if (movement.has('KeyW') || movement.has('ArrowUp')) {
+        forward += 1;
+    }
+
+    if (movement.has('KeyS') || movement.has('ArrowDown')) {
+        forward -= 1;
+    }
+
+    if (movement.has('KeyD') || movement.has('ArrowRight')) {
+        right += 1;
+    }
+
+    if (movement.has('KeyA') || movement.has('ArrowLeft')) {
+        right -= 1;
+    }
+
+    // Normalize diagonal movement.
+    const length = Math.hypot(forward, right);
+
+    if (length > 0) {
+
+        forward /= length;
+        right /= length;
+
+    }
+
+    // Movement in world coordinates.
+    const distance = PLAYER_SPEED * deltaTime;
+
+    const moveVector = new physics.RAPIER.Vector3(
+
+        right * distance,
+
+        0,
+
+        -forward * distance
+
+    );
+
+    const collider = player.userData.collider;
+
+    // Calculate collision-safe movement.
+    characterController.computeColliderMovement(
+        collider,
+        moveVector
+    );
+
+    const correctedMovement =
+        characterController.computedMovement();
+
+    // Apply corrected movement.
+    const position = collider.translation();
+
+    collider.setTranslation({
+
+        x: position.x + correctedMovement.x,
+
+        y: position.y + correctedMovement.y,
+
+        z: position.z + correctedMovement.z
+
+    });
+
+    // Synchronize visual player with physics collider.
+    const newPosition = collider.translation();
+
+    player.position.set(
+        newPosition.x,
+        newPosition.y,
+        newPosition.z
+    );
+
+}
+
+
+// =====================================================
+// ANIMATION LOOP
+// =====================================================
+
+function animate() {
+
+    const deltaTime = Math.min(
+        clock.getDelta(),
+        0.05
+    );
+
+    updatePlayer(deltaTime);
+
+    if (physicsHelper) {
+
+        physicsHelper.update();
+
+    }
+
+    controls.update();
+
+    renderer.render(scene, camera);
+
+    stats.update();
+
+}
+
+</script>
+
+</body>
+</html>

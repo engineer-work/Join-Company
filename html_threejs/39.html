@@ -1,0 +1,798 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js - Subsurface Scattering</title>
+    <link rel="icon" href="data:,">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+            font-family: Arial, sans-serif;
+        }
+
+        #container {
+            position: fixed;
+            inset: 0;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        #info {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            z-index: 10;
+            color: white;
+            line-height: 1.6;
+            text-shadow: 0 1px 3px #000;
+            pointer-events: none;
+        }
+
+        #info a {
+            color: #08f;
+            text-decoration: none;
+            pointer-events: auto;
+        }
+
+        #status {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 20;
+            padding: 15px 20px;
+            max-width: 90%;
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        #status.error {
+            color: #ff7777;
+        }
+
+        .lil-gui {
+            z-index: 30 !important;
+        }
+    </style>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.183.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+
+<body>
+
+<div id="container"></div>
+
+<div id="info">
+    <a href="https://threejs.org/" target="_blank" rel="noopener">three.js</a>
+    <br>
+    Fast subsurface scattering in Blinn-Phong shading demo
+    <br>
+    Art support:
+    <a href="https://github.com/shaochun" target="_blank" rel="noopener">
+        Shaochun Lin
+    </a>
+</div>
+
+<div id="status">Initializing...</div>
+
+<script type="module">
+
+import * as THREE from 'three';
+
+import Stats from 'three/addons/libs/stats.module.js';
+
+import { GUI } from
+    'three/addons/libs/lil-gui.module.min.js';
+
+import { OrbitControls } from
+    'three/addons/controls/OrbitControls.js';
+
+import { SubsurfaceScatteringShader } from
+    'three/addons/shaders/SubsurfaceScatteringShader.js';
+
+import { FBXLoader } from
+    'three/addons/loaders/FBXLoader.js';
+
+
+// ======================================================
+// ASSET PATHS
+// ======================================================
+
+const ASSET_PATH =
+    'https://threejs.org/examples/models/fbx/';
+
+const MODEL_URL =
+    ASSET_PATH + 'stanford-bunny.fbx';
+
+const DIFFUSE_URL =
+    ASSET_PATH + 'white.jpg';
+
+const THICKNESS_URL =
+    ASSET_PATH + 'bunny_thickness.jpg';
+
+
+// ======================================================
+// GLOBAL VARIABLES
+// ======================================================
+
+let camera;
+let scene;
+let renderer;
+
+let controls;
+let stats;
+let gui;
+
+let model;
+let material;
+let uniforms;
+
+let animationRunning = false;
+let disposed = false;
+
+const container = document.getElementById('container');
+const status = document.getElementById('status');
+
+
+// ======================================================
+// STATUS
+// ======================================================
+
+function setStatus(message, isError = false) {
+
+    status.textContent = message;
+
+    status.classList.toggle('error', isError);
+
+    status.style.display = 'block';
+}
+
+
+// ======================================================
+// INITIALIZATION
+// ======================================================
+
+async function init() {
+
+    // --------------------------------------------------
+    // CAMERA
+    // --------------------------------------------------
+
+    camera = new THREE.PerspectiveCamera(
+        40,
+        window.innerWidth / window.innerHeight,
+        1,
+        5000
+    );
+
+    camera.position.set(0, 300, 1600);
+
+
+    // --------------------------------------------------
+    // SCENE
+    // --------------------------------------------------
+
+    scene = new THREE.Scene();
+
+    scene.background = new THREE.Color(0x000000);
+
+
+    // --------------------------------------------------
+    // LIGHTING
+    // --------------------------------------------------
+
+    scene.add(
+        new THREE.AmbientLight(0xc1c1c1)
+    );
+
+
+    const directionalLight = new THREE.DirectionalLight(
+        0xffffff,
+        0.03
+    );
+
+    directionalLight.position
+        .set(0, 0.5, 0.5)
+        .normalize();
+
+    scene.add(directionalLight);
+
+
+    // Point light 1
+
+    const pointLight1 = new THREE.Mesh(
+        new THREE.SphereGeometry(4, 8, 8),
+        new THREE.MeshBasicMaterial({
+            color: 0xc1c1c1
+        })
+    );
+
+    pointLight1.add(
+        new THREE.PointLight(
+            0xc1c1c1,
+            4.0,
+            300,
+            0
+        )
+    );
+
+    pointLight1.position.set(0, -50, 350);
+
+    scene.add(pointLight1);
+
+
+    // Point light 2
+
+    const pointLight2 = new THREE.Mesh(
+        new THREE.SphereGeometry(4, 8, 8),
+        new THREE.MeshBasicMaterial({
+            color: 0xc1c100
+        })
+    );
+
+    pointLight2.add(
+        new THREE.PointLight(
+            0xc1c100,
+            0.75,
+            500,
+            0
+        )
+    );
+
+    pointLight2.position.set(-100, 20, -260);
+
+    scene.add(pointLight2);
+
+
+    // --------------------------------------------------
+    // RENDERER
+    // --------------------------------------------------
+
+    renderer = new THREE.WebGLRenderer({
+        antialias: true
+    });
+
+    renderer.setPixelRatio(
+        Math.min(window.devicePixelRatio, 1.5)
+    );
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+    container.appendChild(renderer.domElement);
+
+
+    // --------------------------------------------------
+    // ORBIT CONTROLS
+    // --------------------------------------------------
+
+    controls = new OrbitControls(
+        camera,
+        renderer.domElement
+    );
+
+    controls.minDistance = 500;
+    controls.maxDistance = 3000;
+
+    controls.target.set(0, 0, 0);
+
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+
+    // --------------------------------------------------
+    // STATS
+    // --------------------------------------------------
+
+    stats = new Stats();
+
+    container.appendChild(stats.dom);
+
+
+    // --------------------------------------------------
+    // RESIZE
+    // --------------------------------------------------
+
+    window.addEventListener(
+        'resize',
+        onWindowResize
+    );
+
+
+    // --------------------------------------------------
+    // LOAD ASSETS AND CREATE MODEL
+    // --------------------------------------------------
+
+    await loadAssets();
+
+    if (disposed) return;
+
+    animationRunning = true;
+
+    renderer.setAnimationLoop(animate);
+
+    status.style.display = 'none';
+
+}
+
+
+// ======================================================
+// LOAD TEXTURES AND FBX
+// ======================================================
+
+async function loadAssets() {
+
+    // --------------------------------------------------
+    // LOAD TEXTURES
+    // --------------------------------------------------
+
+    setStatus('Loading diffuse and thickness textures...');
+
+    const textureLoader = new THREE.TextureLoader();
+
+    const [diffuseTexture, thicknessTexture] =
+        await Promise.all([
+
+            textureLoader.loadAsync(DIFFUSE_URL),
+
+            textureLoader.loadAsync(THICKNESS_URL)
+
+        ]);
+
+    if (disposed) return;
+
+
+    diffuseTexture.colorSpace = THREE.SRGBColorSpace;
+
+    diffuseTexture.wrapS = THREE.RepeatWrapping;
+    diffuseTexture.wrapT = THREE.RepeatWrapping;
+
+    thicknessTexture.colorSpace = THREE.NoColorSpace;
+
+    thicknessTexture.wrapS = THREE.RepeatWrapping;
+    thicknessTexture.wrapT = THREE.RepeatWrapping;
+
+
+    console.log('Diffuse texture loaded:', diffuseTexture);
+    console.log('Thickness texture loaded:', thicknessTexture);
+
+
+    // --------------------------------------------------
+    // CREATE SSS SHADER
+    // --------------------------------------------------
+
+    const shader = SubsurfaceScatteringShader;
+
+    uniforms = THREE.UniformsUtils.clone(
+        shader.uniforms
+    );
+
+
+    uniforms.map.value = diffuseTexture;
+
+    uniforms.diffuse.value =
+        new THREE.Vector3(1.0, 0.2, 0.2);
+
+    uniforms.shininess.value = 500;
+
+    uniforms.thicknessMap.value = thicknessTexture;
+
+    uniforms.thicknessColor.value =
+        new THREE.Vector3(0.5, 0.3, 0.0);
+
+    uniforms.thicknessDistortion.value = 0.1;
+
+    uniforms.thicknessAmbient.value = 0.4;
+
+    uniforms.thicknessAttenuation.value = 0.8;
+
+    uniforms.thicknessPower.value = 2.0;
+
+    uniforms.thicknessScale.value = 16.0;
+
+
+    // --------------------------------------------------
+    // SHADER MATERIAL
+    // --------------------------------------------------
+
+    material = new THREE.ShaderMaterial({
+
+        uniforms: uniforms,
+
+        vertexShader: shader.vertexShader,
+
+        fragmentShader: shader.fragmentShader,
+
+        lights: true
+
+    });
+
+
+    // --------------------------------------------------
+    // LOAD STANFORD BUNNY
+    // --------------------------------------------------
+
+    setStatus('Downloading Stanford Bunny FBX model...');
+
+    const loader = new FBXLoader();
+
+    const fbx = await loader.loadAsync(
+
+        MODEL_URL,
+
+        function (xhr) {
+
+            if (xhr.total > 0) {
+
+                const percent = (
+                    xhr.loaded / xhr.total * 100
+                ).toFixed(1);
+
+                setStatus(
+                    `Downloading Stanford Bunny: ${percent}%`
+                );
+
+            } else {
+
+                setStatus(
+                    `Downloading Stanford Bunny: ${
+                        (xhr.loaded / 1024 / 1024).toFixed(2)
+                    } MB`
+                );
+
+            }
+
+        }
+
+    );
+
+    if (disposed) return;
+
+
+    console.log('FBX loaded:', fbx);
+
+
+    // --------------------------------------------------
+    // APPLY MATERIAL TO FBX MESHES
+    // --------------------------------------------------
+
+    let meshCount = 0;
+
+    fbx.traverse(function (child) {
+
+        if (child.isMesh) {
+
+            child.material = material;
+
+            child.castShadow = true;
+            child.receiveShadow = true;
+
+            meshCount++;
+
+            console.log('Bunny mesh:', child.name);
+
+        }
+
+    });
+
+
+    if (meshCount === 0) {
+
+        throw new Error(
+            'FBX loaded, but no mesh was found.'
+        );
+
+    }
+
+
+    // --------------------------------------------------
+    // CENTER MODEL
+    // --------------------------------------------------
+
+    fbx.updateMatrixWorld(true);
+
+    const boundingBox = new THREE.Box3().setFromObject(fbx);
+
+    const center = new THREE.Vector3();
+
+    boundingBox.getCenter(center);
+
+    fbx.position.sub(center);
+
+    fbx.position.z += 10;
+
+    model = fbx;
+
+    scene.add(model);
+
+
+    // --------------------------------------------------
+    // CAMERA TARGET
+    // --------------------------------------------------
+
+    controls.target.set(0, 0, 0);
+
+    controls.update();
+
+
+    console.log('Bunny mesh count:', meshCount);
+    console.log('Bunny dimensions:', boundingBox.getSize(new THREE.Vector3()));
+
+    console.log('Stanford Bunny successfully added to scene.');
+
+
+    // --------------------------------------------------
+    // GUI
+    // --------------------------------------------------
+
+    initGUI(uniforms);
+
+}
+
+
+// ======================================================
+// GUI
+// ======================================================
+
+function initGUI(uniforms) {
+
+    gui = new GUI({
+        title: 'Thickness Control'
+    });
+
+
+    const params = {
+
+        distortion: uniforms.thicknessDistortion.value,
+
+        ambient: uniforms.thicknessAmbient.value,
+
+        attenuation: uniforms.thicknessAttenuation.value,
+
+        power: uniforms.thicknessPower.value,
+
+        scale: uniforms.thicknessScale.value
+
+    };
+
+
+    gui.add(
+        params,
+        'distortion',
+        0.01,
+        1,
+        0.01
+    )
+    .name('Distortion')
+    .onChange(value => {
+
+        uniforms.thicknessDistortion.value = value;
+
+    });
+
+
+    gui.add(
+        params,
+        'ambient',
+        0.01,
+        5,
+        0.05
+    )
+    .name('Ambient')
+    .onChange(value => {
+
+        uniforms.thicknessAmbient.value = value;
+
+    });
+
+
+    gui.add(
+        params,
+        'attenuation',
+        0.01,
+        5,
+        0.05
+    )
+    .name('Attenuation')
+    .onChange(value => {
+
+        uniforms.thicknessAttenuation.value = value;
+
+    });
+
+
+    gui.add(
+        params,
+        'power',
+        0.01,
+        16,
+        0.1
+    )
+    .name('Power')
+    .onChange(value => {
+
+        uniforms.thicknessPower.value = value;
+
+    });
+
+
+    gui.add(
+        params,
+        'scale',
+        0.01,
+        50,
+        0.1
+    )
+    .name('Scale')
+    .onChange(value => {
+
+        uniforms.thicknessScale.value = value;
+
+    });
+
+}
+
+
+// ======================================================
+// ANIMATION
+// ======================================================
+
+function animate() {
+
+    if (!animationRunning || disposed) return;
+
+    if (model) {
+
+        model.rotation.y = performance.now() / 5000;
+
+    }
+
+    controls.update();
+
+    renderer.render(scene, camera);
+
+    stats.update();
+
+}
+
+
+// ======================================================
+// RESIZE
+// ======================================================
+
+function onWindowResize() {
+
+    if (!camera || !renderer) return;
+
+    camera.aspect =
+        window.innerWidth / window.innerHeight;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+
+}
+
+
+// ======================================================
+// CLEANUP
+// ======================================================
+
+function cleanup() {
+
+    disposed = true;
+    animationRunning = false;
+
+    window.removeEventListener(
+        'resize',
+        onWindowResize
+    );
+
+    if (renderer) {
+
+        renderer.setAnimationLoop(null);
+
+    }
+
+    if (controls) {
+
+        controls.dispose();
+
+    }
+
+    if (gui) {
+
+        gui.destroy();
+
+    }
+
+    if (scene) {
+
+        scene.traverse(object => {
+
+            if (object.geometry) {
+                object.geometry.dispose();
+            }
+
+        });
+
+    }
+
+    if (material) {
+
+        material.dispose();
+
+    }
+
+    if (uniforms) {
+
+        uniforms.map.value?.dispose();
+
+        uniforms.thicknessMap.value?.dispose();
+
+    }
+
+    if (renderer) {
+
+        renderer.dispose();
+
+    }
+
+}
+
+window.addEventListener(
+    'pagehide',
+    cleanup,
+    { once: true }
+);
+
+
+// ======================================================
+// START
+// ======================================================
+
+init().catch(error => {
+
+    console.error('Subsurface Scattering Error:', error);
+
+    setStatus(
+        'Loading failed: ' + error.message,
+        true
+    );
+
+});
+
+</script>
+
+</body>
+</html>

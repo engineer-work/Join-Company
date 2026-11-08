@@ -1,0 +1,2531 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Three.js - 3D Game with Transformable Portfolio</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    background: #88ccee;
+}
+
+#container {
+    width: 100%;
+    height: 100vh;
+}
+
+#info {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 10;
+    padding: 12px 16px;
+    color: white;
+    background: rgba(0,0,0,0.72);
+    border-radius: 8px;
+    line-height: 1.7;
+    pointer-events: none;
+    font-size: 13px;
+}
+
+#status {
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    z-index: 10;
+    padding: 8px 12px;
+    color: white;
+    background: rgba(0,0,0,0.7);
+    border-radius: 6px;
+    pointer-events: none;
+}
+
+canvas {
+    display: block;
+}
+</style>
+
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+    }
+}
+</script>
+</head>
+
+<body>
+
+<div id="info">
+    <strong>3D GAME + INTERACTIVE PORTFOLIO</strong><br>
+    Click game to capture mouse<br>
+    WASD / Arrows - Move<br>
+    SHIFT - Run<br>
+    SPACE - Jump<br>
+    Mouse - Look around<br>
+    Hold left mouse - Throw ball<br>
+    <strong>P - Open / close portfolio</strong><br>
+    W - Translate | E - Rotate | R - Scale<br>
+    Q - World / Local mode<br>
+    Mouse wheel - Zoom portfolio only<br>
+    X / Y / Z - Toggle axes<br>
+    Shift - Snap | ESC - Reset transform
+</div>
+
+<div id="container"></div>
+<div id="status">Loading 3D world...</div>
+
+<script type="module">
+
+// =====================================================
+// IMPORTS
+// =====================================================
+
+import * as THREE from 'three';
+
+import Stats from 'three/addons/libs/stats.module.js';
+
+import { GLTFLoader } from
+'three/addons/loaders/GLTFLoader.js';
+
+import { Octree } from
+'three/addons/math/Octree.js';
+
+import { OctreeHelper } from
+'three/addons/helpers/OctreeHelper.js';
+
+import { Capsule } from
+'three/addons/math/Capsule.js';
+
+import { TransformControls } from
+'three/addons/controls/TransformControls.js';
+
+
+// =====================================================
+// DOM
+// =====================================================
+
+const container = document.getElementById('container');
+const status = document.getElementById('status');
+
+
+// =====================================================
+// SCENE
+// =====================================================
+
+const scene = new THREE.Scene();
+
+scene.background = new THREE.Color(0x88ccee);
+
+scene.fog = new THREE.Fog(
+    0x88ccee,
+    0,
+    65
+);
+
+
+// =====================================================
+// CAMERA
+// =====================================================
+
+const camera = new THREE.PerspectiveCamera(
+    70,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
+);
+
+camera.position.set(0, 2, 5);
+
+
+// =====================================================
+// LIGHTING
+// =====================================================
+
+const hemisphereLight = new THREE.HemisphereLight(
+    0x8dc1de,
+    0x00668d,
+    1.5
+);
+
+scene.add(hemisphereLight);
+
+const directionalLight = new THREE.DirectionalLight(
+    0xffffff,
+    2.5
+);
+
+directionalLight.position.set(-5, 25, -1);
+
+directionalLight.castShadow = true;
+
+directionalLight.shadow.camera.near = 0.01;
+directionalLight.shadow.camera.far = 500;
+
+directionalLight.shadow.camera.right = 30;
+directionalLight.shadow.camera.left = -30;
+directionalLight.shadow.camera.top = 30;
+directionalLight.shadow.camera.bottom = -30;
+
+directionalLight.shadow.mapSize.set(1024, 1024);
+directionalLight.shadow.radius = 4;
+directionalLight.shadow.bias = -0.00006;
+
+scene.add(directionalLight);
+
+
+// =====================================================
+// RENDERER
+// =====================================================
+
+const renderer = new THREE.WebGLRenderer({
+    antialias: true
+});
+
+renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio, 2)
+);
+
+renderer.setSize(
+    window.innerWidth,
+    window.innerHeight
+);
+
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.VSMShadowMap;
+
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1;
+
+container.appendChild(renderer.domElement);
+
+
+// =====================================================
+// STATS
+// =====================================================
+
+const stats = new Stats();
+
+stats.domElement.style.position = 'absolute';
+stats.domElement.style.top = '0px';
+stats.domElement.style.left = '0px';
+
+container.appendChild(stats.domElement);
+
+
+// =====================================================
+// GAME CONSTANTS
+// =====================================================
+
+const GRAVITY = 30;
+
+const NUM_SPHERES = 100;
+
+const SPHERE_RADIUS = 0.2;
+
+const STEPS_PER_FRAME = 5;
+
+const JUMP_SPEED = 15;
+
+
+// =====================================================
+// PLAYER
+// =====================================================
+
+const worldOctree = new Octree();
+
+const playerCollider = new Capsule(
+    new THREE.Vector3(0, 0.35, 0),
+    new THREE.Vector3(0, 1, 0),
+    0.35
+);
+
+const playerVelocity = new THREE.Vector3();
+
+const playerDirection = new THREE.Vector3();
+
+let playerOnFloor = false;
+
+let cameraYaw = 0;
+
+let cameraPitch = 0.12;
+
+let mouseTime = 0;
+
+const keyStates = {};
+
+
+// =====================================================
+// THROWABLE SPHERES
+// =====================================================
+
+const sphereGeometry = new THREE.IcosahedronGeometry(
+    SPHERE_RADIUS,
+    5
+);
+
+const sphereMaterial = new THREE.MeshLambertMaterial({
+    color: 0xdede8d
+});
+
+const spheres = [];
+
+let sphereIdx = 0;
+
+for (let i = 0; i < NUM_SPHERES; i++) {
+
+    const sphere = new THREE.Mesh(
+        sphereGeometry,
+        sphereMaterial
+    );
+
+    sphere.castShadow = true;
+    sphere.receiveShadow = true;
+
+    scene.add(sphere);
+
+    spheres.push({
+
+        mesh: sphere,
+
+        collider: new THREE.Sphere(
+            new THREE.Vector3(0, -100, 0),
+            SPHERE_RADIUS
+        ),
+
+        velocity: new THREE.Vector3()
+
+    });
+
+}
+
+
+// =====================================================
+// SOLDIER CHARACTER
+// =====================================================
+
+const characterLoader = new GLTFLoader();
+
+const characterRoot = new THREE.Group();
+
+scene.add(characterRoot);
+
+let soldier = null;
+
+let soldierMixer = null;
+
+let soldierLoaded = false;
+
+let activeSoldierAction = null;
+
+const soldierActions = {};
+
+characterLoader.load(
+
+    'https://threejs.org/examples/models/gltf/Soldier.glb',
+
+    gltf => {
+
+        soldier = gltf.scene;
+
+        soldier.traverse(child => {
+
+            if (child.isMesh) {
+
+                child.castShadow = true;
+                child.receiveShadow = true;
+
+            }
+
+        });
+
+        soldier.scale.set(1, 1, 1);
+
+        //soldier.rotation.y = Math.PI;
+
+        characterRoot.add(soldier);
+
+        soldierMixer = new THREE.AnimationMixer(soldier);
+
+        gltf.animations.forEach(clip => {
+
+            soldierActions[clip.name.toLowerCase()] =
+                soldierMixer.clipAction(clip);
+
+        });
+
+        soldierLoaded = true;
+
+        playSoldierAnimation('idle');
+
+        console.log(
+            'Soldier animations:',
+            gltf.animations.map(clip => clip.name)
+        );
+
+    },
+
+    undefined,
+
+    error => {
+
+        console.error('Soldier loading error:', error);
+
+    }
+
+);
+
+
+function playSoldierAnimation(name) {
+
+    if (!soldierMixer) return;
+
+    const nextAction = soldierActions[name.toLowerCase()];
+
+    if (!nextAction) return;
+
+    if (activeSoldierAction === nextAction) return;
+
+    nextAction.reset();
+    nextAction.enabled = true;
+    nextAction.setEffectiveTimeScale(1);
+    nextAction.setEffectiveWeight(1);
+    nextAction.fadeIn(0.2);
+    nextAction.play();
+
+    if (activeSoldierAction) {
+
+        activeSoldierAction.fadeOut(0.2);
+
+    }
+
+    activeSoldierAction = nextAction;
+
+}
+
+
+// =====================================================
+// PORTFOLIO 3D OBJECT
+// =====================================================
+
+const portfolioGroup = new THREE.Group();
+
+portfolioGroup.visible = false;
+
+scene.add(portfolioGroup);
+
+
+// =====================================================
+// PORTFOLIO SCREEN TEXTURE
+// =====================================================
+
+const SCREEN_W = 1600;
+const SCREEN_H = 1000;
+
+const screenCanvas = document.createElement('canvas');
+
+screenCanvas.width = SCREEN_W;
+screenCanvas.height = SCREEN_H;
+
+const ctx = screenCanvas.getContext('2d');
+
+const screenTexture = new THREE.CanvasTexture(screenCanvas);
+
+screenTexture.colorSpace = THREE.SRGBColorSpace;
+
+screenTexture.anisotropy =
+    renderer.capabilities.getMaxAnisotropy();
+
+
+// =====================================================
+// SCREEN MESH
+// =====================================================
+
+const screenMesh = new THREE.Mesh(
+
+    new THREE.PlaneGeometry(5.6, 3.5),
+
+    new THREE.MeshBasicMaterial({
+
+        map: screenTexture,
+
+        side: THREE.DoubleSide
+
+    })
+
+);
+
+portfolioGroup.add(screenMesh);
+
+
+// =====================================================
+// SCREEN FRAME
+// =====================================================
+
+const frame = new THREE.Mesh(
+
+    new THREE.BoxGeometry(5.78, 3.68, 0.13),
+
+    new THREE.MeshStandardMaterial({
+
+        color: 0x142b43,
+
+        metalness: 0.75,
+
+        roughness: 0.25
+
+    })
+
+);
+
+frame.position.z = -0.09;
+
+portfolioGroup.add(frame);
+
+
+// =====================================================
+// FRAME EDGES
+// =====================================================
+
+const edge = new THREE.LineSegments(
+
+    new THREE.EdgesGeometry(
+        new THREE.BoxGeometry(5.8, 3.7, 0.14)
+    ),
+
+    new THREE.LineBasicMaterial({
+        color: 0x4fcaff
+    })
+
+);
+
+edge.position.z = -0.08;
+
+portfolioGroup.add(edge);
+
+
+// =====================================================
+// SCREEN STAND
+// =====================================================
+
+const stand = new THREE.Mesh(
+
+    new THREE.BoxGeometry(0.28, 0.85, 0.28),
+
+    new THREE.MeshStandardMaterial({
+
+        color: 0x263b50,
+
+        metalness: 0.7,
+
+        roughness: 0.3
+
+    })
+
+);
+
+stand.position.set(0, -2.15, -0.1);
+
+portfolioGroup.add(stand);
+
+
+const base = new THREE.Mesh(
+
+    new THREE.BoxGeometry(1.4, 0.12, 0.7),
+
+    new THREE.MeshStandardMaterial({
+
+        color: 0x263b50,
+
+        metalness: 0.7,
+
+        roughness: 0.3
+
+    })
+
+);
+
+base.position.set(0, -2.58, -0.1);
+
+portfolioGroup.add(base);
+
+
+// =====================================================
+// PORTFOLIO DATA
+// =====================================================
+
+let portfolioOpen = false;
+
+let portfolioPage = 0;
+
+const portfolioHitAreas = [];
+
+
+const profiles = [
+
+    {
+        title: 'Electronic Profile',
+        sub: 'GitHub - engineer-e',
+        url: 'https://github.com/engineer-e/'
+    },
+
+    {
+        title: 'Work Profile',
+        sub: 'GitHub - engineer-work',
+        url: 'https://github.com/engineer-work/'
+    },
+
+    {
+        title: 'Instagram',
+        sub: '@gobalkrishnan.engineer',
+        url: 'https://www.instagram.com/gobalkrishnan.engineer/'
+    },
+
+    {
+        title: 'LinkedIn',
+        sub: 'engineer-work',
+        url: 'https://www.linkedin.com/in/engineer-work/'
+    },
+
+    {
+        title: 'Hugging Face',
+        sub: 'gobalkrishnan',
+        url: 'https://huggingface.co/gobalkrishnan'
+    },
+
+    {
+        title: 'YouTube Channel',
+        sub: 'My YouTube videos',
+        url: 'https://www.youtube.com/@gobalkrishnanv-j2w'
+    }
+
+];
+
+
+const applications = [
+
+    {
+        title: '01 - MathSci Editor',
+        sub: 'Mathematical and scientific editor',
+        url: 'https://engineer-work.github.io/MathSci-Simulation/'
+    },
+
+    {
+        title: '02 - Focus Reader',
+        sub: 'Focused reading application',
+        url: 'https://engineer-work.github.io/Focus-Reader/'
+    },
+
+    {
+        title: '03 - Cornell Note Taking - Web',
+        sub: 'Web version - Mermaid is not working here',
+        url: 'https://engineer-work.github.io/cornell-notes-pro/'
+    },
+
+    {
+        title: '04 - Cornell Note Taking - Microsoft Store',
+        sub: 'Windows version - Mermaid works here',
+        url: 'https://apps.microsoft.com/store/detail/9PMF15NP0JLS?cid=DevShareMCLPCS'
+    },
+
+    {
+        title: '05 - Planner App',
+        sub: 'Application for education',
+        url: 'https://engineer-work.github.io/planner-app/'
+    },
+
+    {
+        title: '06 - Medical Manuscript ❤️',
+        sub: 'Medical manuscript application',
+        url: 'https://medical-manuscript.ai.studio/'
+    },
+
+    {
+        title: '07 - Image Library ❤️',
+        sub: 'Image learning library',
+        url: 'https://learnfromimage.ai.studio/'
+    },
+
+    {
+        title: '08 - YouTube',
+        sub: 'My YouTube channel',
+        url: 'https://www.youtube.com/@gobalkrishnanv-j2w'
+    }
+
+];
+
+
+const donationURL =
+    'https://engineer-e.github.io/Nvidia-Learning/donate/donate.html';
+
+
+// =====================================================
+// PORTFOLIO SCREEN DRAWING
+// =====================================================
+
+function roundedRect(c, x, y, w, h, r) {
+
+    c.beginPath();
+
+    c.roundRect(x, y, w, h, r);
+
+}
+
+
+function drawScreenButton(
+    x,
+    y,
+    w,
+    h,
+    title,
+    subtitle,
+    url
+) {
+
+    roundedRect(ctx, x, y, w, h, 18);
+
+    ctx.fillStyle = '#102b43';
+    ctx.fill();
+
+    ctx.strokeStyle = '#347ca5';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    ctx.fillStyle = '#75d8ff';
+
+    ctx.font = 'bold 29px Arial';
+
+    ctx.fillText(
+        title,
+        x + 22,
+        y + 42,
+        w - 40
+    );
+
+    ctx.fillStyle = '#d4e6f3';
+
+    ctx.font = '21px Arial';
+
+    ctx.fillText(
+        subtitle,
+        x + 22,
+        y + 80,
+        w - 40
+    );
+
+    portfolioHitAreas.push({
+
+        x,
+        y,
+        w,
+        h,
+        url
+
+    });
+
+}
+
+
+function drawPortfolioScreen() {
+
+    portfolioHitAreas.length = 0;
+
+    const gradient = ctx.createLinearGradient(
+        0,
+        0,
+        SCREEN_W,
+        SCREEN_H
+    );
+
+    gradient.addColorStop(0, '#071525');
+    gradient.addColorStop(1, '#123653');
+
+    ctx.fillStyle = gradient;
+
+    ctx.fillRect(
+        0,
+        0,
+        SCREEN_W,
+        SCREEN_H
+    );
+
+
+    // HEADER
+
+    ctx.fillStyle = '#55cfff';
+
+    ctx.font = 'bold 54px Arial';
+
+    ctx.fillText(
+        'MY DIGITAL PORTFOLIO',
+        55,
+        78
+    );
+
+    ctx.fillStyle = '#d1e6f5';
+
+    ctx.font = '25px Arial';
+
+    ctx.fillText(
+        'Learning  •  Engineering  •  Technology  •  Development',
+        58,
+        123
+    );
+
+
+    ctx.strokeStyle = '#3c83a9';
+    ctx.lineWidth = 3;
+
+    ctx.beginPath();
+
+    ctx.moveTo(55, 150);
+    ctx.lineTo(1545, 150);
+
+    ctx.stroke();
+
+
+    // PAGE TABS
+
+    const tabs = [
+
+        { label: '1  PROFILES', page: 0 },
+
+        { label: '2  APPLICATIONS', page: 1 },
+
+        { label: '3  ABOUT & DONATE', page: 2 }
+
+    ];
+
+
+    tabs.forEach((tab, i) => {
+
+        const x = 55 + i * 500;
+
+        roundedRect(
+            ctx,
+            x,
+            175,
+            460,
+            62,
+            13
+        );
+
+        ctx.fillStyle =
+            portfolioPage === tab.page
+                ? '#087eae'
+                : '#18334b';
+
+        ctx.fill();
+
+        ctx.fillStyle = '#ffffff';
+
+        ctx.font = 'bold 25px Arial';
+
+        ctx.textAlign = 'center';
+
+        ctx.fillText(
+            tab.label,
+            x + 230,
+            215
+        );
+
+        ctx.textAlign = 'left';
+
+        portfolioHitAreas.push({
+
+            x,
+            y: 175,
+            w: 460,
+            h: 62,
+            page: tab.page
+
+        });
+
+    });
+
+
+    // PROFILES PAGE
+
+    if (portfolioPage === 0) {
+
+        ctx.fillStyle = '#ffffff';
+
+        ctx.font = 'bold 31px Arial';
+
+        ctx.fillText(
+            'Connect with me',
+            58,
+            292
+        );
+
+        profiles.forEach((item, i) => {
+
+            const col = i % 2;
+
+            const row = Math.floor(i / 2);
+
+            drawScreenButton(
+
+                55 + col * 755,
+
+                320 + row * 185,
+
+                720,
+
+                150,
+
+                item.title,
+
+                item.sub,
+
+                item.url
+
+            );
+
+        });
+
+    }
+
+
+    // APPLICATIONS PAGE
+
+    else if (portfolioPage === 1) {
+
+        ctx.fillStyle = '#ffffff';
+
+        ctx.font = 'bold 31px Arial';
+
+        ctx.fillText(
+            'Applications I have created',
+            58,
+            292
+        );
+
+        applications.forEach((item, i) => {
+
+            const col = i % 2;
+
+            const row = Math.floor(i / 2);
+
+            drawScreenButton(
+
+                55 + col * 755,
+
+                315 + row * 155,
+
+                720,
+
+                125,
+
+                item.title,
+
+                item.sub,
+
+                item.url
+
+            );
+
+        });
+
+    }
+
+
+    // ABOUT PAGE
+
+    else {
+
+        ctx.fillStyle = '#ffffff';
+
+        ctx.font = 'bold 38px Arial';
+
+        ctx.fillText(
+            'Created for my ambition, passion, hobby, career and growth.',
+            65,
+            340
+        );
+
+        ctx.fillStyle = '#d4e6f3';
+
+        ctx.font = '29px Arial';
+
+        ctx.fillText(
+            'These applications are part of my future learning notes',
+            65,
+            410
+        );
+
+        ctx.fillText(
+            'and my continuous learning and development.',
+            65,
+            455
+        );
+
+
+        roundedRect(
+            ctx,
+            65,
+            550,
+            600,
+            120,
+            20
+        );
+
+        ctx.fillStyle = '#8c4c14';
+        ctx.fill();
+
+        ctx.strokeStyle = '#ffc078';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+
+        ctx.fillStyle = '#ffffff';
+
+        ctx.font = 'bold 38px Arial';
+
+        ctx.fillText(
+            '❤️  SUPPORT / DONATE',
+            105,
+            625
+        );
+
+        portfolioHitAreas.push({
+
+            x: 65,
+            y: 550,
+            w: 600,
+            h: 120,
+            url: donationURL
+
+        });
+
+        ctx.fillStyle = '#b9d7eb';
+
+        ctx.font = '24px Arial';
+
+        ctx.fillText(
+            'Thank you for visiting my portfolio!',
+            70,
+            760
+        );
+
+    }
+
+
+    // FOOTER
+
+    ctx.fillStyle = '#9abbd1';
+
+    ctx.font = '20px Arial';
+
+    ctx.fillText(
+        'Click cards to open links  •  Use tabs to navigate  •  Transform the 3D display',
+        58,
+        960
+    );
+
+
+    // CLOSE BUTTON
+
+    roundedRect(
+        ctx,
+        1430,
+        35,
+        115,
+        65,
+        12
+    );
+
+    ctx.fillStyle = '#a62e39';
+    ctx.fill();
+
+    ctx.fillStyle = '#ffffff';
+
+    ctx.font = 'bold 25px Arial';
+
+    ctx.textAlign = 'center';
+
+    ctx.fillText(
+        'CLOSE',
+        1487,
+        77
+    );
+
+    ctx.textAlign = 'left';
+
+    portfolioHitAreas.push({
+
+        x: 1430,
+        y: 35,
+        w: 115,
+        h: 65,
+        close: true
+
+    });
+
+
+    screenTexture.needsUpdate = true;
+
+}
+
+
+drawPortfolioScreen();
+
+
+// =====================================================
+// TRANSFORM CONTROLS - DEMO 2
+// =====================================================
+
+const portfolioTransform = new TransformControls(
+    camera,
+    renderer.domElement
+);
+
+portfolioTransform.setMode('translate');
+
+portfolioTransform.setSpace('world');
+
+portfolioTransform.setSize(0.8);
+
+portfolioTransform.attach(portfolioGroup);
+
+const portfolioGizmo = portfolioTransform.getHelper();
+
+portfolioGizmo.visible = false;
+
+scene.add(portfolioGizmo);
+
+let portfolioTransformDragging = false;
+
+
+portfolioTransform.addEventListener(
+    'dragging-changed',
+    event => {
+
+        portfolioTransformDragging = event.value;
+
+        if (event.value) {
+
+            for (const key in keyStates) {
+                keyStates[key] = false;
+            }
+
+        }
+
+    }
+);
+
+
+function showPortfolioController(show) {
+
+    portfolioGizmo.visible = show;
+
+    portfolioTransform.enabled = show;
+
+}
+
+
+// =====================================================
+// PORTFOLIO CAMERA / ZOOM STATE
+// =====================================================
+
+let portfolioCameraReady = false;
+
+let portfolioCameraDistance = 8;
+
+const MIN_PORTFOLIO_ZOOM = 3.5;
+
+const MAX_PORTFOLIO_ZOOM = 16;
+
+const portfolioCameraTarget = new THREE.Vector3();
+
+const portfolioCameraOffset = new THREE.Vector3();
+
+
+// Camera is placed in front of the screen based on its
+// rotation. This keeps it looking at the portfolio.
+
+function updatePortfolioCamera() {
+
+    if (!portfolioOpen || !portfolioCameraReady) {
+        return;
+    }
+
+    portfolioCameraTarget.copy(
+        portfolioGroup.position
+    );
+
+    portfolioCameraOffset.set(
+        0,
+        1.4,
+        portfolioCameraDistance
+    );
+
+    portfolioCameraOffset.applyQuaternion(
+        portfolioGroup.quaternion
+    );
+
+    camera.position.copy(
+        portfolioCameraTarget
+    ).add(portfolioCameraOffset);
+
+    camera.lookAt(
+        portfolioCameraTarget
+    );
+
+}
+
+
+// =====================================================
+// PORTFOLIO OPEN / CLOSE
+// =====================================================
+
+function openPortfolio() {
+
+    portfolioOpen = true;
+
+    portfolioPage = 0;
+
+    drawPortfolioScreen();
+
+    portfolioGroup.visible = true;
+
+    if (document.pointerLockElement) {
+        document.exitPointerLock();
+    }
+
+    for (const key in keyStates) {
+        keyStates[key] = false;
+    }
+
+    const px = -Math.sin(cameraYaw);
+
+    const pz = -Math.cos(cameraYaw);
+
+    portfolioGroup.position.set(
+
+        playerCollider.start.x + px * 3.2,
+
+        playerCollider.start.y + 1.6,
+
+        playerCollider.start.z + pz * 3.2
+
+    );
+
+    portfolioGroup.rotation.set(
+        0,
+        cameraYaw,
+        0
+    );
+
+    portfolioTransform.attach(portfolioGroup);
+
+    portfolioTransform.setMode('translate');
+
+    portfolioTransform.setSpace('world');
+
+    portfolioTransform.enabled = true;
+
+    showPortfolioController(true);
+
+    portfolioCameraDistance = 8;
+
+    portfolioCameraReady = true;
+
+    updatePortfolioCamera();
+
+}
+
+
+function closePortfolio() {
+
+    portfolioOpen = false;
+
+    portfolioGroup.visible = false;
+
+    showPortfolioController(false);
+
+    portfolioTransformDragging = false;
+
+    portfolioCameraReady = false;
+
+    for (const key in keyStates) {
+        keyStates[key] = false;
+    }
+
+}
+
+
+function togglePortfolio() {
+
+    if (portfolioOpen) {
+
+        closePortfolio();
+
+    } else {
+
+        openPortfolio();
+
+    }
+
+}
+
+
+// =====================================================
+// PORTFOLIO CLICK DETECTION
+// =====================================================
+
+const screenRaycaster = new THREE.Raycaster();
+
+const screenMouse = new THREE.Vector2();
+
+let portfolioPointerStart = null;
+
+
+function clickPortfolioScreen(event) {
+
+    const rect = renderer.domElement.getBoundingClientRect();
+
+    screenMouse.x =
+        ((event.clientX - rect.left) / rect.width) * 2 - 1;
+
+    screenMouse.y =
+        -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+    screenRaycaster.setFromCamera(
+        screenMouse,
+        camera
+    );
+
+    const hits = screenRaycaster.intersectObject(
+        screenMesh,
+        false
+    );
+
+    if (!hits.length) return false;
+
+    const uv = hits[0].uv;
+
+    const px = uv.x * SCREEN_W;
+
+    const py = (1 - uv.y) * SCREEN_H;
+
+    for (const area of portfolioHitAreas) {
+
+        if (
+
+            px >= area.x &&
+            px <= area.x + area.w &&
+
+            py >= area.y &&
+            py <= area.y + area.h
+
+        ) {
+
+            if (area.close) {
+
+                closePortfolio();
+
+                return true;
+
+            }
+
+            if (area.page !== undefined) {
+
+                portfolioPage = area.page;
+
+                drawPortfolioScreen();
+
+                return true;
+
+            }
+
+            if (area.url) {
+
+                window.open(
+                    area.url,
+                    '_blank',
+                    'noopener,noreferrer'
+                );
+
+                return true;
+
+            }
+
+        }
+
+    }
+
+    return true;
+
+}
+
+
+// =====================================================
+// PORTFOLIO POINTER EVENTS
+// =====================================================
+
+renderer.domElement.addEventListener(
+    'pointerdown',
+    event => {
+
+        if (!portfolioOpen || event.button !== 0) {
+            return;
+        }
+
+        portfolioPointerStart = {
+
+            x: event.clientX,
+
+            y: event.clientY
+
+        };
+
+    }
+);
+
+
+renderer.domElement.addEventListener(
+    'pointerup',
+    event => {
+
+        if (!portfolioOpen || !portfolioPointerStart) {
+
+            portfolioPointerStart = null;
+
+            return;
+
+        }
+
+        const dx =
+            event.clientX - portfolioPointerStart.x;
+
+        const dy =
+            event.clientY - portfolioPointerStart.y;
+
+        const moved = Math.sqrt(dx * dx + dy * dy);
+
+        portfolioPointerStart = null;
+
+        if (moved > 5 || portfolioTransformDragging) {
+            return;
+        }
+
+        clickPortfolioScreen(event);
+
+    }
+);
+
+
+// =====================================================
+// PORTFOLIO ZOOM - MOUSE WHEEL
+// Only active when portfolio is open.
+// =====================================================
+
+renderer.domElement.addEventListener(
+    'wheel',
+    event => {
+
+        if (!portfolioOpen) {
+            return;
+        }
+
+        event.preventDefault();
+
+        const zoomSpeed = 0.01;
+
+        portfolioCameraDistance +=
+            event.deltaY * zoomSpeed;
+
+        portfolioCameraDistance = THREE.MathUtils.clamp(
+
+            portfolioCameraDistance,
+
+            MIN_PORTFOLIO_ZOOM,
+
+            MAX_PORTFOLIO_ZOOM
+
+        );
+
+        updatePortfolioCamera();
+
+    },
+    { passive: false }
+);
+
+
+// =====================================================
+// KEYBOARD CONTROLS
+// =====================================================
+
+document.addEventListener(
+    'keydown',
+    event => {
+
+        // Toggle portfolio
+
+        if (event.code === 'KeyP' && !event.repeat) {
+
+            togglePortfolio();
+
+            event.preventDefault();
+
+            return;
+
+        }
+
+
+        // Transform controls keyboard
+
+        if (portfolioOpen) {
+
+            if (event.code === 'ShiftLeft' ||
+                event.code === 'ShiftRight') {
+
+                portfolioTransform.setTranslationSnap(1);
+
+                portfolioTransform.setRotationSnap(
+                    THREE.MathUtils.degToRad(15)
+                );
+
+                portfolioTransform.setScaleSnap(0.25);
+
+                return;
+
+            }
+
+
+            switch (event.key.toLowerCase()) {
+
+                case 'w':
+
+                    portfolioTransform.setMode('translate');
+
+                    break;
+
+                case 'e':
+
+                    portfolioTransform.setMode('rotate');
+
+                    break;
+
+                case 'r':
+
+                    portfolioTransform.setMode('scale');
+
+                    break;
+
+                case 'q':
+
+                    portfolioTransform.setSpace(
+
+                        portfolioTransform.space === 'local'
+                            ? 'world'
+                            : 'local'
+
+                    );
+
+                    break;
+
+                case 'x':
+
+                    portfolioTransform.showX =
+                        !portfolioTransform.showX;
+
+                    break;
+
+                case 'y':
+
+                    portfolioTransform.showY =
+                        !portfolioTransform.showY;
+
+                    break;
+
+                case 'z':
+
+                    portfolioTransform.showZ =
+                        !portfolioTransform.showZ;
+
+                    break;
+
+                case '+':
+
+                case '=':
+
+                    portfolioTransform.setSize(
+
+                        portfolioTransform.size + 0.1
+
+                    );
+
+                    break;
+
+                case '-':
+
+                case '_':
+
+                    portfolioTransform.setSize(
+
+                        Math.max(
+                            portfolioTransform.size - 0.1,
+                            0.1
+                        )
+
+                    );
+
+                    break;
+
+                case ' ':
+
+                    portfolioTransform.enabled =
+                        !portfolioTransform.enabled;
+
+                    break;
+
+                case 'escape':
+
+                    portfolioTransform.reset();
+
+                    break;
+
+            }
+
+            event.preventDefault();
+
+            return;
+
+        }
+
+
+        // Normal game keys
+
+        keyStates[event.code] = true;
+
+        if (
+            event.code === 'Space' ||
+            event.code.startsWith('Arrow')
+        ) {
+
+            event.preventDefault();
+
+        }
+
+    }
+);
+
+
+document.addEventListener(
+    'keyup',
+    event => {
+
+        keyStates[event.code] = false;
+
+        if (
+            portfolioOpen &&
+            (
+                event.code === 'ShiftLeft' ||
+                event.code === 'ShiftRight'
+            )
+        ) {
+
+            portfolioTransform.setTranslationSnap(null);
+
+            portfolioTransform.setRotationSnap(null);
+
+            portfolioTransform.setScaleSnap(null);
+
+        }
+
+    }
+);
+
+
+// =====================================================
+// GAME MOUSE CONTROLS
+// =====================================================
+
+renderer.domElement.addEventListener(
+    'mousedown',
+    event => {
+
+        if (portfolioOpen) {
+            return;
+        }
+
+        if (document.pointerLockElement !== document.body) {
+
+            document.body.requestPointerLock();
+
+        }
+
+        if (event.button === 0) {
+
+            mouseTime = performance.now();
+
+        }
+
+    }
+);
+
+
+document.addEventListener(
+    'mousemove',
+    event => {
+
+        if (portfolioOpen) {
+            return;
+        }
+
+        if (document.pointerLockElement === document.body) {
+
+            cameraYaw -= event.movementX / 500;
+
+            cameraPitch -= event.movementY / 500;
+
+            cameraPitch = THREE.MathUtils.clamp(
+                cameraPitch,
+                -0.25,
+                0.65
+            );
+
+        }
+
+    }
+);
+
+
+document.addEventListener(
+    'mouseup',
+    event => {
+
+        if (portfolioOpen) {
+            return;
+        }
+
+        if (
+            event.button === 0 &&
+            document.pointerLockElement === document.body
+        ) {
+
+            throwBall();
+
+        }
+
+    }
+);
+
+
+// =====================================================
+// PLAYER COLLISIONS
+// =====================================================
+
+function playerCollisions() {
+
+    const result = worldOctree.capsuleIntersect(
+        playerCollider
+    );
+
+    playerOnFloor = false;
+
+    if (result) {
+
+        playerOnFloor = result.normal.y >= 0.15;
+
+        if (!playerOnFloor) {
+
+            playerVelocity.addScaledVector(
+
+                result.normal,
+
+                -result.normal.dot(playerVelocity)
+
+            );
+
+        }
+
+        if (result.depth >= 1e-10) {
+
+            playerCollider.translate(
+
+                result.normal.multiplyScalar(
+                    result.depth
+                )
+
+            );
+
+        }
+
+    }
+
+}
+
+
+// =====================================================
+// UPDATE PLAYER
+// =====================================================
+
+function updatePlayer(deltaTime) {
+
+    let damping = Math.exp(-4 * deltaTime) - 1;
+
+    if (!playerOnFloor) {
+
+        playerVelocity.y -= GRAVITY * deltaTime;
+
+        damping *= 0.1;
+
+    }
+
+    playerVelocity.addScaledVector(
+        playerVelocity,
+        damping
+    );
+
+    const deltaPosition = playerVelocity
+        .clone()
+        .multiplyScalar(deltaTime);
+
+    playerCollider.translate(deltaPosition);
+
+    playerCollisions();
+
+}
+
+
+// =====================================================
+// SPHERE COLLISION
+// =====================================================
+
+const vector1 = new THREE.Vector3();
+
+const vector2 = new THREE.Vector3();
+
+const vector3 = new THREE.Vector3();
+
+
+function playerSphereCollision(sphere) {
+
+    const center = new THREE.Vector3()
+        .addVectors(
+            playerCollider.start,
+            playerCollider.end
+        )
+        .multiplyScalar(0.5);
+
+    const sphereCenter = sphere.collider.center;
+
+    const radius =
+        playerCollider.radius +
+        sphere.collider.radius;
+
+    const radiusSquared = radius * radius;
+
+    for (const point of [
+
+        playerCollider.start,
+
+        playerCollider.end,
+
+        center
+
+    ]) {
+
+        const distanceSquared =
+            point.distanceToSquared(sphereCenter);
+
+        if (distanceSquared < radiusSquared) {
+
+            const normal = vector1
+                .subVectors(point, sphereCenter)
+                .normalize();
+
+            const v1 = vector2
+                .copy(normal)
+                .multiplyScalar(
+                    normal.dot(playerVelocity)
+                );
+
+            const v2 = vector3
+                .copy(normal)
+                .multiplyScalar(
+                    normal.dot(sphere.velocity)
+                );
+
+            playerVelocity.add(v2).sub(v1);
+
+            sphere.velocity.add(v1).sub(v2);
+
+            const distance = (
+                radius - Math.sqrt(distanceSquared)
+            ) / 2;
+
+            sphereCenter.addScaledVector(
+                normal,
+                -distance
+            );
+
+        }
+
+    }
+
+}
+
+
+function spheresCollisions() {
+
+    for (let i = 0; i < spheres.length; i++) {
+
+        const s1 = spheres[i];
+
+        for (let j = i + 1; j < spheres.length; j++) {
+
+            const s2 = spheres[j];
+
+            const distanceSquared =
+                s1.collider.center.distanceToSquared(
+                    s2.collider.center
+                );
+
+            const radius =
+                s1.collider.radius +
+                s2.collider.radius;
+
+            const radiusSquared = radius * radius;
+
+            if (distanceSquared < radiusSquared) {
+
+                const normal = vector1
+                    .subVectors(
+                        s1.collider.center,
+                        s2.collider.center
+                    )
+                    .normalize();
+
+                const v1 = vector2
+                    .copy(normal)
+                    .multiplyScalar(
+                        normal.dot(s1.velocity)
+                    );
+
+                const v2 = vector3
+                    .copy(normal)
+                    .multiplyScalar(
+                        normal.dot(s2.velocity)
+                    );
+
+                s1.velocity.add(v2).sub(v1);
+
+                s2.velocity.add(v1).sub(v2);
+
+                const distance = (
+                    radius - Math.sqrt(distanceSquared)
+                ) / 2;
+
+                s1.collider.center.addScaledVector(
+                    normal,
+                    distance
+                );
+
+                s2.collider.center.addScaledVector(
+                    normal,
+                    -distance
+                );
+
+            }
+
+        }
+
+    }
+
+}
+
+
+// =====================================================
+// UPDATE SPHERES
+// =====================================================
+
+function updateSpheres(deltaTime) {
+
+    spheres.forEach(sphere => {
+
+        sphere.collider.center.addScaledVector(
+            sphere.velocity,
+            deltaTime
+        );
+
+        const result = worldOctree.sphereIntersect(
+            sphere.collider
+        );
+
+        if (result) {
+
+            sphere.velocity.addScaledVector(
+
+                result.normal,
+
+                -result.normal.dot(sphere.velocity) * 1.5
+
+            );
+
+            sphere.collider.center.add(
+
+                result.normal.multiplyScalar(
+                    result.depth
+                )
+
+            );
+
+        } else {
+
+            sphere.velocity.y -= GRAVITY * deltaTime;
+
+        }
+
+        const damping = Math.exp(-1.5 * deltaTime) - 1;
+
+        sphere.velocity.addScaledVector(
+            sphere.velocity,
+            damping
+        );
+
+        playerSphereCollision(sphere);
+
+    });
+
+    spheresCollisions();
+
+    for (const sphere of spheres) {
+
+        sphere.mesh.position.copy(
+            sphere.collider.center
+        );
+
+    }
+
+}
+
+
+// =====================================================
+// MOVEMENT DIRECTION
+// =====================================================
+
+const forwardVector = new THREE.Vector3();
+
+const rightVector = new THREE.Vector3();
+
+
+function getForwardVector() {
+
+    forwardVector.set(
+
+        -Math.sin(cameraYaw),
+
+        0,
+
+        -Math.cos(cameraYaw)
+
+    );
+
+    return forwardVector;
+
+}
+
+
+function getRightVector() {
+
+    rightVector.set(
+
+        Math.cos(cameraYaw),
+
+        0,
+
+        -Math.sin(cameraYaw)
+
+    );
+
+    return rightVector;
+
+}
+
+
+// =====================================================
+// PLAYER CONTROLS
+// =====================================================
+
+function controls(deltaTime) {
+
+    if (portfolioOpen) return;
+
+    const running =
+        keyStates.ShiftLeft ||
+        keyStates.ShiftRight;
+
+    const speedDelta =
+        deltaTime *
+        (playerOnFloor ? 25 : 8) *
+        (running ? 1.7 : 1);
+
+    if (
+        keyStates.KeyW ||
+        keyStates.ArrowUp
+    ) {
+
+        playerVelocity.addScaledVector(
+            getForwardVector(),
+            speedDelta
+        );
+
+    }
+
+    if (
+        keyStates.KeyS ||
+        keyStates.ArrowDown
+    ) {
+
+        playerVelocity.addScaledVector(
+            getForwardVector(),
+            -speedDelta
+        );
+
+    }
+
+    if (
+        keyStates.KeyA ||
+        keyStates.ArrowLeft
+    ) {
+
+        playerVelocity.addScaledVector(
+            getRightVector(),
+            -speedDelta
+        );
+
+    }
+
+    if (
+        keyStates.KeyD ||
+        keyStates.ArrowRight
+    ) {
+
+        playerVelocity.addScaledVector(
+            getRightVector(),
+            speedDelta
+        );
+
+    }
+
+    if (playerOnFloor && keyStates.Space) {
+
+        playerVelocity.y = JUMP_SPEED;
+
+        playerOnFloor = false;
+
+    }
+
+}
+
+
+// =====================================================
+// SOLDIER UPDATE
+// =====================================================
+
+const soldierMoveDirection = new THREE.Vector3();
+
+
+function updateSoldier() {
+
+    if (!soldierLoaded || !soldier) return;
+
+    characterRoot.position.set(
+
+        playerCollider.start.x,
+
+        playerCollider.start.y - playerCollider.radius,
+
+        playerCollider.start.z
+
+    );
+
+    soldierMoveDirection.set(
+
+        playerVelocity.x,
+
+        0,
+
+        playerVelocity.z
+
+    );
+
+    const horizontalSpeed =
+        soldierMoveDirection.length();
+
+    if (horizontalSpeed > 0.15) {
+
+        soldierMoveDirection.normalize();
+
+        characterRoot.rotation.y = Math.atan2(
+
+            soldierMoveDirection.x,
+
+            soldierMoveDirection.z
+
+        ) - Math.PI;
+
+        const running =
+            keyStates.ShiftLeft ||
+            keyStates.ShiftRight;
+
+        playSoldierAnimation(
+            running ? 'run' : 'walk'
+        );
+
+    } else {
+
+        playSoldierAnimation('idle');
+
+    }
+
+}
+
+
+// =====================================================
+// THIRD-PERSON CAMERA
+// =====================================================
+
+const cameraOrigin = new THREE.Vector3();
+
+const cameraDirection = new THREE.Vector3();
+
+const cameraDesired = new THREE.Vector3();
+
+const cameraTarget = new THREE.Vector3();
+
+const cameraRay = new THREE.Ray();
+
+
+function updateThirdPersonCamera() {
+
+    // Portfolio camera is controlled separately.
+    // Do not overwrite its zoom or position.
+
+    if (portfolioOpen) {
+
+        updatePortfolioCamera();
+
+        return;
+
+    }
+
+    const playerHead = playerCollider.end;
+
+    cameraOrigin.copy(playerHead);
+
+    cameraOrigin.y += 0.15;
+
+    const distance = 4.5;
+
+    const height = 1.3;
+
+    cameraDesired.set(
+
+        playerHead.x +
+            Math.sin(cameraYaw) * distance,
+
+        playerHead.y +
+            height +
+            Math.sin(cameraPitch) * 1.5,
+
+        playerHead.z +
+            Math.cos(cameraYaw) * distance
+
+    );
+
+    cameraDirection.subVectors(
+        cameraDesired,
+        cameraOrigin
+    );
+
+    const desiredDistance = cameraDirection.length();
+
+    cameraDirection.normalize();
+
+    cameraRay.origin.copy(cameraOrigin);
+
+    cameraRay.direction.copy(cameraDirection);
+
+    const wallHit = worldOctree.rayIntersect(cameraRay);
+
+    if (wallHit) {
+
+        const safeDistance = Math.max(
+
+            0.25,
+
+            Math.min(
+                desiredDistance,
+                wallHit.distance - 0.25
+            )
+
+        );
+
+        cameraDesired.copy(cameraOrigin)
+            .addScaledVector(
+                cameraDirection,
+                safeDistance
+            );
+
+    }
+
+    camera.position.copy(cameraDesired);
+
+    cameraTarget.copy(playerHead);
+
+    cameraTarget.y += 0.55;
+
+    camera.lookAt(cameraTarget);
+
+}
+
+
+// =====================================================
+// THROW BALL
+// =====================================================
+
+function throwBall() {
+
+    if (portfolioOpen) return;
+
+    const sphere = spheres[sphereIdx];
+
+    camera.getWorldDirection(playerDirection);
+
+    sphere.collider.center
+        .copy(playerCollider.end)
+        .addScaledVector(
+            playerDirection,
+            playerCollider.radius * 1.5
+        );
+
+    const holdDuration = Math.max(
+
+        0,
+
+        performance.now() - mouseTime
+
+    );
+
+    const impulse = 15 + 30 * (
+
+        1 - Math.exp(-holdDuration * 0.001)
+
+    );
+
+    sphere.velocity
+        .copy(playerDirection)
+        .multiplyScalar(impulse);
+
+    sphere.velocity.addScaledVector(
+        playerVelocity,
+        2
+    );
+
+    sphereIdx = (sphereIdx + 1) % spheres.length;
+
+}
+
+
+// =====================================================
+// LOAD COLLISION WORLD
+// =====================================================
+
+const worldLoader = new GLTFLoader();
+
+const MODEL_URL =
+'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r180/examples/models/gltf/collision-world.glb';
+
+
+worldLoader.load(
+
+    MODEL_URL,
+
+    gltf => {
+
+        scene.add(gltf.scene);
+
+        worldOctree.fromGraphNode(gltf.scene);
+
+        gltf.scene.traverse(child => {
+
+            if (child.isMesh) {
+
+                child.castShadow = true;
+
+                child.receiveShadow = true;
+
+                if (child.material.map) {
+
+                    child.material.map.anisotropy =
+                        renderer.capabilities.getMaxAnisotropy();
+
+                }
+
+            }
+
+        });
+
+        const helper = new OctreeHelper(worldOctree);
+
+        helper.visible = false;
+
+        scene.add(helper);
+
+        status.textContent =
+            'World loaded. Press P to open portfolio.';
+
+        console.log('Collision world loaded.');
+
+    },
+
+    xhr => {
+
+        if (xhr.total) {
+
+            status.textContent =
+                'Loading world: ' +
+                Math.round(
+                    xhr.loaded / xhr.total * 100
+                ) +
+                '%';
+
+        }
+
+    },
+
+    error => {
+
+        console.error(
+            'World loading failed:',
+            error
+        );
+
+        status.textContent =
+            'World loading failed. Check browser console.';
+
+    }
+
+);
+
+
+// =====================================================
+// OUT OF BOUNDS RECOVERY
+// =====================================================
+
+function teleportPlayerIfOob() {
+
+    if (playerCollider.end.y <= -25) {
+
+        playerCollider.start.set(0, 0.35, 0);
+
+        playerCollider.end.set(0, 1, 0);
+
+        playerVelocity.set(0, 0, 0);
+
+    }
+
+}
+
+
+// =====================================================
+// RESIZE
+// =====================================================
+
+window.addEventListener(
+    'resize',
+    () => {
+
+        camera.aspect =
+            window.innerWidth / window.innerHeight;
+
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(
+            window.innerWidth,
+            window.innerHeight
+        );
+
+    }
+);
+
+
+// =====================================================
+// ANIMATION LOOP
+// =====================================================
+
+function animate() {
+
+    const frameDelta = Math.min(
+        0.05,
+        1 / 60
+    );
+
+    const deltaTime =
+        frameDelta / STEPS_PER_FRAME;
+
+
+    // Pause game movement while viewing portfolio.
+
+    if (!portfolioOpen) {
+
+        for (let i = 0; i < STEPS_PER_FRAME; i++) {
+
+            controls(deltaTime);
+
+            updatePlayer(deltaTime);
+
+            updateSpheres(deltaTime);
+
+            teleportPlayerIfOob();
+
+        }
+
+    }
+
+
+    if (soldierMixer) {
+
+        soldierMixer.update(frameDelta);
+
+    }
+
+
+    updateSoldier();
+
+    updateThirdPersonCamera();
+
+
+    renderer.render(
+        scene,
+        camera
+    );
+
+    stats.update();
+
+}
+
+
+// =====================================================
+// START
+// =====================================================
+
+renderer.setAnimationLoop(animate);
+
+</script>
+</body>
+</html>
