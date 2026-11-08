@@ -667,6 +667,7 @@ const applications = [
 
 const donationURL =
     'https://engineer-e.github.io/Nvidia-Learning/donate/donate.html';
+const myLifeURL= 'https://engineer-work.github.io/Join-Company/README-life.html';
 
 
 // =====================================================
@@ -767,7 +768,7 @@ function drawPortfolioScreen() {
     ctx.font = 'bold 54px Arial';
 
     ctx.fillText(
-        'MY DIGITAL PORTFOLIO',
+        'Gobal Krishnan V - My Profile ❤️ ',
         55,
         78
     );
@@ -850,6 +851,9 @@ function drawPortfolioScreen() {
             page: tab.page
 
         });
+
+        
+        
 
     });
 
@@ -1004,6 +1008,42 @@ function drawPortfolioScreen() {
             w: 600,
             h: 120,
             url: donationURL
+
+        });
+
+        roundedRect(
+            ctx,
+            700,
+            550,
+            600,
+            120,
+            20
+        );
+
+        ctx.fillStyle = '#559944';
+        ctx.fill();
+
+        ctx.strokeStyle = '#ffc078';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+
+        ctx.fillStyle = '#ffffff';
+
+        ctx.font = 'bold 38px Arial';
+
+        ctx.fillText(
+            '❤️ My Life - History',
+            750,
+            625
+        );
+
+        portfolioHitAreas.push({
+
+            x: 700,
+            y: 550,
+            w: 600,
+            h: 120,
+            url: myLifeURL
 
         });
 
