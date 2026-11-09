@@ -1,0 +1,602 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Procedural Biped — Reinforcement Learning</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;overflow:hidden;background:#101722;color:#edf4ff;font:14px Arial}
+#view{position:fixed;inset:0}
+#panel{position:fixed;top:12px;left:12px;width:300px;padding:15px;background:#101c2bf2;border:1px solid #40566f;border-radius:12px;z-index:3}
+h2{margin:0 0 8px}
+p{font-size:12px;color:#b8c9dc;line-height:1.5}
+button{width:100%;padding:9px;margin:4px 0;background:#263c54;color:white;border:1px solid #536c86;border-radius:7px;cursor:pointer}
+button:hover{background:#365875}
+.primary{background:#087f8c}
+#stats{margin-top:8px;background:#17283b;padding:10px;border-radius:8px;font-size:12px;line-height:1.8}
+#message{margin-top:8px;color:#69e3d7;font-size:12px;line-height:1.5}
+</style>
+</head>
+<body>
+<div id="view"></div>
+<div id="panel">
+<h2>RL Biped Robot</h2>
+<p>Q-learning chooses movement and pushing actions. A procedural joint gait animates the biped as it walks.</p>
+<button class="primary" id="train">Train Agent (5,000 episodes)</button>
+<button id="walk">Start Walking</button>
+<button id="add">Add Block</button>
+<button id="remove">Remove Block</button>
+<button id="reset">Reset Learning</button>
+<div id="stats">
+Episode: <b id="episode">0</b><br>
+Learned states: <b id="states">0</b><br>
+Steps: <b id="steps">0</b><br>
+Successes: <b id="success">0</b><br>
+Exploration: <b id="epsilon">1.00</b>
+</div>
+<div id="message">Loading Three.js…</div>
+</div>
+
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"}}
+</script>
+
+<script type="module">
+import * as THREE from "three";
+
+/* =====================================================
+   THREE.JS
+===================================================== */
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x101722);
+scene.fog=new THREE.Fog(0x101722,20,45);
+
+const camera=new THREE.PerspectiveCamera(48,innerWidth/innerHeight,.1,100);
+camera.position.set(8,12,15);
+camera.lookAt(0,0,0);
+
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(innerWidth,innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+document.querySelector("#view").appendChild(renderer.domElement);
+
+scene.add(new THREE.HemisphereLight(0xd9edff,0x26303b,2));
+const sun=new THREE.DirectionalLight(0xffffff,3);
+sun.position.set(5,12,8);
+sun.castShadow=true;
+scene.add(sun);
+
+const N=8,CELL=1.5;
+const START={x:1,z:1},GOAL={x:6,z:6};
+const wx=x=>(x-3.5)*CELL;
+const wz=z=>(z-3.5)*CELL;
+
+const floor=new THREE.Mesh(
+ new THREE.PlaneGeometry(N*CELL,N*CELL),
+ new THREE.MeshStandardMaterial({color:0x263548,roughness:.9})
+);
+floor.rotation.x=-Math.PI/2;
+floor.receiveShadow=true;
+scene.add(floor);
+
+const grid=new THREE.GridHelper(N*CELL,N,0x70849a,0x40546a);
+grid.position.y=.01;
+scene.add(grid);
+
+/* =====================================================
+   ROBOT — PROCEDURAL GEOMETRY
+===================================================== */
+const robot=new THREE.Group();
+scene.add(robot);
+
+const bodyMat=new THREE.MeshStandardMaterial({
+ color:0x24d9c1,metalness:.4,roughness:.3
+});
+const jointMat=new THREE.MeshStandardMaterial({
+ color:0x24394b,metalness:.5,roughness:.35
+});
+const eyeMat=new THREE.MeshStandardMaterial({
+ color:0x9affff,emissive:0x28cfff,emissiveIntensity:2
+});
+
+function box(parent,size,mat,pos){
+ const m=new THREE.Mesh(new THREE.BoxGeometry(...size),mat);
+ m.position.set(...pos);
+ m.castShadow=true;
+ m.receiveShadow=true;
+ parent.add(m);
+ return m;
+}
+function sphere(parent,r,mat,pos){
+ const m=new THREE.Mesh(new THREE.SphereGeometry(r,16,12),mat);
+ m.position.set(...pos);
+ m.castShadow=true;
+ parent.add(m);
+ return m;
+}
+
+const torso=new THREE.Group();
+robot.add(torso);
+box(torso,[.52,.64,.34],bodyMat,[0,1.12,0]);
+box(torso,[.42,.18,.32],jointMat,[0,.72,0]);
+box(torso,[.34,.34,.32],jointMat,[0,1.62,0]);
+box(torso,[.23,.07,.04],eyeMat,[0,1.65,-.17]);
+
+// Each limb has a pivot at its hip/shoulder.
+// Upper and lower links rotate together with a knee/elbow.
+function createLeg(x){
+ const hip=new THREE.Group();
+ hip.position.set(x,.68,0);
+ robot.add(hip);
+
+ sphere(hip,.11,jointMat,[0,0,0]);
+ box(hip,[.18,.43,.18],bodyMat,[0,-.22,0]);
+
+ const knee=new THREE.Group();
+ knee.position.y=-.43;
+ hip.add(knee);
+ sphere(knee,.09,jointMat,[0,0,0]);
+ box(knee,[.16,.4,.16],jointMat,[0,-.2,0]);
+
+ const foot=new THREE.Group();
+ foot.position.set(0,-.4,-.07);
+ knee.add(foot);
+ box(foot,[.22,.11,.36],bodyMat,[0,-.035,-.08]);
+
+ return {hip,knee,foot};
+}
+function createArm(x){
+ const shoulder=new THREE.Group();
+ shoulder.position.set(x,1.42,0);
+ robot.add(shoulder);
+ sphere(shoulder,.1,jointMat,[0,0,0]);
+ box(shoulder,[.15,.38,.15],bodyMat,[0,-.19,0]);
+
+ const elbow=new THREE.Group();
+ elbow.position.y=-.38;
+ shoulder.add(elbow);
+ sphere(elbow,.08,jointMat,[0,0,0]);
+ box(elbow,[.13,.35,.13],jointMat,[0,-.18,0]);
+ return {shoulder,elbow};
+}
+
+const leftLeg=createLeg(-.16);
+const rightLeg=createLeg(.16);
+const leftArm=createArm(-.37);
+const rightArm=createArm(.37);
+
+const robotShadow=new THREE.Mesh(
+ new THREE.CircleGeometry(.48,24),
+ new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.24})
+);
+robotShadow.rotation.x=-Math.PI/2;
+robotShadow.position.y=.025;
+scene.add(robotShadow);
+
+/* =====================================================
+   WORLD
+===================================================== */
+const fixed=new Set();
+const fixedMeshes=[];
+const blocks=[];
+let blockID=0;
+
+function key(x,z){return `${x},${z}`}
+function isWall(x,z){return fixed.has(key(x,z))}
+function blockAt(x,z,ignore=null){
+ return blocks.find(b=>b.x===x&&b.z===z&&b!==ignore);
+}
+function inside(x,z){return x>=1&&z>=1&&x<=6&&z<=6}
+
+function addWall(x,z){
+ fixed.add(key(x,z));
+ const mesh=new THREE.Mesh(
+  new THREE.BoxGeometry(CELL,.7,CELL),
+  new THREE.MeshStandardMaterial({color:0x53667c})
+ );
+ mesh.position.set(wx(x),.35,wz(z));
+ mesh.castShadow=true;
+ scene.add(mesh);
+ fixedMeshes.push(mesh);
+}
+addWall(3,3);
+addWall(4,3);
+addWall(3,4);
+
+const goal=new THREE.Group();
+const goalBase=new THREE.Mesh(
+ new THREE.CylinderGeometry(.45,.45,.12,24),
+ new THREE.MeshStandardMaterial({color:0x39df7b,emissive:0x13552a})
+);
+goalBase.position.y=.08;
+goal.add(goalBase);
+const goalOrb=new THREE.Mesh(
+ new THREE.SphereGeometry(.2,20,20),
+ new THREE.MeshStandardMaterial({color:0x9affb8,emissive:0x22aa55})
+);
+goalOrb.position.y=.65;
+goal.add(goalOrb);
+goal.position.set(wx(GOAL.x),0,wz(GOAL.z));
+scene.add(goal);
+
+function addBlock(x,z){
+ if(!inside(x,z)||isWall(x,z)||blockAt(x,z))return false;
+ if((x===START.x&&z===START.z)||(x===GOAL.x&&z===GOAL.z))return false;
+ const mesh=new THREE.Mesh(
+  new THREE.BoxGeometry(CELL*.72,.72,CELL*.72),
+  new THREE.MeshStandardMaterial({color:0xf4a340,roughness:.55})
+ );
+ mesh.position.set(wx(x),.36,wz(z));
+ mesh.castShadow=true;
+ mesh.receiveShadow=true;
+ scene.add(mesh);
+ blocks.push({id:blockID++,x,z,mesh});
+ return true;
+}
+function removeBlock(b){
+ if(!b)return;
+ scene.remove(b.mesh);
+ b.mesh.geometry.dispose();
+ b.mesh.material.dispose();
+ blocks.splice(blocks.indexOf(b),1);
+}
+addBlock(2,4);
+addBlock(5,2);
+addBlock(5,5);
+
+/* =====================================================
+   Q-LEARNING
+   Actions: north, east, south, west.
+   Pushing is a valid transition when the cell behind
+   the block is free.
+===================================================== */
+const ACTIONS=[
+ {dx:0,dz:-1},
+ {dx:1,dz:0},
+ {dx:0,dz:1},
+ {dx:-1,dz:0}
+];
+
+const Q=new Map();
+let epsilon=1;
+const alpha=.18,gamma=.94;
+const epsilonMin=.04,epsilonDecay=.9993;
+
+let agent={x:START.x,z:START.z};
+let episode=0,successes=0,totalSteps=0;
+let rewardTotal=0;
+let isTraining=false,walking=false;
+let trainCancelled=false;
+let walkTimer=null;
+
+function stateKey(x,z,blockList){
+ const layout=blockList
+  .map(b=>`${b.x},${b.z}`)
+  .sort()
+  .join(";");
+ return `${x},${z}|${layout}`;
+}
+function getQ(state){
+ if(!Q.has(state))Q.set(state,[0,0,0,0]);
+ return Q.get(state);
+}
+function bestAction(state){
+ const values=getQ(state);
+ let best=0;
+ for(let i=1;i<4;i++)if(values[i]>values[best])best=i;
+ return best;
+}
+function chooseAction(state,explore=true){
+ if(explore&&Math.random()<epsilon)return Math.floor(Math.random()*4);
+ return bestAction(state);
+}
+
+function transition(world,x,z,actionIndex){
+ const a=ACTIONS[actionIndex];
+ const nx=x+a.dx,nz=z+a.dz;
+
+ if(!inside(nx,nz)||isWall(nx,nz)){
+  return {x,z,reward:-4,done:false};
+ }
+
+ const block=world.find(b=>b.x===nx&&b.z===nz);
+ if(block){
+  const bx=nx+a.dx,bz=nz+a.dz;
+  if(!inside(bx,bz)||isWall(bx,bz)||
+     world.some(b=>b!==block&&b.x===bx&&b.z===bz)){
+   return {x,z,reward:-5,done:false};
+  }
+  block.x=bx;block.z=bz;
+  const done=nx===GOAL.x&&nz===GOAL.z;
+  return {x:nx,z:nz,reward:done?100:-1.2,done};
+ }
+
+ const oldDist=Math.abs(GOAL.x-x)+Math.abs(GOAL.z-z);
+ const newDist=Math.abs(GOAL.x-nx)+Math.abs(GOAL.z-nz);
+ const done=nx===GOAL.x&&nz===GOAL.z;
+
+ return {
+  x:nx,z:nz,
+  reward:done?100:-1+(oldDist-newDist)*.4,
+  done
+ };
+}
+
+function cloneBlocks(){
+ return blocks.map(b=>({x:b.x,z:b.z}));
+}
+
+/* =====================================================
+   TRAINING
+===================================================== */
+async function train(count=5000){
+ if(isTraining)return;
+ stopWalking();
+ isTraining=true;
+ trainCancelled=false;
+
+ const snapshot=cloneBlocks();
+ document.querySelector("#message").textContent="Training Q-learning…";
+
+ for(let ep=0;ep<count&&!trainCancelled;ep++){
+  let x=START.x,z=START.z;
+  const world=snapshot.map(b=>({...b}));
+  let done=false,epReward=0;
+
+  for(let t=0;t<180&&!done&&!trainCancelled;t++){
+   const state=stateKey(x,z,world);
+   const action=chooseAction(state,true);
+   const result=transition(world,x,z,action);
+   const nextState=stateKey(result.x,result.z,world);
+
+   const current=getQ(state);
+   const next=getQ(nextState);
+   const maxNext=Math.max(...next);
+
+   current[action]+=alpha*(
+    result.reward+gamma*(result.done?0:maxNext)-current[action]
+   );
+
+   x=result.x;z=result.z;
+   done=result.done;
+   epReward+=result.reward;
+   totalSteps++;
+
+   if(t%40===0){
+    updateStats();
+    await new Promise(resolve=>setTimeout(resolve,0));
+   }
+  }
+
+  episode++;
+  if(done)successes++;
+  epsilon=Math.max(epsilonMin,epsilon*epsilonDecay);
+  rewardTotal=epReward;
+  updateStats();
+ }
+
+ isTraining=false;
+ document.querySelector("#message").textContent=
+  trainCancelled?"Training cancelled.":"Training completed. Try Start Walking.";
+}
+
+/* =====================================================
+   REAL VISIBLE WALK CYCLE
+===================================================== */
+let gaitPhase=0;
+let moving=false;
+let from={x:agent.x,z:agent.z};
+let to={x:agent.x,z:agent.z};
+let moveStart=0;
+const moveDuration=360;
+let activeAction=0;
+
+function smooth(t){return t*t*(3-2*t)}
+
+function animateGait(amount){
+ gaitPhase+=amount;
+ const swing=Math.sin(gaitPhase)*.52;
+ const lift=Math.max(0,Math.cos(gaitPhase))*0.13;
+
+ leftLeg.hip.rotation.x=swing;
+ rightLeg.hip.rotation.x=-swing;
+ leftLeg.knee.rotation.x=Math.max(0,-swing)*.8;
+ rightLeg.knee.rotation.x=Math.max(0,swing)*.8;
+
+ leftArm.shoulder.rotation.x=-swing*.65;
+ rightArm.shoulder.rotation.x=swing*.65;
+ leftArm.elbow.rotation.x=.15+Math.max(0,swing)*.35;
+ rightArm.elbow.rotation.x=.15+Math.max(0,-swing)*.35;
+
+ torso.position.y=.025+lift;
+}
+
+function resetGait(){
+ for(const leg of [leftLeg,rightLeg]){
+  leg.hip.rotation.x=0;
+  leg.knee.rotation.x=0;
+ }
+ for(const arm of [leftArm,rightArm]){
+  arm.shoulder.rotation.x=0;
+  arm.elbow.rotation.x=0;
+ }
+ torso.position.y=0;
+}
+
+function updateRobot(){
+ robot.position.set(wx(agent.x),0,wz(agent.z));
+ robotShadow.position.set(wx(agent.x),.025,wz(agent.z));
+}
+
+function beginStep(){
+ if(!walking||moving)return;
+
+ const state=stateKey(agent.x,agent.z,blocks);
+ const action=chooseAction(state,false);
+ const a=ACTIONS[action];
+
+ const result=transition(blocks,agent.x,agent.z,action);
+ activeAction=action;
+
+ if(result.x===agent.x&&result.z===agent.z){
+  // Blocked movement: show a brief body reaction instead of teleporting.
+  robot.rotation.y=Math.atan2(a.dx,a.dz);
+  return;
+ }
+
+ from={x:agent.x,z:agent.z};
+ to={x:result.x,z:result.z};
+ agent.x=result.x;
+ agent.z=result.z;
+
+ robot.rotation.y=Math.atan2(a.dx,a.dz);
+ moving=true;
+ moveStart=performance.now();
+ currentMoveReward=result.reward;
+ moveDone=result.done;
+
+ if(result.done){
+  successes++;
+  document.querySelector("#message").textContent="Goal reached!";
+ }
+}
+let currentMoveReward=0,moveDone=false;
+
+function stopWalking(){
+ walking=false;
+ moving=false;
+ clearInterval(walkTimer);
+ resetGait();
+ document.querySelector("#walk").textContent="Start Walking";
+}
+
+document.querySelector("#walk").onclick=()=>{
+ if(isTraining)return;
+ if(walking){
+  stopWalking();
+ }else{
+  walking=true;
+  document.querySelector("#walk").textContent="Pause Walking";
+  document.querySelector("#message").textContent="Robot is following its learned policy.";
+  beginStep();
+  walkTimer=setInterval(beginStep,420);
+ }
+};
+
+/* =====================================================
+   UI
+===================================================== */
+function updateStats(){
+ document.querySelector("#episode").textContent=episode;
+ document.querySelector("#states").textContent=Q.size;
+ document.querySelector("#steps").textContent=totalSteps;
+ document.querySelector("#success").textContent=successes;
+ document.querySelector("#epsilon").textContent=epsilon.toFixed(2);
+}
+
+document.querySelector("#train").onclick=()=>train(5000);
+
+function randomCell(){
+ for(let i=0;i<200;i++){
+  const x=1+Math.floor(Math.random()*6);
+  const z=1+Math.floor(Math.random()*6);
+  if(inside(x,z)&&!isWall(x,z)&&!blockAt(x,z)&&
+     !(x===GOAL.x&&z===GOAL.z)&&
+     !(x===agent.x&&z===agent.z))return {x,z};
+ }
+ return null;
+}
+
+document.querySelector("#add").onclick=()=>{
+ stopWalking();
+ const p=randomCell();
+ if(!p){document.querySelector("#message").textContent="No empty cell.";return;}
+ addBlock(p.x,p.z);
+ document.querySelector("#message").textContent="Block added; training new layout.";
+ train(2500);
+};
+
+document.querySelector("#remove").onclick=()=>{
+ stopWalking();
+ if(!blocks.length)return;
+ let closest=blocks[0],dist=Infinity;
+ for(const b of blocks){
+  const d=Math.abs(b.x-agent.x)+Math.abs(b.z-agent.z);
+  if(d<dist){dist=d;closest=b;}
+ }
+ removeBlock(closest);
+ document.querySelector("#message").textContent="Block removed; training new layout.";
+ train(2500);
+};
+
+document.querySelector("#reset").onclick=()=>{
+ trainCancelled=true;
+ stopWalking();
+ Q.clear();
+ epsilon=1;episode=0;successes=0;totalSteps=0;rewardTotal=0;
+ agent={x:START.x,z:START.z};
+ updateRobot();updateStats();
+ document.querySelector("#message").textContent="Q-learning reset.";
+};
+
+/* =====================================================
+   FRAME LOOP — INTERPOLATED STEP + GAIT
+===================================================== */
+const clock=new THREE.Clock();
+
+function animate(){
+ requestAnimationFrame(animate);
+
+ const now=performance.now();
+
+ if(moving){
+  const t=Math.min(1,(now-moveStart)/moveDuration);
+  const s=smooth(t);
+
+  robot.position.set(
+   THREE.MathUtils.lerp(wx(from.x),wx(to.x),s),
+   Math.sin(Math.PI*t)*.12,
+   THREE.MathUtils.lerp(wz(from.z),wz(to.z),s)
+  );
+  robotShadow.position.set(robot.position.x,.025,robot.position.z);
+
+  animateGait(.18);
+
+  if(t>=1){
+   moving=false;
+   updateRobot();
+   if(moveDone){
+    stopWalking();
+   }
+  }
+ }else if(walking){
+  animateGait(.04);
+ }else{
+  resetGait();
+  updateRobot();
+ }
+
+ goalOrb.position.y=.65+Math.sin(clock.getElapsedTime()*2)*.07;
+ goalOrb.rotation.y+=.012;
+
+ renderer.render(scene,camera);
+}
+animate();
+
+window.addEventListener("resize",()=>{
+ camera.aspect=innerWidth/innerHeight;
+ camera.updateProjectionMatrix();
+ renderer.setSize(innerWidth,innerHeight);
+});
+
+updateRobot();
+updateStats();
+document.querySelector("#message").textContent=
+ "Ready. Click Train Agent before testing.";
+</script>
+</body>
+</html>

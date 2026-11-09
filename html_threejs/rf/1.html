@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js Humanoid Acrobatics Prototype</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background: #101820;
+            color: white;
+        }
+
+        #info {
+            position: fixed;
+            top: 12px;
+            left: 12px;
+            z-index: 10;
+            max-width: 330px;
+            padding: 14px 16px;
+            background: rgba(0, 0, 0, 0.72);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 10px;
+            line-height: 1.55;
+            font-size: 13px;
+        }
+
+        #info strong {
+            display: block;
+            font-size: 15px;
+            margin-bottom: 7px;
+        }
+
+        #status {
+            color: #80e8ff;
+            margin-top: 8px;
+        }
+
+        #crosshair {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: white;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            opacity: 0.75;
+        }
+
+        #start {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            background: rgba(0, 0, 0, 0.65);
+        }
+
+        #start button {
+            border: 0;
+            border-radius: 8px;
+            padding: 15px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #07121c;
+            background: #80e8ff;
+        }
+
+        #start button:hover {
+            background: #b1f2ff;
+        }
+    </style>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+
+<body>
+
+    <div id="info">
+        <strong>Humanoid Acrobatics Prototype</strong>
+        WASD / Arrow keys — Move<br>
+        Mouse — Look around<br>
+        Space — Jump<br>
+        F — Backflip<br>
+        G — Frontflip<br>
+        Shift — Run<br>
+        Esc — Release mouse
+        <div id="status">Loading game...</div>
+    </div>
+
+    <div id="crosshair"></div>
+
+    <div id="start">
+        <button id="startButton">Click to Play</button>
+    </div>
+
+    <script type="module">
+
+        import * as THREE from 'three';
+
+        import { GLTFLoader }
+            from 'three/addons/loaders/GLTFLoader.js';
+
+        import { Octree }
+            from 'three/addons/math/Octree.js';
+
+        import { Capsule }
+            from 'three/addons/math/Capsule.js';
+
+        import Stats
+            from 'three/addons/libs/stats.module.js';
+
+
+        // =====================================================
+        // CONSTANTS
+        // =====================================================
+
+        const WORLD_URL =
+            'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r180/examples/models/gltf/collision-world.glb';
+
+        const SOLDIER_URL =
+            'https://threejs.org/examples/models/gltf/Soldier.glb';
+
+        const GRAVITY = 30;
+
+        const WALK_SPEED = 5.0;
+
+        const RUN_SPEED = 8.0;
+
+        const JUMP_SPEED = 9.5;
+
+        const PLAYER_RADIUS = 0.35;
+
+        const CAMERA_DISTANCE = 5.0;
+
+        const CAMERA_HEIGHT = 2.2;
+
+        const CAMERA_SENSITIVITY = 0.002;
+
+
+        // =====================================================
+        // GLOBALS
+        // =====================================================
+
+        let scene;
+        let camera;
+        let renderer;
+        let stats;
+
+        let worldOctree;
+
+        let soldier;
+        let soldierMixer;
+
+        let soldierLoaded = false;
+
+        let activeAnimation = null;
+
+        const soldierActions = {};
+
+        let playerOnFloor = false;
+
+        let gameStarted = false;
+
+        let yaw = 0;
+
+        let pitch = -0.12;
+
+        let mouseDown = false;
+
+        let previousMouseX = 0;
+
+        let previousMouseY = 0;
+
+        const clock = new THREE.Clock();
+
+        const statusElement =
+            document.getElementById('status');
+
+
+        // =====================================================
+        // PLAYER CAPSULE
+        // =====================================================
+
+        const playerCollider = new Capsule(
+            new THREE.Vector3(0, 0.35, 0),
+            new THREE.Vector3(0, 1.0, 0),
+            PLAYER_RADIUS
+        );
+
+        const playerVelocity = new THREE.Vector3();
+
+        const playerDirection = new THREE.Vector3();
+
+        const playerMoveDirection = new THREE.Vector3();
+
+        const playerSideDirection = new THREE.Vector3();
+
+        const worldUp = new THREE.Vector3(0, 1, 0);
+
+
+        // =====================================================
+        // INPUT
+        // =====================================================
+
+        const keyStates = {};
+
+        window.addEventListener('keydown', (event) => {
+
+            keyStates[event.code] = true;
+
+            if (event.code === 'Space') {
+                event.preventDefault();
+            }
+
+            if (event.repeat) return;
+
+            if (event.code === 'KeyF') {
+                startAcrobatics('backflip');
+            }
+
+            if (event.code === 'KeyG') {
+                startAcrobatics('frontflip');
+            }
+
+        });
+
+        window.addEventListener('keyup', (event) => {
+
+            keyStates[event.code] = false;
+
+        });
+
+
+        // =====================================================
+        // POINTER LOCK AND CAMERA
+        // =====================================================
+
+        document
+            .getElementById('startButton')
+            .addEventListener('click', () => {
+
+                renderer.domElement.requestPointerLock();
+
+            });
+
+        document.addEventListener('pointerlockchange', () => {
+
+            gameStarted =
+                document.pointerLockElement === renderer.domElement;
+
+            document.getElementById('start').style.display =
+                gameStarted ? 'none' : 'flex';
+
+        });
+
+        document.addEventListener('mousemove', (event) => {
+
+            if (!gameStarted) return;
+
+            yaw -= event.movementX * CAMERA_SENSITIVITY;
+
+            pitch -= event.movementY * CAMERA_SENSITIVITY;
+
+            pitch = THREE.MathUtils.clamp(
+                pitch,
+                -1.1,
+                0.65
+            );
+
+        });
+
+
+        // =====================================================
+        // SCENE
+        // =====================================================
+
+        scene = new THREE.Scene();
+
+        scene.background = new THREE.Color(0x9db7d0);
+
+        scene.fog = new THREE.Fog(
+            0x9db7d0,
+            20,
+            100
+        );
+
+
+        // =====================================================
+        // CAMERA
+        // =====================================================
+
+        camera = new THREE.PerspectiveCamera(
+            70,
+            window.innerWidth / window.innerHeight,
+            0.1,
+            200
+        );
+
+        camera.position.set(0, 3, 8);
+
+
+        // =====================================================
+        // LIGHTING
+        // =====================================================
+
+        const hemiLight = new THREE.HemisphereLight(
+            0xffffff,
+            0x526070,
+            2.0
+        );
+
+        scene.add(hemiLight);
+
+        const directionalLight = new THREE.DirectionalLight(
+            0xffffff,
+            3.0
+        );
+
+        directionalLight.position.set(
+            10,
+            20,
+            10
+        );
+
+        directionalLight.castShadow = true;
+
+        directionalLight.shadow.mapSize.set(
+            2048,
+            2048
+        );
+
+        scene.add(directionalLight);
+
+
+        // =====================================================
+        // RENDERER
+        // =====================================================
+
+        renderer = new THREE.WebGLRenderer({
+            antialias: true
+        });
+
+        renderer.setPixelRatio(
+            Math.min(window.devicePixelRatio, 2)
+        );
+
+        renderer.setSize(
+            window.innerWidth,
+            window.innerHeight
+        );
+
+        renderer.shadowMap.enabled = true;
+
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+
+        renderer.toneMappingExposure = 1.0;
+
+        document.body.appendChild(renderer.domElement);
+
+
+        // =====================================================
+        // STATS
+        // =====================================================
+
+        stats = new Stats();
+
+        stats.domElement.style.position = 'fixed';
+
+        stats.domElement.style.top = '0px';
+
+        stats.domElement.style.right = '0px';
+
+        document.body.appendChild(stats.domElement);
+
+
+        // =====================================================
+        // OCTREE COLLISION WORLD
+        // =====================================================
+
+        worldOctree = new Octree();
+
+        const worldLoader = new GLTFLoader();
+
+        worldLoader.load(
+            WORLD_URL,
+
+            (gltf) => {
+
+                scene.add(gltf.scene);
+
+                worldOctree.fromGraphNode(gltf.scene);
+
+                gltf.scene.traverse((child) => {
+
+                    if (!child.isMesh) return;
+
+                    child.castShadow = true;
+
+                    child.receiveShadow = true;
+
+                    if (child.material?.map) {
+
+                        child.material.map.anisotropy =
+                            renderer.capabilities.getMaxAnisotropy();
+
+                    }
+
+                });
+
+                statusElement.textContent =
+                    'Collision world loaded. Loading Soldier...';
+
+            },
+
+            undefined,
+
+            (error) => {
+
+                console.error(
+                    'World loading error:',
+                    error
+                );
+
+                statusElement.textContent =
+                    'World failed to load. Check console.';
+
+            }
+        );
+
+
+        // =====================================================
+        // SOLDIER VISUAL ROOT
+        // =====================================================
+
+        const characterRoot = new THREE.Group();
+
+        scene.add(characterRoot);
+
+
+        // =====================================================
+        // ACROBATICS PIVOT
+        // =====================================================
+        // The model rotates around an approximate torso point.
+        // This is visual rotation only; the capsule remains upright.
+
+        const acrobaticsPivot = new THREE.Group();
+
+        acrobaticsPivot.position.y = 0.9;
+
+        characterRoot.add(acrobaticsPivot);
+
+
+        // =====================================================
+        // ACROBATICS STATE
+        // =====================================================
+
+        const acrobatics = {
+
+            active: false,
+
+            kind: 'backflip',
+
+            elapsed: 0,
+
+            duration: 0.95,
+
+            totalRotation: Math.PI * 2,
+
+            rotationSign: 1,
+
+            waitingForLanding: false
+
+        };
+
+
+        // =====================================================
+        // LOAD SOLDIER GLB
+        // =====================================================
+
+        const soldierLoader = new GLTFLoader();
+
+        soldierLoader.load(
+            SOLDIER_URL,
+
+            (gltf) => {
+
+                soldier = gltf.scene;
+
+                soldier.position.y = -0.9;
+
+                acrobaticsPivot.add(soldier);
+
+                soldier.traverse((child) => {
+
+                    if (!child.isMesh) return;
+
+                    child.castShadow = true;
+
+                    child.receiveShadow = true;
+
+                });
+
+                soldier.rotation.y= Math.PI
+
+                soldierMixer = new THREE.AnimationMixer(soldier);
+
+                const clips = gltf.animations;
+
+                clips.forEach((clip) => {
+
+                    const name = clip.name.toLowerCase();
+
+                    const action = soldierMixer.clipAction(clip);
+
+                    soldierActions[name] = action;
+
+                });
+
+                playSoldierAnimation('idle');
+
+                soldierLoaded = true;
+
+                statusElement.textContent =
+                    'Ready. Press F for backflip or G for frontflip.';
+
+            },
+
+            (xhr) => {
+
+                if (xhr.total > 0) {
+
+                    const percent =
+                        (xhr.loaded / xhr.total) * 100;
+
+                    statusElement.textContent =
+                        `Loading Soldier: ${percent.toFixed(0)}%`;
+
+                }
+
+            },
+
+            (error) => {
+
+                console.error(
+                    'Soldier loading error:',
+                    error
+                );
+
+                statusElement.textContent =
+                    'Soldier.glb failed to load.';
+
+            }
+        );
+
+
+        // =====================================================
+        // PLAY SOLDIER ANIMATION
+        // =====================================================
+
+        function playSoldierAnimation(name) {
+
+            if (!soldierMixer) return;
+
+            const targetName = Object.keys(soldierActions)
+                .find(key => key.includes(name));
+
+            if (!targetName) return;
+
+            const nextAction = soldierActions[targetName];
+
+            if (!nextAction) return;
+
+            if (activeAnimation === nextAction) return;
+
+            if (activeAnimation) {
+
+                activeAnimation.fadeOut(0.2);
+
+            }
+
+            nextAction.reset();
+
+            nextAction.setEffectiveWeight(1);
+
+            nextAction.setEffectiveTimeScale(1);
+
+            nextAction.fadeIn(0.2);
+
+            nextAction.play();
+
+            activeAnimation = nextAction;
+
+        }
+
+
+        // =====================================================
+        // CAMERA DIRECTION
+        // =====================================================
+
+        function getForwardVector() {
+
+            return new THREE.Vector3(
+                -Math.sin(yaw),
+                0,
+                -Math.cos(yaw)
+            );
+
+        }
+
+        function getSideVector() {
+
+            return new THREE.Vector3(
+                Math.cos(yaw),
+                0,
+                -Math.sin(yaw)
+            );
+
+        }
+
+
+        // =====================================================
+        // START ACROBATICS
+        // =====================================================
+
+        function startAcrobatics(kind) {
+
+            if (!soldierLoaded) return;
+
+            if (acrobatics.active) return;
+
+            if (!playerOnFloor) return;
+
+            acrobatics.active = true;
+
+            acrobatics.kind = kind;
+
+            acrobatics.elapsed = 0;
+
+            acrobatics.duration =
+                kind === 'spin' ? 0.85 : 0.95;
+
+            acrobatics.totalRotation =
+                Math.PI * 2;
+
+            acrobatics.waitingForLanding = false;
+
+            // Direction of visual somersault:
+            // F = backflip, G = frontflip.
+            acrobatics.rotationSign =
+                kind === 'frontflip' ? -1 : 1;
+
+            // Launch the player into the air.
+            playerVelocity.y = JUMP_SPEED;
+
+            // A small horizontal impulse gives the flip some travel.
+            const forward = getForwardVector();
+
+            playerVelocity.addScaledVector(
+                forward,
+                1.1
+            );
+
+            playerOnFloor = false;
+
+            playSoldierAnimation('idle');
+
+            statusElement.textContent =
+                `Acrobatics: ${kind}`;
+
+        }
+
+
+        // =====================================================
+        // UPDATE ACROBATICS
+        // =====================================================
+
+        function updateAcrobatics(delta) {
+
+            if (!acrobatics.active) {
+
+                acrobaticsPivot.rotation.set(
+                    0,
+                    0,
+                    0
+                );
+
+                return;
+
+            }
+
+            acrobatics.elapsed += delta;
+
+            const t = THREE.MathUtils.clamp(
+                acrobatics.elapsed / acrobatics.duration,
+                0,
+                1
+            );
+
+            // Use a smooth phase progression.
+            const eased =
+                t * t * (3 - 2 * t);
+
+            if (acrobatics.kind === 'spin') {
+
+                acrobaticsPivot.rotation.y =
+                    eased * acrobatics.totalRotation;
+
+            } else {
+
+                acrobaticsPivot.rotation.x =
+                    acrobatics.rotationSign *
+                    eased *
+                    acrobatics.totalRotation;
+
+            }
+
+            // At 2π the visual returns to its upright orientation.
+            // Keep the state alive until the player has landed.
+            if (t >= 1) {
+
+                acrobatics.waitingForLanding = true;
+
+                if (playerOnFloor) {
+
+                    finishAcrobatics();
+
+                }
+
+            }
+
+        }
+
+
+        // =====================================================
+        // FINISH ACROBATICS
+        // =====================================================
+
+        function finishAcrobatics() {
+
+            acrobatics.active = false;
+
+            acrobatics.waitingForLanding = false;
+
+            acrobaticsPivot.rotation.set(
+                0,
+                0,
+                0
+            );
+
+            statusElement.textContent =
+                'Acrobatics complete — landed.';
+
+        }
+
+
+        // =====================================================
+        // PLAYER MOVEMENT
+        // =====================================================
+
+        function updateControls(delta) {
+
+            if (!gameStarted) return;
+
+            const running =
+                keyStates['ShiftLeft'] ||
+                keyStates['ShiftRight'];
+
+            const speed =
+                running ? RUN_SPEED : WALK_SPEED;
+
+            const acceleration =
+                playerOnFloor ? 25 : 8;
+
+            const speedDelta =
+                delta * acceleration;
+
+            playerMoveDirection.set(0, 0, 0);
+
+            const forward = getForwardVector();
+
+            const side = getSideVector();
+
+            if (
+                keyStates['KeyW'] ||
+                keyStates['ArrowUp']
+            ) {
+
+                playerMoveDirection.add(forward);
+
+            }
+
+            if (
+                keyStates['KeyS'] ||
+                keyStates['ArrowDown']
+            ) {
+
+                playerMoveDirection.sub(forward);
+
+            }
+
+            if (
+                keyStates['KeyA'] ||
+                keyStates['ArrowLeft']
+            ) {
+
+                playerMoveDirection.sub(side);
+
+            }
+
+            if (
+                keyStates['KeyD'] ||
+                keyStates['ArrowRight']
+            ) {
+
+                playerMoveDirection.add(side);
+
+            }
+
+            if (playerMoveDirection.lengthSq() > 0) {
+
+                playerMoveDirection.normalize();
+
+                playerVelocity.x +=
+                    playerMoveDirection.x *
+                    speed *
+                    speedDelta;
+
+                playerVelocity.z +=
+                    playerMoveDirection.z *
+                    speed *
+                    speedDelta;
+
+            }
+
+            // Ground friction.
+            if (playerOnFloor) {
+
+                const damping =
+                    Math.exp(-8 * delta);
+
+                playerVelocity.x *= damping;
+
+                playerVelocity.z *= damping;
+
+            }
+
+            // Clamp horizontal speed.
+            const horizontalVelocity =
+                new THREE.Vector3(
+                    playerVelocity.x,
+                    0,
+                    playerVelocity.z
+                );
+
+            if (horizontalVelocity.length() > speed) {
+
+                horizontalVelocity.setLength(speed);
+
+                playerVelocity.x =
+                    horizontalVelocity.x;
+
+                playerVelocity.z =
+                    horizontalVelocity.z;
+
+            }
+
+            // Normal jump.
+            if (
+                playerOnFloor &&
+                keyStates['Space'] &&
+                !acrobatics.active
+            ) {
+
+                playerVelocity.y = JUMP_SPEED;
+
+                playerOnFloor = false;
+
+            }
+
+        }
+
+
+        // =====================================================
+        // PLAYER COLLISION AND GRAVITY
+        // =====================================================
+
+        function updatePlayer(delta) {
+
+            if (!worldOctree) return;
+
+            // Gravity.
+            playerVelocity.y -= GRAVITY * delta;
+
+            // Move capsule.
+            playerCollider.translate(
+                playerVelocity.clone().multiplyScalar(delta)
+            );
+
+            // Collision resolution.
+            const result =
+                worldOctree.capsuleIntersect(playerCollider);
+
+            playerOnFloor = false;
+
+            if (result) {
+
+                playerCollider.translate(
+                    result.normal.clone().multiplyScalar(
+                        result.depth
+                    )
+                );
+
+                if (result.normal.y > 0) {
+
+                    playerOnFloor = true;
+
+                }
+
+                // Remove velocity into the collision surface.
+                const velocityDot =
+                    playerVelocity.dot(result.normal);
+
+                if (velocityDot < 0) {
+
+                    playerVelocity.addScaledVector(
+                        result.normal,
+                        -velocityDot
+                    );
+
+                }
+
+            }
+
+            // If the flip has completed and the character lands,
+            // return to the normal movement state.
+            if (
+                acrobatics.active &&
+                acrobatics.waitingForLanding &&
+                playerOnFloor
+            ) {
+
+                finishAcrobatics();
+
+            }
+
+            // Reset if the player falls out of the world.
+            if (playerCollider.end.y < -25) {
+
+                playerCollider.start.set(
+                    0,
+                    0.35,
+                    0
+                );
+
+                playerCollider.end.set(
+                    0,
+                    1,
+                    0
+                );
+
+                playerVelocity.set(0, 0, 0);
+
+                playerOnFloor = false;
+
+                acrobatics.active = false;
+
+                acrobaticsPivot.rotation.set(
+                    0,
+                    0,
+                    0
+                );
+
+            }
+
+        }
+
+
+        // =====================================================
+        // UPDATE SOLDIER POSITION AND DIRECTION
+        // =====================================================
+
+        function updateSoldier() {
+
+            if (!soldierLoaded || !soldier) return;
+
+            characterRoot.position.set(
+                playerCollider.start.x,
+                playerCollider.start.y -
+                    playerCollider.radius,
+                playerCollider.start.z
+            );
+
+            // The torso pivot owns flip rotation.
+            if (acrobatics.active) return;
+
+            acrobaticsPivot.rotation.set(
+                0,
+                0,
+                0
+            );
+
+            const horizontalSpeed = Math.sqrt(
+                playerVelocity.x * playerVelocity.x +
+                playerVelocity.z * playerVelocity.z
+            );
+
+            if (horizontalSpeed > 0.15) {
+
+                // Face the direction of movement.
+                characterRoot.rotation.y = Math.atan2(
+                    playerVelocity.x,
+                    playerVelocity.z
+                );
+
+                const running =
+                    keyStates['ShiftLeft'] ||
+                    keyStates['ShiftRight'];
+
+                if (running) {
+
+                    playSoldierAnimation('run');
+
+                } else {
+
+                    playSoldierAnimation('walk');
+
+                }
+
+            } else {
+
+                playSoldierAnimation('idle');
+
+            }
+
+        }
+
+
+        // =====================================================
+        // THIRD-PERSON CAMERA
+        // =====================================================
+
+        function updateCamera() {
+
+            const playerPosition =
+                playerCollider.end.clone();
+
+            const horizontalDirection =
+                new THREE.Vector3(
+                    Math.sin(yaw),
+                    0,
+                    Math.cos(yaw)
+                );
+
+            const cameraOffset =
+                horizontalDirection.multiplyScalar(
+                    CAMERA_DISTANCE
+                );
+
+            camera.position.copy(playerPosition);
+
+            camera.position.add(cameraOffset);
+
+            camera.position.y += CAMERA_HEIGHT;
+
+            // Apply pitch by aiming toward a point around the player.
+            const lookTarget =
+                playerPosition.clone();
+
+            lookTarget.y += pitch * 4.0;
+
+            camera.lookAt(lookTarget);
+
+        }
+
+
+        // =====================================================
+        // ANIMATION LOOP
+        // =====================================================
+
+        function animate() {
+
+            const delta = Math.min(
+                clock.getDelta(),
+                0.05
+            );
+
+            // Movement input.
+            updateControls(delta);
+
+            // Capsule collision + gravity.
+            updatePlayer(delta);
+
+            // Visual acrobatics.
+            updateAcrobatics(delta);
+
+            // Soldier animation mixer.
+            if (soldierMixer) {
+
+                soldierMixer.update(delta);
+
+            }
+
+            // Sync character to the capsule.
+            updateSoldier();
+
+            // Follow player.
+            updateCamera();
+
+            renderer.render(
+                scene,
+                camera
+            );
+
+            stats.update();
+
+        }
+
+
+        // =====================================================
+        // RESIZE
+        // =====================================================
+
+        window.addEventListener('resize', () => {
+
+            camera.aspect =
+                window.innerWidth /
+                window.innerHeight;
+
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(
+                window.innerWidth,
+                window.innerHeight
+            );
+
+            renderer.setPixelRatio(
+                Math.min(window.devicePixelRatio, 2)
+            );
+
+        });
+
+
+        // =====================================================
+        // START
+        // =====================================================
+
+        renderer.setAnimationLoop(animate);
+
+    </script>
+
+</body>
+</html>

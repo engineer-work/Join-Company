@@ -1,0 +1,1777 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personal Cortex — Reinforcement Learning</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    background: #88ccee;
+}
+
+#container { width: 100%; height: 100vh; }
+canvas { display: block; }
+
+#info {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 10;
+    padding: 12px 16px;
+    color: white;
+    background: rgba(0,0,0,.75);
+    border-radius: 8px;
+    line-height: 1.6;
+    pointer-events: none;
+    font-size: 12px;
+}
+
+#status {
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    z-index: 10;
+    padding: 9px 13px;
+    color: white;
+    background: rgba(0,0,0,.8);
+    border-radius: 6px;
+    pointer-events: none;
+    font-size: 12px;
+}
+
+#rl-panel {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 285px;
+    z-index: 20;
+    color: #eaf6ff;
+    background: rgba(5,18,32,.94);
+    border: 1px solid #3983aa;
+    border-radius: 10px;
+    padding: 13px;
+    box-shadow: 0 5px 25px #0005;
+    font-size: 12px;
+}
+
+#rl-panel h3 {
+    margin: 0 0 10px;
+    color: #67d5ff;
+    font-size: 16px;
+}
+
+.rl-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+    margin: 10px 0;
+}
+
+#rl-panel button {
+    border: 1px solid #438bb0;
+    background: #123b57;
+    color: white;
+    padding: 9px 6px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#rl-panel button:hover { background: #17658e; }
+
+#rl-panel button.active { background: #087eae; }
+
+.rl-stat {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px solid #ffffff19;
+}
+
+#rl-panel label {
+    display: block;
+    margin-top: 9px;
+    color: #b9d9eb;
+}
+
+#rl-panel input {
+    width: 100%;
+    margin-top: 5px;
+    padding: 7px;
+    background: #102a40;
+    color: white;
+    border: 1px solid #367da2;
+    border-radius: 5px;
+}
+
+#rl-panel small {
+    display: block;
+    color: #9bb9cb;
+    line-height: 1.5;
+    margin-top: 8px;
+}
+
+#progress-track {
+    height: 7px;
+    background: #253b4c;
+    border-radius: 10px;
+    margin-top: 9px;
+    overflow: hidden;
+}
+
+#progress {
+    height: 100%;
+    width: 0%;
+    background: #45d49b;
+    transition: width .15s;
+}
+
+@media(max-width:700px) {
+    #rl-panel {
+        width: 220px;
+        top: auto;
+        bottom: 55px;
+        right: 8px;
+        padding: 9px;
+    }
+    #info { max-width: 190px; }
+}
+</style>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+
+<body>
+
+<div id="info">
+<strong>PERSONAL CORTEX — 3D WORLD</strong><br>
+Click game to capture mouse<br>
+WASD / Arrows — Move<br>
+SHIFT — Run | SPACE — Jump<br>
+Mouse — Look | Hold left mouse — Throw ball<br>
+<strong>P — Open / close portfolio</strong><br>
+W / E / R — Transform portfolio<br>
+Q — World / Local | X / Y / Z — Axes<br>
+Mouse wheel — Portfolio zoom
+</div>
+
+<div id="container"></div>
+<div id="status">Loading 3D world...</div>
+
+<div id="rl-panel">
+    <h3>🧠 Reinforcement Learning</h3>
+
+    <div class="rl-stat">
+        <span>Agent mode</span>
+        <strong id="rl-mode">MANUAL</strong>
+    </div>
+    <div class="rl-stat">
+        <span>Episode</span>
+        <strong id="rl-episode">0</strong>
+    </div>
+    <div class="rl-stat">
+        <span>Total steps</span>
+        <strong id="rl-steps">0</strong>
+    </div>
+    <div class="rl-stat">
+        <span>Last reward</span>
+        <strong id="rl-reward">0</strong>
+    </div>
+    <div class="rl-stat">
+        <span>Goal distance</span>
+        <strong id="rl-distance">--</strong>
+    </div>
+    <div class="rl-stat">
+        <span>Learned states</span>
+        <strong id="rl-states">0</strong>
+    </div>
+
+    <div id="progress-track"><div id="progress"></div></div>
+
+    <div class="rl-buttons">
+        <button id="train-btn">▶ Train</button>
+        <button id="auto-btn">🤖 Autopilot</button>
+        <button id="manual-btn" class="active">Manual</button>
+        <button id="stop-btn">■ Stop</button>
+        <button id="save-btn">Save brain</button>
+        <button id="load-btn">Load brain</button>
+        <button id="reset-btn">Reset brain</button>
+        <button id="goal-btn">Set goal here</button>
+    </div>
+
+    <label>
+        Training episodes
+        <input id="episodes-input" type="number" min="1" max="10000" value="100">
+    </label>
+
+    <small>
+        Training uses the real collision world and capsule physics.
+        During training, manual movement is disabled. Autopilot uses
+        the learned Q-table. Click "Set goal here" to use the point
+        in front of the player as the target.
+    </small>
+</div>
+
+<script type="module">
+
+import * as THREE from 'three';
+import Stats from 'three/addons/libs/stats.module.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { Octree } from 'three/addons/math/Octree.js';
+import { OctreeHelper } from 'three/addons/helpers/OctreeHelper.js';
+import { Capsule } from 'three/addons/math/Capsule.js';
+import { TransformControls } from 'three/addons/controls/TransformControls.js';
+
+const container = document.getElementById('container');
+const status = document.getElementById('status');
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x88ccee);
+scene.fog = new THREE.Fog(0x88ccee, 0, 65);
+
+const camera = new THREE.PerspectiveCamera(
+    70, window.innerWidth / window.innerHeight, .1, 1000
+);
+camera.position.set(0, 2, 5);
+
+scene.add(new THREE.HemisphereLight(0x8dc1de, 0x00668d, 1.5));
+
+const directionalLight = new THREE.DirectionalLight(0xffffff, 2.5);
+directionalLight.position.set(-5, 25, -1);
+directionalLight.castShadow = true;
+directionalLight.shadow.camera.near = .01;
+directionalLight.shadow.camera.far = 500;
+directionalLight.shadow.camera.right = 30;
+directionalLight.shadow.camera.left = -30;
+directionalLight.shadow.camera.top = 30;
+directionalLight.shadow.camera.bottom = -30;
+directionalLight.shadow.mapSize.set(1024, 1024);
+directionalLight.shadow.radius = 4;
+directionalLight.shadow.bias = -.00006;
+scene.add(directionalLight);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.VSMShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1;
+container.appendChild(renderer.domElement);
+
+const stats = new Stats();
+stats.domElement.style.position = 'absolute';
+stats.domElement.style.top = '0';
+stats.domElement.style.left = '0';
+container.appendChild(stats.domElement);
+
+const GRAVITY = 30;
+const NUM_SPHERES = 100;
+const SPHERE_RADIUS = .2;
+const STEPS_PER_FRAME = 5;
+const JUMP_SPEED = 15;
+
+const worldOctree = new Octree();
+let worldLoaded = false;
+
+const playerCollider = new Capsule(
+    new THREE.Vector3(0, .35, 0),
+    new THREE.Vector3(0, 1, 0),
+    .35
+);
+
+const playerVelocity = new THREE.Vector3();
+const playerDirection = new THREE.Vector3();
+let playerOnFloor = false;
+let cameraYaw = 0;
+let cameraPitch = .12;
+let mouseTime = 0;
+const keyStates = {};
+
+const sphereGeometry = new THREE.IcosahedronGeometry(SPHERE_RADIUS, 5);
+const sphereMaterial = new THREE.MeshLambertMaterial({ color: 0xdede8d });
+const spheres = [];
+let sphereIdx = 0;
+
+for (let i = 0; i < NUM_SPHERES; i++) {
+    const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+    sphere.castShadow = true;
+    sphere.receiveShadow = true;
+    scene.add(sphere);
+
+    spheres.push({
+        mesh: sphere,
+        collider: new THREE.Sphere(
+            new THREE.Vector3(0, -100, 0), SPHERE_RADIUS
+        ),
+        velocity: new THREE.Vector3()
+    });
+}
+
+// =====================================================
+// SOLDIER CHARACTER
+// =====================================================
+
+const characterLoader = new GLTFLoader();
+const characterRoot = new THREE.Group();
+scene.add(characterRoot);
+
+let soldier = null;
+let soldierMixer = null;
+let soldierLoaded = false;
+let activeSoldierAction = null;
+const soldierActions = {};
+
+characterLoader.load(
+    'https://threejs.org/examples/models/gltf/Soldier.glb',
+    gltf => {
+        soldier = gltf.scene;
+        soldier.traverse(child => {
+            if (child.isMesh) {
+                child.castShadow = true;
+                child.receiveShadow = true;
+            }
+        });
+        soldier.scale.set(1, 1, 1);
+        characterRoot.add(soldier);
+        soldierMixer = new THREE.AnimationMixer(soldier);
+
+        gltf.animations.forEach(clip => {
+            soldierActions[clip.name.toLowerCase()] =
+                soldierMixer.clipAction(clip);
+        });
+
+        soldierLoaded = true;
+        playSoldierAnimation('idle');
+        console.log('Soldier animations:', gltf.animations.map(c => c.name));
+    },
+    undefined,
+    error => console.error('Soldier loading error:', error)
+);
+
+function playSoldierAnimation(name) {
+    if (!soldierMixer) return;
+    const nextAction = soldierActions[name.toLowerCase()];
+    if (!nextAction || activeSoldierAction === nextAction) return;
+
+    nextAction.reset();
+    nextAction.enabled = true;
+    nextAction.setEffectiveTimeScale(1);
+    nextAction.setEffectiveWeight(1);
+    nextAction.fadeIn(.2);
+    nextAction.play();
+
+    if (activeSoldierAction) activeSoldierAction.fadeOut(.2);
+    activeSoldierAction = nextAction;
+}
+
+// =====================================================
+// PORTFOLIO
+// =====================================================
+
+const portfolioGroup = new THREE.Group();
+portfolioGroup.visible = false;
+scene.add(portfolioGroup);
+
+const SCREEN_W = 1600;
+const SCREEN_H = 1000;
+const screenCanvas = document.createElement('canvas');
+screenCanvas.width = SCREEN_W;
+screenCanvas.height = SCREEN_H;
+const ctx = screenCanvas.getContext('2d');
+const screenTexture = new THREE.CanvasTexture(screenCanvas);
+screenTexture.colorSpace = THREE.SRGBColorSpace;
+screenTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+
+const screenMesh = new THREE.Mesh(
+    new THREE.PlaneGeometry(5.6, 3.5),
+    new THREE.MeshBasicMaterial({ map: screenTexture, side: THREE.DoubleSide })
+);
+portfolioGroup.add(screenMesh);
+
+const frame = new THREE.Mesh(
+    new THREE.BoxGeometry(5.78, 3.68, .13),
+    new THREE.MeshStandardMaterial({
+        color: 0x142b43, metalness: .75, roughness: .25
+    })
+);
+frame.position.z = -.09;
+portfolioGroup.add(frame);
+
+const edge = new THREE.LineSegments(
+    new THREE.EdgesGeometry(new THREE.BoxGeometry(5.8, 3.7, .14)),
+    new THREE.LineBasicMaterial({ color: 0x4fcaff })
+);
+edge.position.z = -.08;
+portfolioGroup.add(edge);
+
+const stand = new THREE.Mesh(
+    new THREE.BoxGeometry(.28, .85, .28),
+    new THREE.MeshStandardMaterial({
+        color: 0x263b50, metalness: .7, roughness: .3
+    })
+);
+stand.position.set(0, -2.15, -.1);
+portfolioGroup.add(stand);
+
+const base = new THREE.Mesh(
+    new THREE.BoxGeometry(1.4, .12, .7),
+    new THREE.MeshStandardMaterial({
+        color: 0x263b50, metalness: .7, roughness: .3
+    })
+);
+base.position.set(0, -2.58, -.1);
+portfolioGroup.add(base);
+
+let portfolioOpen = false;
+let portfolioPage = 0;
+const portfolioHitAreas = [];
+
+const profiles = [
+    { title: 'Electronic Profile', sub: 'GitHub - engineer-e', url: 'https://github.com/engineer-e/' },
+    { title: 'Work Profile', sub: 'GitHub - engineer-work', url: 'https://github.com/engineer-work/' },
+    { title: 'Instagram', sub: '@gobalkrishnan.engineer', url: 'https://www.instagram.com/gobalkrishnan.engineer/' },
+    { title: 'LinkedIn', sub: 'engineer-work', url: 'https://www.linkedin.com/in/engineer-work/' },
+    { title: 'Hugging Face', sub: 'gobalkrishnan', url: 'https://huggingface.co/gobalkrishnan' },
+    { title: 'YouTube Channel', sub: 'My YouTube videos', url: 'https://www.youtube.com/@gobalkrishnanv-j2w' }
+];
+
+const applications = [
+    { title: '01 - MathSci Editor', sub: 'Mathematical and scientific editor', url: 'https://engineer-work.github.io/MathSci-Simulation/' },
+    { title: '02 - Focus Reader', sub: 'Focused reading application', url: 'https://engineer-work.github.io/Focus-Reader/' },
+    { title: '03 - Cornell Note Taking - Web', sub: 'Web version - Mermaid is not working here', url: 'https://engineer-work.github.io/cornell-notes-pro/' },
+    { title: '04 - Cornell Note Taking - Microsoft Store', sub: 'Windows version - Mermaid works here', url: 'https://apps.microsoft.com/store/detail/9PMF15NP0JLS?cid=DevShareMCLPCS' },
+    { title: '05 - Planner App', sub: 'Application for education', url: 'https://engineer-work.github.io/planner-app/' },
+    { title: '06 - Medical Manuscript ❤️', sub: 'Medical manuscript application', url: 'https://medical-manuscript.ai.studio/' },
+    { title: '07 - Image Library ❤️', sub: 'Image learning library', url: 'https://learnfromimage.ai.studio/' },
+    { title: '08 - YouTube', sub: 'My YouTube channel', url: 'https://www.youtube.com/@gobalkrishnanv-j2w' }
+];
+
+const donationURL = 'https://engineer-e.github.io/Nvidia-Learning/donate/donate.html';
+const myLifeURL = 'https://engineer-work.github.io/Join-Company/README-life.html';
+
+function roundedRect(c, x, y, w, h, r) {
+    c.beginPath();
+    c.roundRect(x, y, w, h, r);
+}
+
+function drawScreenButton(x, y, w, h, title, subtitle, url) {
+    roundedRect(ctx, x, y, w, h, 18);
+    ctx.fillStyle = '#102b43';
+    ctx.fill();
+    ctx.strokeStyle = '#347ca5';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    ctx.fillStyle = '#75d8ff';
+    ctx.font = 'bold 29px Arial';
+    ctx.fillText(title, x + 22, y + 42, w - 40);
+
+    ctx.fillStyle = '#d4e6f3';
+    ctx.font = '21px Arial';
+    ctx.fillText(subtitle, x + 22, y + 80, w - 40);
+
+    portfolioHitAreas.push({ x, y, w, h, url });
+}
+
+function drawPortfolioScreen() {
+    portfolioHitAreas.length = 0;
+
+    const gradient = ctx.createLinearGradient(0, 0, SCREEN_W, SCREEN_H);
+    gradient.addColorStop(0, '#071525');
+    gradient.addColorStop(1, '#123653');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, SCREEN_W, SCREEN_H);
+
+    ctx.fillStyle = '#55cfff';
+    ctx.font = 'bold 54px Arial';
+    ctx.fillText('Gobal Krishnan V - My Profile ❤️', 55, 78);
+
+    ctx.fillStyle = '#d1e6f5';
+    ctx.font = '25px Arial';
+    ctx.fillText('Learning • Engineering • Technology • Development', 58, 123);
+
+    ctx.strokeStyle = '#3c83a9';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(55, 150);
+    ctx.lineTo(1545, 150);
+    ctx.stroke();
+
+    const tabs = [
+        { label: '1 PROFILES', page: 0 },
+        { label: '2 APPLICATIONS', page: 1 },
+        { label: '3 ABOUT & DONATE', page: 2 }
+    ];
+
+    tabs.forEach((tab, i) => {
+        const x = 55 + i * 500;
+        roundedRect(ctx, x, 175, 460, 62, 13);
+        ctx.fillStyle = portfolioPage === tab.page ? '#087eae' : '#18334b';
+        ctx.fill();
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 25px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText(tab.label, x + 230, 215);
+        ctx.textAlign = 'left';
+        portfolioHitAreas.push({ x, y: 175, w: 460, h: 62, page: tab.page });
+    });
+
+    if (portfolioPage === 0) {
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 31px Arial';
+        ctx.fillText('Connect with me', 58, 292);
+        profiles.forEach((item, i) => {
+            drawScreenButton(
+                55 + (i % 2) * 755,
+                320 + Math.floor(i / 2) * 185,
+                720, 150, item.title, item.sub, item.url
+            );
+        });
+    } else if (portfolioPage === 1) {
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 31px Arial';
+        ctx.fillText('Applications I have created', 58, 292);
+        applications.forEach((item, i) => {
+            drawScreenButton(
+                55 + (i % 2) * 755,
+                315 + Math.floor(i / 2) * 155,
+                720, 125, item.title, item.sub, item.url
+            );
+        });
+    } else {
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 38px Arial';
+        ctx.fillText('Created for my ambition, passion, hobby, career and growth.', 65, 340);
+
+        ctx.fillStyle = '#d4e6f3';
+        ctx.font = '29px Arial';
+        ctx.fillText('These applications are part of my future learning notes', 65, 410);
+        ctx.fillText('and my continuous learning and development.', 65, 455);
+
+        roundedRect(ctx, 65, 550, 600, 120, 20);
+        ctx.fillStyle = '#8c4c14';
+        ctx.fill();
+        ctx.strokeStyle = '#ffc078';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 38px Arial';
+        ctx.fillText('❤️ SUPPORT / DONATE', 105, 625);
+        portfolioHitAreas.push({ x: 65, y: 550, w: 600, h: 120, url: donationURL });
+
+        roundedRect(ctx, 700, 550, 600, 120, 20);
+        ctx.fillStyle = '#559944';
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 38px Arial';
+        ctx.fillText('❤️ My Life - History', 750, 625);
+        portfolioHitAreas.push({ x: 700, y: 550, w: 600, h: 120, url: myLifeURL });
+
+        ctx.fillStyle = '#b9d7eb';
+        ctx.font = '24px Arial';
+        ctx.fillText('Thank you for visiting my portfolio!', 70, 760);
+    }
+
+    ctx.fillStyle = '#9abbd1';
+    ctx.font = '20px Arial';
+    ctx.fillText('Click cards to open links • Use tabs to navigate • Transform the 3D display', 58, 960);
+
+    roundedRect(ctx, 1430, 35, 115, 65, 12);
+    ctx.fillStyle = '#a62e39';
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 25px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('CLOSE', 1487, 77);
+    ctx.textAlign = 'left';
+    portfolioHitAreas.push({ x: 1430, y: 35, w: 115, h: 65, close: true });
+
+    screenTexture.needsUpdate = true;
+}
+
+drawPortfolioScreen();
+
+const portfolioTransform = new TransformControls(camera, renderer.domElement);
+portfolioTransform.setMode('translate');
+portfolioTransform.setSpace('world');
+portfolioTransform.setSize(.8);
+portfolioTransform.attach(portfolioGroup);
+
+const portfolioGizmo = portfolioTransform.getHelper();
+portfolioGizmo.visible = false;
+scene.add(portfolioGizmo);
+
+let portfolioTransformDragging = false;
+
+portfolioTransform.addEventListener('dragging-changed', event => {
+    portfolioTransformDragging = event.value;
+    if (event.value) {
+        for (const key in keyStates) keyStates[key] = false;
+    }
+});
+
+function showPortfolioController(show) {
+    portfolioGizmo.visible = show;
+    portfolioTransform.enabled = show;
+}
+
+let portfolioCameraReady = false;
+let portfolioCameraDistance = 8;
+const MIN_PORTFOLIO_ZOOM = 3.5;
+const MAX_PORTFOLIO_ZOOM = 16;
+const portfolioCameraTarget = new THREE.Vector3();
+const portfolioCameraOffset = new THREE.Vector3();
+
+function updatePortfolioCamera() {
+    if (!portfolioOpen || !portfolioCameraReady) return;
+
+    portfolioCameraTarget.copy(portfolioGroup.position);
+    portfolioCameraOffset.set(0, 1.4, portfolioCameraDistance);
+    portfolioCameraOffset.applyQuaternion(portfolioGroup.quaternion);
+    camera.position.copy(portfolioCameraTarget).add(portfolioCameraOffset);
+    camera.lookAt(portfolioCameraTarget);
+}
+
+function openPortfolio() {
+    portfolioOpen = true;
+    portfolioPage = 0;
+    drawPortfolioScreen();
+    portfolioGroup.visible = true;
+
+    if (document.pointerLockElement) document.exitPointerLock();
+    for (const key in keyStates) keyStates[key] = false;
+
+    const px = -Math.sin(cameraYaw);
+    const pz = -Math.cos(cameraYaw);
+
+    portfolioGroup.position.set(
+        playerCollider.start.x + px * 3.2,
+        playerCollider.start.y + 1.6,
+        playerCollider.start.z + pz * 3.2
+    );
+    portfolioGroup.rotation.set(0, cameraYaw, 0);
+
+    portfolioTransform.attach(portfolioGroup);
+    portfolioTransform.setMode('translate');
+    portfolioTransform.setSpace('world');
+    portfolioTransform.enabled = true;
+    showPortfolioController(true);
+
+    portfolioCameraDistance = 8;
+    portfolioCameraReady = true;
+    updatePortfolioCamera();
+}
+
+function closePortfolio() {
+    portfolioOpen = false;
+    portfolioGroup.visible = false;
+    showPortfolioController(false);
+    portfolioTransformDragging = false;
+    portfolioCameraReady = false;
+    for (const key in keyStates) keyStates[key] = false;
+}
+
+function togglePortfolio() {
+    if (portfolioOpen) closePortfolio();
+    else openPortfolio();
+}
+
+const screenRaycaster = new THREE.Raycaster();
+const screenMouse = new THREE.Vector2();
+let portfolioPointerStart = null;
+
+function clickPortfolioScreen(event) {
+    const rect = renderer.domElement.getBoundingClientRect();
+    screenMouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    screenMouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+    screenRaycaster.setFromCamera(screenMouse, camera);
+    const hits = screenRaycaster.intersectObject(screenMesh, false);
+    if (!hits.length) return false;
+
+    const uv = hits[0].uv;
+    const px = uv.x * SCREEN_W;
+    const py = (1 - uv.y) * SCREEN_H;
+
+    for (const area of portfolioHitAreas) {
+        if (
+            px >= area.x && px <= area.x + area.w &&
+            py >= area.y && py <= area.y + area.h
+        ) {
+            if (area.close) {
+                closePortfolio();
+                return true;
+            }
+            if (area.page !== undefined) {
+                portfolioPage = area.page;
+                drawPortfolioScreen();
+                return true;
+            }
+            if (area.url) {
+                window.open(area.url, '_blank', 'noopener,noreferrer');
+                return true;
+            }
+        }
+    }
+    return true;
+}
+
+renderer.domElement.addEventListener('pointerdown', event => {
+    if (!portfolioOpen || event.button !== 0) return;
+    portfolioPointerStart = { x: event.clientX, y: event.clientY };
+});
+
+renderer.domElement.addEventListener('pointerup', event => {
+    if (!portfolioOpen || !portfolioPointerStart) {
+        portfolioPointerStart = null;
+        return;
+    }
+
+    const dx = event.clientX - portfolioPointerStart.x;
+    const dy = event.clientY - portfolioPointerStart.y;
+    const moved = Math.sqrt(dx * dx + dy * dy);
+    portfolioPointerStart = null;
+
+    if (moved > 5 || portfolioTransformDragging) return;
+    clickPortfolioScreen(event);
+});
+
+renderer.domElement.addEventListener('wheel', event => {
+    if (!portfolioOpen) return;
+    event.preventDefault();
+    portfolioCameraDistance += event.deltaY * .01;
+    portfolioCameraDistance = THREE.MathUtils.clamp(
+        portfolioCameraDistance, MIN_PORTFOLIO_ZOOM, MAX_PORTFOLIO_ZOOM
+    );
+    updatePortfolioCamera();
+}, { passive: false });
+
+// =====================================================
+// PLAYER PHYSICS AND CONTROLS
+// =====================================================
+
+function playerCollisions() {
+    const result = worldOctree.capsuleIntersect(playerCollider);
+    playerOnFloor = false;
+
+    if (result) {
+        playerOnFloor = result.normal.y >= .15;
+
+        if (!playerOnFloor) {
+            playerVelocity.addScaledVector(
+                result.normal, -result.normal.dot(playerVelocity)
+            );
+        }
+
+        if (result.depth >= 1e-10) {
+            playerCollider.translate(
+                result.normal.multiplyScalar(result.depth)
+            );
+        }
+    }
+}
+
+function updatePlayer(deltaTime) {
+    let damping = Math.exp(-4 * deltaTime) - 1;
+
+    if (!playerOnFloor) {
+        playerVelocity.y -= GRAVITY * deltaTime;
+        damping *= .1;
+    }
+
+    playerVelocity.addScaledVector(playerVelocity, damping);
+
+    playerCollider.translate(
+        playerVelocity.clone().multiplyScalar(deltaTime)
+    );
+
+    playerCollisions();
+}
+
+const vector1 = new THREE.Vector3();
+const vector2 = new THREE.Vector3();
+const vector3 = new THREE.Vector3();
+
+function playerSphereCollision(sphere) {
+    const center = new THREE.Vector3()
+        .addVectors(playerCollider.start, playerCollider.end)
+        .multiplyScalar(.5);
+
+    const sphereCenter = sphere.collider.center;
+    const radius = playerCollider.radius + sphere.collider.radius;
+    const radiusSquared = radius * radius;
+
+    for (const point of [playerCollider.start, playerCollider.end, center]) {
+        const distanceSquared = point.distanceToSquared(sphereCenter);
+
+        if (distanceSquared < radiusSquared) {
+            const normal = vector1.subVectors(point, sphereCenter).normalize();
+            const v1 = vector2.copy(normal).multiplyScalar(normal.dot(playerVelocity));
+            const v2 = vector3.copy(normal).multiplyScalar(normal.dot(sphere.velocity));
+
+            playerVelocity.add(v2).sub(v1);
+            sphere.velocity.add(v1).sub(v2);
+
+            const distance = (radius - Math.sqrt(distanceSquared)) / 2;
+            sphereCenter.addScaledVector(normal, -distance);
+        }
+    }
+}
+
+function spheresCollisions() {
+    for (let i = 0; i < spheres.length; i++) {
+        const s1 = spheres[i];
+
+        for (let j = i + 1; j < spheres.length; j++) {
+            const s2 = spheres[j];
+
+            const distanceSquared =
+                s1.collider.center.distanceToSquared(s2.collider.center);
+
+            const radius = s1.collider.radius + s2.collider.radius;
+
+            if (distanceSquared < radius * radius) {
+                const normal = vector1.subVectors(
+                    s1.collider.center, s2.collider.center
+                ).normalize();
+
+                const v1 = vector2.copy(normal).multiplyScalar(normal.dot(s1.velocity));
+                const v2 = vector3.copy(normal).multiplyScalar(normal.dot(s2.velocity));
+
+                s1.velocity.add(v2).sub(v1);
+                s2.velocity.add(v1).sub(v2);
+
+                const distance = (radius - Math.sqrt(distanceSquared)) / 2;
+                s1.collider.center.addScaledVector(normal, distance);
+                s2.collider.center.addScaledVector(normal, -distance);
+            }
+        }
+    }
+}
+
+function updateSpheres(deltaTime) {
+    spheres.forEach(sphere => {
+        sphere.collider.center.addScaledVector(sphere.velocity, deltaTime);
+
+        const result = worldOctree.sphereIntersect(sphere.collider);
+
+        if (result) {
+            sphere.velocity.addScaledVector(
+                result.normal,
+                -result.normal.dot(sphere.velocity) * 1.5
+            );
+            sphere.collider.center.add(
+                result.normal.multiplyScalar(result.depth)
+            );
+        } else {
+            sphere.velocity.y -= GRAVITY * deltaTime;
+        }
+
+        const damping = Math.exp(-1.5 * deltaTime) - 1;
+        sphere.velocity.addScaledVector(sphere.velocity, damping);
+        playerSphereCollision(sphere);
+    });
+
+    spheresCollisions();
+
+    for (const sphere of spheres) {
+        sphere.mesh.position.copy(sphere.collider.center);
+    }
+}
+
+const forwardVector = new THREE.Vector3();
+const rightVector = new THREE.Vector3();
+
+function getForwardVector() {
+    forwardVector.set(-Math.sin(cameraYaw), 0, -Math.cos(cameraYaw));
+    return forwardVector;
+}
+
+function getRightVector() {
+    rightVector.set(Math.cos(cameraYaw), 0, -Math.sin(cameraYaw));
+    return rightVector;
+}
+
+function controls(deltaTime) {
+    if (portfolioOpen || !worldLoaded || RL.mode !== 'manual') return;
+
+    const running = keyStates.ShiftLeft || keyStates.ShiftRight;
+    const speedDelta = deltaTime * (playerOnFloor ? 25 : 8) * (running ? 1.7 : 1);
+
+    if (keyStates.KeyW || keyStates.ArrowUp)
+        playerVelocity.addScaledVector(getForwardVector(), speedDelta);
+
+    if (keyStates.KeyS || keyStates.ArrowDown)
+        playerVelocity.addScaledVector(getForwardVector(), -speedDelta);
+
+    if (keyStates.KeyA || keyStates.ArrowLeft)
+        playerVelocity.addScaledVector(getRightVector(), -speedDelta);
+
+    if (keyStates.KeyD || keyStates.ArrowRight)
+        playerVelocity.addScaledVector(getRightVector(), speedDelta);
+
+    if (playerOnFloor && keyStates.Space) {
+        playerVelocity.y = JUMP_SPEED;
+        playerOnFloor = false;
+    }
+}
+
+// =====================================================
+// REINFORCEMENT LEARNING — TABULAR Q-LEARNING
+// =====================================================
+
+const RL = {
+    mode: 'manual',
+    q: Object.create(null),
+    episode: 0,
+    totalSteps: 0,
+    episodeReward: 0,
+    lastReward: 0,
+    epsilon: .35,
+    epsilonMin: .04,
+    epsilonDecay: .992,
+    alpha: .18,
+    gamma: .94,
+    running: false,
+    training: false,
+    trainRemaining: 0,
+    episodeSteps: 0,
+    maxEpisodeSteps: 450,
+    action: 0,
+    actionFrames: 0,
+    actionDuration: 8,
+    lastDistance: 0,
+    goalReached: 0,
+    bestReward: -Infinity,
+    lastState: null,
+    lastAction: 0,
+    start: new THREE.Vector3(0, .35, 0),
+    goal: new THREE.Vector3(0, .35, -12),
+    goalMarker: null,
+    rewardSum: 0
+};
+
+const ACTIONS = [
+    { turn: 0, move: 1 },
+    { turn: -.28, move: 1 },
+    { turn: .28, move: 1 },
+    { turn: -.5, move: .45 },
+    { turn: .5, move: .45 },
+    { turn: 0, move: -0.5 },
+    { turn: 0, move: 0 }
+];
+
+const rlRaycaster = new THREE.Raycaster();
+const rlDirection = new THREE.Vector3();
+const rlOrigin = new THREE.Vector3();
+const rlGoalDirection = new THREE.Vector3();
+
+const rlSensorAngles = [
+    -Math.PI / 2,
+    -Math.PI / 4,
+    0,
+    Math.PI / 4,
+    Math.PI / 2
+];
+
+const rlSensorLength = 4;
+
+function getPlayerPosition() {
+    return playerCollider.end;
+}
+
+function horizontalDistance(a, b) {
+    const dx = a.x - b.x;
+    const dz = a.z - b.z;
+    return Math.sqrt(dx * dx + dz * dz);
+}
+
+function getGoalDistance() {
+    return horizontalDistance(getPlayerPosition(), RL.goal);
+}
+
+function quantize(value, step) {
+    return Math.round(value / step);
+}
+
+function getSensors() {
+    const position = getPlayerPosition();
+    const readings = [];
+
+    rlOrigin.copy(position);
+    rlOrigin.y += .1;
+
+    for (const angle of rlSensorAngles) {
+        const yaw = cameraYaw + angle;
+
+        rlDirection.set(-Math.sin(yaw), 0, -Math.cos(yaw)).normalize();
+
+        rlRaycaster.set(rlOrigin, rlDirection);
+        rlRaycaster.far = rlSensorLength;
+
+        const hit = worldOctree.rayIntersect(rlRaycaster.ray);
+        const distance = hit ? hit.distance : rlSensorLength;
+
+        readings.push(
+            Math.min(3, Math.floor(distance / 1.25))
+        );
+    }
+
+    return readings;
+}
+
+function getRLState() {
+    const position = getPlayerPosition();
+
+    rlGoalDirection.set(
+        RL.goal.x - position.x,
+        0,
+        RL.goal.z - position.z
+    );
+
+    const goalAngle = Math.atan2(
+        -rlGoalDirection.x,
+        -rlGoalDirection.z
+    );
+
+    let relativeAngle = goalAngle - cameraYaw;
+    relativeAngle = Math.atan2(
+        Math.sin(relativeAngle),
+        Math.cos(relativeAngle)
+    );
+
+    const angleBin = Math.round(
+        relativeAngle / (Math.PI / 4)
+    );
+
+    const distanceBin = Math.min(
+        12,
+        Math.floor(getGoalDistance() / 2)
+    );
+
+    const sensors = getSensors();
+
+    const vertical = playerOnFloor ? 0 : 1;
+
+    return [
+        quantize(position.x, 2),
+        quantize(position.z, 2),
+        distanceBin,
+        angleBin,
+        vertical,
+        ...sensors
+    ].join(',');
+}
+
+function getQValues(state) {
+    if (!RL.q[state]) RL.q[state] = new Array(ACTIONS.length).fill(0);
+    return RL.q[state];
+}
+
+function chooseAction(state, explore = true) {
+    const values = getQValues(state);
+
+    if (explore && Math.random() < RL.epsilon) {
+        return Math.floor(Math.random() * ACTIONS.length);
+    }
+
+    let best = 0;
+
+    for (let i = 1; i < values.length; i++) {
+        if (values[i] > values[best]) best = i;
+    }
+
+    return best;
+}
+
+function updateQ(state, action, reward, nextState, terminal) {
+    const current = getQValues(state);
+    const next = getQValues(nextState);
+
+    const nextMax = terminal ? 0 : Math.max(...next);
+
+    const target = reward + RL.gamma * nextMax;
+
+    current[action] += RL.alpha * (target - current[action]);
+}
+
+function resetEpisode() {
+    playerCollider.start.copy(RL.start);
+    playerCollider.end.set(
+        RL.start.x,
+        RL.start.y + .65,
+        RL.start.z
+    );
+
+    playerVelocity.set(0, 0, 0);
+    playerOnFloor = false;
+
+    cameraYaw = 0;
+    cameraPitch = .12;
+
+    RL.episodeSteps = 0;
+    RL.episodeReward = 0;
+    RL.actionFrames = 0;
+    RL.lastDistance = getGoalDistance();
+}
+
+function setRLMode(mode) {
+    RL.mode = mode;
+    RL.training = mode === 'training';
+    RL.running = mode === 'autopilot';
+
+    for (const key in keyStates) keyStates[key] = false;
+
+    if (document.pointerLockElement) document.exitPointerLock();
+
+    document.querySelectorAll('#rl-panel button').forEach(b => b.classList.remove('active'));
+
+    if (mode === 'manual') {
+        document.getElementById('manual-btn').classList.add('active');
+        status.textContent = 'Manual control active.';
+    } else if (mode === 'training') {
+        document.getElementById('train-btn').classList.add('active');
+        status.textContent = 'RL training in progress...';
+    } else if (mode === 'autopilot') {
+        document.getElementById('auto-btn').classList.add('active');
+        status.textContent = 'Autopilot active.';
+    } else {
+        status.textContent = 'Reinforcement learning stopped.';
+    }
+
+    updateRLUI();
+}
+
+function beginTraining(count) {
+    if (!worldLoaded) {
+        status.textContent = 'Wait for the collision world to load first.';
+        return;
+    }
+
+    RL.trainRemaining = count;
+    RL.episode = 0;
+    RL.epsilon = Math.max(RL.epsilon, .08);
+    RL.rewardSum = 0;
+    resetEpisode();
+    setRLMode('training');
+}
+
+function endTraining() {
+    RL.trainRemaining = 0;
+    setRLMode('stopped');
+}
+
+function startAutopilot() {
+    if (!worldLoaded) {
+        status.textContent = 'Wait for the collision world to load first.';
+        return;
+    }
+
+    resetEpisode();
+    RL.actionFrames = 0;
+    setRLMode('autopilot');
+}
+
+function stopRL() {
+    RL.trainRemaining = 0;
+    RL.running = false;
+    RL.training = false;
+    setRLMode('stopped');
+    playerVelocity.x = 0;
+    playerVelocity.z = 0;
+}
+
+function getActionVelocity(action, deltaTime) {
+    cameraYaw += action.turn;
+
+    const direction = new THREE.Vector3(
+        -Math.sin(cameraYaw), 0, -Math.cos(cameraYaw)
+    );
+
+    const speed = 19 * action.move;
+
+    playerVelocity.x += direction.x * speed * deltaTime;
+    playerVelocity.z += direction.z * speed * deltaTime;
+}
+
+function rlReward(oldDistance, newDistance, collision, fallen) {
+    let reward = (oldDistance - newDistance) * 3;
+
+    reward -= .08;
+
+    if (collision) reward -= 1.5;
+    if (fallen) reward -= 20;
+
+    if (newDistance < 1.25) {
+        reward += 35;
+    }
+
+    return reward;
+}
+
+function trainStep(deltaTime) {
+    if (!RL.training || !worldLoaded) return;
+
+    const oldDistance = getGoalDistance();
+
+    if (!RL.lastState) RL.lastState = getRLState();
+
+    if (RL.actionFrames <= 0) {
+        RL.lastState = getRLState();
+        RL.lastAction = chooseAction(RL.lastState, true);
+        RL.actionFrames = RL.actionDuration;
+    }
+
+    const action = ACTIONS[RL.lastAction];
+
+    getActionVelocity(action, deltaTime);
+
+    updatePlayer(deltaTime);
+    updateSpheres(deltaTime);
+
+    RL.actionFrames--;
+
+    const newDistance = getGoalDistance();
+    const fallen = getPlayerPosition().y < -10;
+    const reached = newDistance < 1.25;
+
+    const state = getRLState();
+    const reward = rlReward(oldDistance, newDistance, false, fallen);
+
+    RL.episodeReward += reward;
+    RL.lastReward = reward;
+    RL.totalSteps++;
+    RL.episodeSteps++;
+
+    const terminal =
+        reached || fallen || RL.episodeSteps >= RL.maxEpisodeSteps;
+
+    updateQ(RL.lastState, RL.lastAction, reward, state, terminal);
+
+    RL.lastState = state;
+
+    if (terminal) {
+        finishTrainingEpisode(reached);
+    }
+}
+
+function finishTrainingEpisode(reached) {
+    RL.rewardSum += RL.episodeReward;
+    RL.bestReward = Math.max(RL.bestReward, RL.episodeReward);
+
+    if (reached) RL.goalReached++;
+
+    RL.episode++;
+    RL.trainRemaining--;
+
+    RL.epsilon = Math.max(
+        RL.epsilonMin,
+        RL.epsilon * RL.epsilonDecay
+    );
+
+    if (RL.trainRemaining <= 0) {
+        RL.training = false;
+        RL.trainRemaining = 0;
+        setRLMode('stopped');
+        status.textContent = 'Training finished. Try Autopilot.';
+        saveBrain();
+        return;
+    }
+
+    resetEpisode();
+    RL.lastState = null;
+}
+
+function autopilotStep(deltaTime) {
+    if (!RL.running || !worldLoaded) return;
+
+    const distance = getGoalDistance();
+
+    if (distance < 1.25) {
+        playerVelocity.x *= .8;
+        playerVelocity.z *= .8;
+        RL.goalReached++;
+        status.textContent = 'Goal reached! Autopilot completed.';
+        setRLMode('stopped');
+        return;
+    }
+
+    if (getPlayerPosition().y < -10) {
+        resetEpisode();
+        return;
+    }
+
+    if (RL.actionFrames <= 0) {
+        const state = getRLState();
+        RL.action = chooseAction(state, false);
+        RL.actionFrames = RL.actionDuration;
+    }
+
+    getActionVelocity(ACTIONS[RL.action], deltaTime);
+    RL.actionFrames--;
+}
+
+function updateRLUI() {
+    document.getElementById('rl-mode').textContent = RL.mode.toUpperCase();
+    document.getElementById('rl-episode').textContent = RL.episode;
+    document.getElementById('rl-steps').textContent = RL.totalSteps;
+    document.getElementById('rl-reward').textContent = RL.lastReward.toFixed(2);
+    document.getElementById('rl-distance').textContent =
+        worldLoaded ? getGoalDistance().toFixed(2) + ' m' : '--';
+    document.getElementById('rl-states').textContent = Object.keys(RL.q).length;
+
+    const total = Number(document.getElementById('episodes-input').value) || 100;
+    const done = RL.episode;
+    document.getElementById('progress').style.width =
+        Math.min(100, done / total * 100) + '%';
+}
+
+function saveBrain() {
+    try {
+        localStorage.setItem('personalCortexQTable', JSON.stringify({
+            q: RL.q,
+            epsilon: RL.epsilon,
+            episode: RL.episode,
+            totalSteps: RL.totalSteps
+        }));
+        status.textContent = 'Q-table saved in browser storage.';
+    } catch (error) {
+        console.error(error);
+        status.textContent = 'Could not save Q-table.';
+    }
+}
+
+function loadBrain() {
+    try {
+        const raw = localStorage.getItem('personalCortexQTable');
+        if (!raw) {
+            status.textContent = 'No saved brain found.';
+            return;
+        }
+
+        const data = JSON.parse(raw);
+        RL.q = Object.assign(Object.create(null), data.q || {});
+        RL.epsilon = data.epsilon ?? RL.epsilon;
+        RL.episode = data.episode ?? 0;
+        RL.totalSteps = data.totalSteps ?? 0;
+
+        updateRLUI();
+        status.textContent = 'Saved Q-table loaded.';
+    } catch (error) {
+        console.error(error);
+        status.textContent = 'Could not load saved brain.';
+    }
+}
+
+function resetBrain() {
+    stopRL();
+    RL.q = Object.create(null);
+    RL.episode = 0;
+    RL.totalSteps = 0;
+    RL.epsilon = .35;
+    RL.lastReward = 0;
+    RL.goalReached = 0;
+    RL.bestReward = -Infinity;
+
+    localStorage.removeItem('personalCortexQTable');
+    updateRLUI();
+    status.textContent = 'Q-table reset.';
+}
+
+function setGoalInFront() {
+    const direction = new THREE.Vector3(
+        -Math.sin(cameraYaw), 0, -Math.cos(cameraYaw)
+    );
+
+    RL.goal.copy(getPlayerPosition()).addScaledVector(direction, 12);
+    RL.goalMarker.position.set(RL.goal.x, RL.goal.y + .1, RL.goal.z);
+    status.textContent = 'New goal set 12 metres ahead.';
+    updateRLUI();
+}
+
+const goalGeometry = new THREE.CylinderGeometry(.65, .65, .12, 32);
+const goalMaterial = new THREE.MeshStandardMaterial({
+    color: 0x20e88a,
+    emissive: 0x087e40
+});
+RL.goalMarker = new THREE.Mesh(goalGeometry, goalMaterial);
+RL.goalMarker.position.set(RL.goal.x, .12, RL.goal.z);
+RL.goalMarker.castShadow = true;
+scene.add(RL.goalMarker);
+
+document.getElementById('train-btn').addEventListener('click', () => {
+    const count = Math.max(1, Math.min(
+        10000,
+        Number(document.getElementById('episodes-input').value) || 100
+    ));
+    beginTraining(count);
+});
+
+document.getElementById('auto-btn').addEventListener('click', startAutopilot);
+document.getElementById('manual-btn').addEventListener('click', () => setRLMode('manual'));
+document.getElementById('stop-btn').addEventListener('click', stopRL);
+document.getElementById('save-btn').addEventListener('click', saveBrain);
+document.getElementById('load-btn').addEventListener('click', loadBrain);
+document.getElementById('reset-btn').addEventListener('click', resetBrain);
+document.getElementById('goal-btn').addEventListener('click', setGoalInFront);
+
+// =====================================================
+// SOLDIER UPDATE
+// =====================================================
+
+const soldierMoveDirection = new THREE.Vector3();
+
+function updateSoldier() {
+    if (!soldierLoaded || !soldier) return;
+
+    characterRoot.position.set(
+        playerCollider.start.x,
+        playerCollider.start.y - playerCollider.radius,
+        playerCollider.start.z
+    );
+
+    soldierMoveDirection.set(playerVelocity.x, 0, playerVelocity.z);
+    const horizontalSpeed = soldierMoveDirection.length();
+
+    if (horizontalSpeed > .15) {
+        soldierMoveDirection.normalize();
+
+        characterRoot.rotation.y =
+            Math.atan2(soldierMoveDirection.x, soldierMoveDirection.z) - Math.PI;
+
+        const running =
+            (RL.mode === 'manual' && (keyStates.ShiftLeft || keyStates.ShiftRight)) ||
+            (RL.mode !== 'manual' && horizontalSpeed > 5);
+
+        playSoldierAnimation(running ? 'run' : 'walk');
+    } else {
+        playSoldierAnimation('idle');
+    }
+}
+
+// =====================================================
+// THIRD-PERSON CAMERA
+// =====================================================
+
+const cameraOrigin = new THREE.Vector3();
+const cameraDirection = new THREE.Vector3();
+const cameraDesired = new THREE.Vector3();
+const cameraTarget = new THREE.Vector3();
+const cameraRay = new THREE.Ray();
+
+function updateThirdPersonCamera() {
+    if (portfolioOpen) {
+        updatePortfolioCamera();
+        return;
+    }
+
+    const playerHead = playerCollider.end;
+    cameraOrigin.copy(playerHead);
+    cameraOrigin.y += .15;
+
+    const distance = 4.5;
+    const height = 1.3;
+
+    cameraDesired.set(
+        playerHead.x + Math.sin(cameraYaw) * distance,
+        playerHead.y + height + Math.sin(cameraPitch) * 1.5,
+        playerHead.z + Math.cos(cameraYaw) * distance
+    );
+
+    cameraDirection.subVectors(cameraDesired, cameraOrigin);
+    const desiredDistance = cameraDirection.length();
+    cameraDirection.normalize();
+
+    cameraRay.origin.copy(cameraOrigin);
+    cameraRay.direction.copy(cameraDirection);
+
+    const wallHit = worldOctree.rayIntersect(cameraRay);
+
+    if (wallHit) {
+        const safeDistance = Math.max(
+            .25, Math.min(desiredDistance, wallHit.distance - .25)
+        );
+
+        cameraDesired.copy(cameraOrigin).addScaledVector(
+            cameraDirection, safeDistance
+        );
+    }
+
+    camera.position.copy(cameraDesired);
+    cameraTarget.copy(playerHead);
+    cameraTarget.y += .55;
+    camera.lookAt(cameraTarget);
+}
+
+// =====================================================
+// THROW BALL
+// =====================================================
+
+function throwBall() {
+    if (portfolioOpen) return;
+
+    const sphere = spheres[sphereIdx];
+    camera.getWorldDirection(playerDirection);
+
+    sphere.collider.center.copy(playerCollider.end)
+        .addScaledVector(playerDirection, playerCollider.radius * 1.5);
+
+    const holdDuration = Math.max(0, performance.now() - mouseTime);
+    const impulse = 15 + 30 * (1 - Math.exp(-holdDuration * .001));
+
+    sphere.velocity.copy(playerDirection).multiplyScalar(impulse);
+    sphere.velocity.addScaledVector(playerVelocity, 2);
+
+    sphereIdx = (sphereIdx + 1) % spheres.length;
+}
+
+// =====================================================
+// WORLD LOADING
+// =====================================================
+
+const worldLoader = new GLTFLoader();
+const MODEL_URL =
+    'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r180/examples/models/gltf/collision-world.glb';
+
+worldLoader.load(
+    MODEL_URL,
+    gltf => {
+        scene.add(gltf.scene);
+        worldOctree.fromGraphNode(gltf.scene);
+
+        gltf.scene.traverse(child => {
+            if (child.isMesh) {
+                child.castShadow = true;
+                child.receiveShadow = true;
+
+                if (child.material.map) {
+                    child.material.map.anisotropy =
+                        renderer.capabilities.getMaxAnisotropy();
+                }
+            }
+        });
+
+        const helper = new OctreeHelper(worldOctree);
+        helper.visible = false;
+        scene.add(helper);
+
+        worldLoaded = true;
+        status.textContent = 'World loaded. Press P for portfolio or Train for RL.';
+        updateRLUI();
+
+        console.log('Collision world loaded.');
+    },
+    xhr => {
+        if (xhr.total) {
+            status.textContent =
+                'Loading world: ' + Math.round(xhr.loaded / xhr.total * 100) + '%';
+        }
+    },
+    error => {
+        console.error('World loading failed:', error);
+        status.textContent = 'World loading failed. Check browser console.';
+    }
+);
+
+// =====================================================
+// OUT OF BOUNDS
+// =====================================================
+
+function teleportPlayerIfOob() {
+    if (playerCollider.end.y <= -25) {
+        playerCollider.start.copy(RL.start);
+        playerCollider.end.set(RL.start.x, RL.start.y + .65, RL.start.z);
+        playerVelocity.set(0, 0, 0);
+        playerOnFloor = false;
+    }
+}
+
+// =====================================================
+// KEYBOARD
+// =====================================================
+
+document.addEventListener('keydown', event => {
+    if (event.code === 'KeyP' && !event.repeat) {
+        togglePortfolio();
+        event.preventDefault();
+        return;
+    }
+
+    if (portfolioOpen) {
+        if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
+            portfolioTransform.setTranslationSnap(1);
+            portfolioTransform.setRotationSnap(THREE.MathUtils.degToRad(15));
+            portfolioTransform.setScaleSnap(.25);
+            return;
+        }
+
+        switch (event.key.toLowerCase()) {
+            case 'w':
+                portfolioTransform.setMode('translate');
+                break;
+            case 'e':
+                portfolioTransform.setMode('rotate');
+                break;
+            case 'r':
+                portfolioTransform.setMode('scale');
+                break;
+            case 'q':
+                portfolioTransform.setSpace(
+                    portfolioTransform.space === 'local' ? 'world' : 'local'
+                );
+                break;
+            case 'x':
+                portfolioTransform.showX = !portfolioTransform.showX;
+                break;
+            case 'y':
+                portfolioTransform.showY = !portfolioTransform.showY;
+                break;
+            case 'z':
+                portfolioTransform.showZ = !portfolioTransform.showZ;
+                break;
+            case '+':
+            case '=':
+                portfolioTransform.setSize(portfolioTransform.size + .1);
+                break;
+            case '-':
+            case '_':
+                portfolioTransform.setSize(Math.max(portfolioTransform.size - .1, .1));
+                break;
+            case 'escape':
+                portfolioTransform.reset();
+                break;
+        }
+
+        event.preventDefault();
+        return;
+    }
+
+    if (RL.mode !== 'manual') return;
+
+    keyStates[event.code] = true;
+
+    if (event.code === 'Space' || event.code.startsWith('Arrow')) {
+        event.preventDefault();
+    }
+});
+
+document.addEventListener('keyup', event => {
+    keyStates[event.code] = false;
+
+    if (portfolioOpen &&
+        (event.code === 'ShiftLeft' || event.code === 'ShiftRight')) {
+        portfolioTransform.setTranslationSnap(null);
+        portfolioTransform.setRotationSnap(null);
+        portfolioTransform.setScaleSnap(null);
+    }
+});
+
+// =====================================================
+// GAME MOUSE CONTROLS
+// =====================================================
+
+renderer.domElement.addEventListener('mousedown', event => {
+    if (portfolioOpen || RL.mode !== 'manual') return;
+
+    if (document.pointerLockElement !== document.body) {
+        document.body.requestPointerLock();
+    }
+
+    if (event.button === 0) mouseTime = performance.now();
+});
+
+document.addEventListener('mousemove', event => {
+    if (portfolioOpen || RL.mode !== 'manual') return;
+
+    if (document.pointerLockElement === document.body) {
+        cameraYaw -= event.movementX / 500;
+        cameraPitch -= event.movementY / 500;
+        cameraPitch = THREE.MathUtils.clamp(cameraPitch, -.25, .65);
+    }
+});
+
+document.addEventListener('mouseup', event => {
+    if (portfolioOpen || RL.mode !== 'manual') return;
+
+    if (event.button === 0 &&
+        document.pointerLockElement === document.body) {
+        throwBall();
+    }
+});
+
+// =====================================================
+// RESIZE
+// =====================================================
+
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// =====================================================
+// MAIN ANIMATION LOOP
+// =====================================================
+
+let uiUpdateTimer = 0;
+
+function animate() {
+    const frameDelta = Math.min(.05, 1 / 60);
+    const deltaTime = frameDelta / STEPS_PER_FRAME;
+
+    if (!portfolioOpen) {
+        for (let i = 0; i < STEPS_PER_FRAME; i++) {
+            if (RL.mode === 'training') {
+                trainStep(deltaTime);
+            } else {
+                if (RL.mode === 'autopilot') {
+                    autopilotStep(deltaTime);
+                } else if (RL.mode === 'manual') {
+                    controls(deltaTime);
+                }
+
+                updatePlayer(deltaTime);
+                updateSpheres(deltaTime);
+            }
+
+            teleportPlayerIfOob();
+        }
+    }
+
+    if (soldierMixer) soldierMixer.update(frameDelta);
+
+    updateSoldier();
+    updateThirdPersonCamera();
+
+    renderer.render(scene, camera);
+    stats.update();
+
+    uiUpdateTimer += frameDelta;
+
+    if (uiUpdateTimer > .15) {
+        updateRLUI();
+        uiUpdateTimer = 0;
+    }
+}
+
+renderer.setAnimationLoop(animate);
+
+</script>
+</body>
+</html>

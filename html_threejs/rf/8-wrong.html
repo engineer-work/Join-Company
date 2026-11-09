@@ -1,0 +1,1790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personal Cortex - Reinforcement Learning</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    overflow: hidden;
+    background: #88ccee;
+    font-family: Arial, sans-serif;
+}
+
+canvas {
+    display: block;
+}
+
+#hud {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 10;
+    width: 270px;
+    padding: 14px;
+    border-radius: 12px;
+    color: white;
+    background: rgba(10, 20, 35, .88);
+    box-shadow: 0 5px 20px #0005;
+    font-size: 12px;
+}
+
+#hud h2 {
+    margin: 0 0 10px;
+    font-size: 17px;
+}
+
+#hud button {
+    border: 0;
+    border-radius: 6px;
+    padding: 7px 9px;
+    margin: 3px 2px;
+    cursor: pointer;
+    color: white;
+    background: #1769aa;
+}
+
+#hud button:hover {
+    background: #258bd7;
+}
+
+#hud button.danger {
+    background: #b83232;
+}
+
+#hud button.success {
+    background: #16854c;
+}
+
+#status {
+    margin-top: 9px;
+    line-height: 1.7;
+    color: #c8eaff;
+}
+
+#help {
+    position: fixed;
+    bottom: 12px;
+    left: 12px;
+    z-index: 10;
+    padding: 10px 13px;
+    color: white;
+    background: #071525cc;
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+#portfolioPanel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 20;
+    width: min(520px, 90vw);
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 22px;
+    border-radius: 14px;
+    color: white;
+    background: rgba(8, 18, 35, .97);
+    border: 1px solid #4b9bda;
+    display: none;
+}
+
+#portfolioPanel h2 {
+    margin-top: 0;
+}
+
+#portfolioPanel a {
+    color: #72c9ff;
+    display: block;
+    padding: 8px 0;
+}
+
+#portfolioPanel button {
+    background: #b83232;
+    color: white;
+    border: 0;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+#loading {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    background: #101b2b;
+    font-size: 20px;
+}
+
+#loading small {
+    display: block;
+    margin-top: 10px;
+    font-size: 12px;
+    color: #a8c8df;
+}
+</style>
+</head>
+
+<body>
+
+<div id="loading">
+    <div>
+        Personal Cortex
+        <small>Loading 3D world...</small>
+    </div>
+</div>
+
+<div id="hud">
+    <h2>Personal Cortex</h2>
+
+    <div>
+        <button id="manualBtn" class="success">Manual</button>
+        <button id="trainBtn">Train RL</button>
+        <button id="autoBtn">Autopilot</button>
+        <button id="stopBtn" class="danger">Stop</button>
+    </div>
+
+    <div>
+        <button id="goalBtn">Set Goal Here</button>
+        <button id="resetBtn">Reset</button>
+    </div>
+
+    <div>
+        <button id="saveBtn">Save Q-table</button>
+        <button id="loadBtn">Load Q-table</button>
+    </div>
+
+    <div id="status">
+        Mode: Manual<br>
+        Episode: 0<br>
+        Steps: 0<br>
+        Reward: 0<br>
+        Q States: 0<br>
+        Distance: 0
+    </div>
+</div>
+
+<div id="help">
+    WASD / Arrow keys: Move<br>
+    SHIFT: Run<br>
+    SPACE: Jump<br>
+    Mouse: Rotate camera<br>
+    Left click: Throw object<br>
+    E: Interact with portfolio<br>
+    G: Set goal at current position<br>
+    ESC: Close portfolio
+</div>
+
+<div id="portfolioPanel">
+    <h2>Personal Cortex Portfolio</h2>
+    <p>Explore the portfolio information below.</p>
+
+    <h3>Profiles</h3>
+    <a href="https://github.com/" target="_blank">GitHub Profile</a>
+    <a href="https://www.linkedin.com/" target="_blank">LinkedIn Profile</a>
+
+    <h3>Projects</h3>
+    <a href="https://github.com/" target="_blank">Engineering Projects</a>
+    <a href="https://github.com/" target="_blank">Robotics Projects</a>
+
+    <h3>Applications</h3>
+    <a href="https://github.com/" target="_blank">Software Development</a>
+    <a href="https://github.com/" target="_blank">Artificial Intelligence</a>
+
+    <button id="closePortfolio">Close</button>
+</div>
+
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+    }
+}
+</script>
+
+<script type="module">
+
+import * as THREE from "three";
+
+import { GLTFLoader } from
+"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/loaders/GLTFLoader.js";
+
+import { Octree } from
+"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/math/Octree.js";
+
+import { Capsule } from
+"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/math/Capsule.js";
+
+
+/* =========================================================
+   BASIC SCENE
+========================================================= */
+
+const scene = new THREE.Scene();
+
+scene.background = new THREE.Color(0x88ccee);
+scene.fog = new THREE.Fog(0x88ccee, 35, 160);
+
+const camera = new THREE.PerspectiveCamera(
+    70,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    500
+);
+
+const renderer = new THREE.WebGLRenderer({
+    antialias: true
+});
+
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+document.body.appendChild(renderer.domElement);
+
+scene.add(new THREE.HemisphereLight(0xffffff, 0x526070, 2));
+
+const sunlight = new THREE.DirectionalLight(0xffffff, 3);
+
+sunlight.position.set(30, 60, 25);
+sunlight.castShadow = true;
+sunlight.shadow.mapSize.set(2048, 2048);
+
+scene.add(sunlight);
+
+
+/* =========================================================
+   COLLISION WORLD
+========================================================= */
+
+const worldGroup = new THREE.Group();
+
+scene.add(worldGroup);
+
+const worldOctree = new Octree();
+
+const materialGround = new THREE.MeshStandardMaterial({
+    color: 0x658b58,
+    roughness: 1
+});
+
+const materialBuilding = new THREE.MeshStandardMaterial({
+    color: 0x78899a
+});
+
+const materialStairs = new THREE.MeshStandardMaterial({
+    color: 0xa7a7a7,
+    roughness: .9
+});
+
+function addStaticBox(x, y, z, sx, sy, sz, material) {
+
+    const mesh = new THREE.Mesh(
+        new THREE.BoxGeometry(sx, sy, sz),
+        material
+    );
+
+    mesh.position.set(x, y, z);
+
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+
+    worldGroup.add(mesh);
+
+    return mesh;
+}
+
+// Ground
+addStaticBox(
+    0, -0.5, 0,
+    120, 1, 120,
+    materialGround
+);
+
+// Outer environment walls
+addStaticBox(0, 3, -60, 120, 6, 1, materialBuilding);
+addStaticBox(0, 3, 60, 120, 6, 1, materialBuilding);
+addStaticBox(-60, 3, 0, 1, 6, 120, materialBuilding);
+addStaticBox(60, 3, 0, 1, 6, 120, materialBuilding);
+
+
+/* =========================================================
+   STRAIGHT STAIRCASE
+========================================================= */
+
+function createStraightStairs({
+    x = 0,
+    z = -8,
+    width = 4,
+    steps = 12,
+    stepDepth = .5,
+    stepHeight = .25,
+    direction = -1
+} = {}) {
+
+    for (let i = 0; i < steps; i++) {
+
+        const height = (i + 1) * stepHeight;
+
+        const mesh = new THREE.Mesh(
+            new THREE.BoxGeometry(
+                width,
+                height,
+                stepDepth
+            ),
+            materialStairs
+        );
+
+        mesh.position.set(
+            x,
+            height / 2,
+            z + direction * (i * stepDepth)
+        );
+
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+
+        worldGroup.add(mesh);
+    }
+}
+
+createStraightStairs({
+    x: 0,
+    z: -8,
+    width: 5,
+    steps: 14,
+    stepDepth: .55,
+    stepHeight: .22,
+    direction: -1
+});
+
+
+/* =========================================================
+   CURVED STAIRCASE
+   Individual treads follow a curved path.
+========================================================= */
+
+function createCurvedStairs({
+    centerX = 13,
+    centerZ = -10,
+    radius = 5,
+    steps = 24,
+    stepHeight = .18,
+    stepWidth = 2.4,
+    angleStart = -Math.PI / 2,
+    angleLength = Math.PI * 1.5
+} = {}) {
+
+    for (let i = 0; i < steps; i++) {
+
+        const t = i / (steps - 1);
+
+        const angle =
+            angleStart + t * angleLength;
+
+        const x = centerX + Math.cos(angle) * radius;
+        const z = centerZ + Math.sin(angle) * radius;
+
+        const height = (i + 1) * stepHeight;
+
+        const tread = new THREE.Mesh(
+            new THREE.BoxGeometry(
+                stepWidth,
+                height,
+                .55
+            ),
+            materialStairs
+        );
+
+        tread.position.set(
+            x,
+            height / 2,
+            z
+        );
+
+        // Align each tread approximately with the curve.
+        tread.rotation.y = -angle;
+
+        tread.castShadow = true;
+        tread.receiveShadow = true;
+
+        worldGroup.add(tread);
+    }
+}
+
+createCurvedStairs();
+
+
+/* =========================================================
+   OTHER WORLD OBJECTS
+========================================================= */
+
+// Buildings
+addStaticBox(-12, 2, -15, 8, 4, 8, materialBuilding);
+addStaticBox(12, 2, 15, 8, 4, 8, materialBuilding);
+addStaticBox(-18, 3, 12, 8, 6, 8, materialBuilding);
+
+// Obstacles
+addStaticBox(-5, 1, 8, 3, 2, 3, materialBuilding);
+addStaticBox(5, 1, 12, 3, 2, 3, materialBuilding);
+
+// Platforms
+addStaticBox(0, 1.5, -22, 12, 1, 5, materialBuilding);
+
+// Create collision octree only from static world geometry.
+worldGroup.updateMatrixWorld(true);
+worldOctree.fromGraphNode(worldGroup);
+
+
+/* =========================================================
+   PLAYER AND CAPSULE
+========================================================= */
+
+const PLAYER_RADIUS = .35;
+const PLAYER_HEIGHT = 1.65;
+
+const playerCollider = new Capsule(
+    new THREE.Vector3(0, PLAYER_RADIUS, 0),
+    new THREE.Vector3(0, PLAYER_HEIGHT, 0),
+    PLAYER_RADIUS
+);
+
+const playerVelocity = new THREE.Vector3();
+
+let playerOnFloor = false;
+
+let playerModel = null;
+let playerMixer = null;
+
+let cameraYaw = 0;
+let cameraPitch = .25;
+
+let playerDirection = new THREE.Vector3();
+
+function getPlayerPosition() {
+    return playerCollider.end.clone();
+}
+
+function setPlayerPosition(position) {
+
+    const offset = new THREE.Vector3(
+        0,
+        PLAYER_HEIGHT,
+        0
+    );
+
+    playerCollider.start.copy(position);
+    playerCollider.end.copy(position).add(offset);
+
+    playerVelocity.set(0, 0, 0);
+}
+
+
+/* =========================================================
+   SOLDIER GLB
+========================================================= */
+
+const loader = new GLTFLoader();
+
+loader.load(
+    "https://threejs.org/examples/models/gltf/Soldier.glb",
+
+    (gltf) => {
+
+        playerModel = gltf.scene;
+
+        playerModel.scale.setScalar(.65);
+
+        playerModel.traverse((obj) => {
+
+            if (obj.isMesh) {
+                obj.castShadow = true;
+                obj.receiveShadow = true;
+            }
+
+        });
+
+        scene.add(playerModel);
+
+        if (gltf.animations.length) {
+
+            playerMixer = new THREE.AnimationMixer(playerModel);
+
+            const idle = gltf.animations.find(a =>
+                a.name.toLowerCase().includes("idle")
+            ) || gltf.animations[0];
+
+            playerMixer.clipAction(idle).play();
+        }
+
+        document.querySelector("#loading").style.display = "none";
+    },
+
+    undefined,
+
+    (error) => {
+
+        console.error("Soldier model failed to load:", error);
+
+        document.querySelector("#loading").style.display = "none";
+    }
+);
+
+
+/* =========================================================
+   PLAYER COLLISION RESOLUTION
+========================================================= */
+
+function playerCollisions() {
+
+    let collidedWithWall = false;
+
+    playerOnFloor = false;
+
+    // Multiple iterations help resolve corners and overlapping contacts.
+    for (let i = 0; i < 5; i++) {
+
+        const result = worldOctree.capsuleIntersect(
+            playerCollider
+        );
+
+        if (!result) break;
+
+        const normal = result.normal.clone().normalize();
+
+        if (normal.y > .55) {
+            playerOnFloor = true;
+        }
+
+        if (normal.y < .5) {
+            collidedWithWall = true;
+        }
+
+        // Remove velocity into the collision surface.
+        const velocityIntoSurface =
+            playerVelocity.dot(normal);
+
+        if (velocityIntoSurface < 0) {
+
+            playerVelocity.addScaledVector(
+                normal,
+                -velocityIntoSurface
+            );
+        }
+
+        if (result.depth > 0) {
+
+            playerCollider.translate(
+                normal.multiplyScalar(result.depth + 0.0001)
+            );
+        }
+    }
+
+    return collidedWithWall;
+}
+
+
+/* =========================================================
+   STAIR MOVEMENT SOLVER
+========================================================= */
+
+const MAX_STEP_HEIGHT = .65;
+const STEP_RISE_INCREMENT = .025;
+const MOVE_SUBSTEP = .035;
+
+function tryStepMove(horizontalMove) {
+
+    const originalStart = playerCollider.start.clone();
+    const originalEnd = playerCollider.end.clone();
+
+    // First try normal horizontal movement.
+    playerCollider.translate(horizontalMove);
+
+    let hit = worldOctree.capsuleIntersect(playerCollider);
+
+    if (!hit) {
+        return false;
+    }
+
+    // Restore before attempting to climb.
+    playerCollider.start.copy(originalStart);
+    playerCollider.end.copy(originalEnd);
+
+    // Only attempt step climbing when the collision is a wall.
+    if (hit.normal.y > .5) {
+        return false;
+    }
+
+    const riseCount = Math.ceil(
+        MAX_STEP_HEIGHT / STEP_RISE_INCREMENT
+    );
+
+    for (let i = 1; i <= riseCount; i++) {
+
+        const rise = i * STEP_RISE_INCREMENT;
+
+        playerCollider.start.copy(originalStart);
+        playerCollider.end.copy(originalEnd);
+
+        // Raise the capsule.
+        playerCollider.translate(
+            new THREE.Vector3(0, rise, 0)
+        );
+
+        const verticalCollision =
+            worldOctree.capsuleIntersect(playerCollider);
+
+        if (verticalCollision) {
+            continue;
+        }
+
+        // Try moving forward from this raised position.
+        playerCollider.translate(horizontalMove);
+
+        const horizontalCollision =
+            worldOctree.capsuleIntersect(playerCollider);
+
+        if (horizontalCollision) {
+            continue;
+        }
+
+        // The horizontal move succeeded.
+        // Descend until the next floor or tread is reached.
+        let landed = false;
+
+        const maxDrop = rise + .12;
+        const dropCount = Math.ceil(
+            maxDrop / .015
+        );
+
+        for (let j = 0; j < dropCount; j++) {
+
+            playerCollider.translate(
+                new THREE.Vector3(0, -.015, 0)
+            );
+
+            const groundHit =
+                worldOctree.capsuleIntersect(playerCollider);
+
+            if (!groundHit) continue;
+
+            if (groundHit.normal.y > .55) {
+
+                playerCollider.translate(
+                    groundHit.normal.clone().multiplyScalar(
+                        groundHit.depth + .0001
+                    )
+                );
+
+                playerOnFloor = true;
+                landed = true;
+
+                break;
+            }
+
+            // A wall or side contact is not a valid tread.
+            break;
+        }
+
+        if (landed) {
+
+            // Do not retain downward velocity after landing.
+            if (playerVelocity.y < 0) {
+                playerVelocity.y = 0;
+            }
+
+            return true;
+        }
+    }
+
+    // No step could be climbed.
+    playerCollider.start.copy(originalStart);
+    playerCollider.end.copy(originalEnd);
+
+    return false;
+}
+
+
+/* =========================================================
+   PLAYER PHYSICS
+========================================================= */
+
+const GRAVITY = 22;
+const JUMP_FORCE = 8.5;
+
+function updatePlayer(delta) {
+
+    let wallCollision = false;
+
+    // Vertical movement.
+    playerVelocity.y -= GRAVITY * delta;
+
+    playerCollider.translate(
+        new THREE.Vector3(
+            0,
+            playerVelocity.y * delta,
+            0
+        )
+    );
+
+    wallCollision =
+        playerCollisions() || wallCollision;
+
+    if (playerOnFloor && playerVelocity.y < 0) {
+        playerVelocity.y = 0;
+    }
+
+    // Horizontal movement is divided into small steps.
+    const horizontalVelocity = new THREE.Vector3(
+        playerVelocity.x,
+        0,
+        playerVelocity.z
+    );
+
+    const horizontalDistance =
+        horizontalVelocity.length() * delta;
+
+    const count = Math.max(
+        1,
+        Math.ceil(horizontalDistance / MOVE_SUBSTEP)
+    );
+
+    const move = new THREE.Vector3(
+        playerVelocity.x * delta / count,
+        0,
+        playerVelocity.z * delta / count
+    );
+
+    for (let i = 0; i < count; i++) {
+
+        const before = playerCollider.start.clone();
+
+        playerCollider.translate(move);
+
+        const hit = worldOctree.capsuleIntersect(
+            playerCollider
+        );
+
+        if (hit) {
+
+            playerCollider.start.copy(before);
+            playerCollider.end.copy(before).add(
+                new THREE.Vector3(0, PLAYER_HEIGHT, 0)
+            );
+
+            const stepped = tryStepMove(move);
+
+            if (!stepped) {
+
+                wallCollision =
+                    playerCollisions() || wallCollision;
+            }
+        }
+    }
+
+    wallCollision =
+        playerCollisions() || wallCollision;
+
+    return wallCollision;
+}
+
+
+/* =========================================================
+   PLAYER MODEL POSITION
+========================================================= */
+
+function updateSoldier(delta) {
+
+    if (!playerModel) return;
+
+    const position = playerCollider.start.clone();
+
+    playerModel.position.set(
+        position.x,
+        position.y - PLAYER_RADIUS,
+        position.z
+    );
+
+    const speed = Math.sqrt(
+        playerVelocity.x ** 2 +
+        playerVelocity.z ** 2
+    );
+
+    if (speed > .1) {
+
+        const targetRotation = Math.atan2(
+            playerVelocity.x,
+            playerVelocity.z
+        );
+
+        playerModel.rotation.y = targetRotation;
+    }
+
+    if (playerMixer) {
+        playerMixer.update(delta);
+    }
+}
+
+
+/* =========================================================
+   CAMERA
+========================================================= */
+
+const cameraTarget = new THREE.Vector3();
+
+function updateThirdPersonCamera(delta) {
+
+    const position = getPlayerPosition();
+
+    cameraTarget.copy(position);
+    cameraTarget.y += .3;
+
+    const distance = 5.5;
+
+    const horizontalDistance =
+        Math.cos(cameraPitch) * distance;
+
+    const offset = new THREE.Vector3(
+        Math.sin(cameraYaw) * horizontalDistance,
+        Math.sin(cameraPitch) * distance + 1,
+        Math.cos(cameraYaw) * horizontalDistance
+    );
+
+    const desiredPosition = cameraTarget.clone().add(offset);
+
+    // Prevent camera from passing through world geometry.
+    const rayDirection = desiredPosition.clone()
+        .sub(cameraTarget);
+
+    const rayDistance = rayDirection.length();
+
+    rayDirection.normalize();
+
+    const ray = new THREE.Ray(
+        cameraTarget,
+        rayDirection
+    );
+
+    const hit = worldOctree.rayIntersect(ray);
+
+    if (hit && hit.distance < rayDistance) {
+
+        desiredPosition.copy(cameraTarget).addScaledVector(
+            rayDirection,
+            Math.max(.5, hit.distance - .25)
+        );
+    }
+
+    camera.position.lerp(
+        desiredPosition,
+        Math.min(1, delta * 8)
+    );
+
+    camera.lookAt(cameraTarget);
+}
+
+
+/* =========================================================
+   INPUT
+========================================================= */
+
+const keys = {};
+
+window.addEventListener("keydown", (event) => {
+
+    keys[event.code] = true;
+
+    if (
+        ["Space", "ArrowUp", "ArrowDown",
+         "ArrowLeft", "ArrowRight"].includes(event.code)
+    ) {
+        event.preventDefault();
+    }
+
+    if (event.code === "Space") {
+        jump();
+    }
+
+    if (event.code === "KeyG") {
+        setGoalAtPlayer();
+    }
+
+    if (event.code === "KeyE") {
+        interactPortfolio();
+    }
+
+    if (event.code === "Escape") {
+        closePortfolio();
+    }
+});
+
+window.addEventListener("keyup", (event) => {
+    keys[event.code] = false;
+});
+
+function jump() {
+
+    if (!playerOnFloor) return;
+
+    playerVelocity.y = JUMP_FORCE;
+
+    playerOnFloor = false;
+}
+
+
+/* =========================================================
+   MOUSE CAMERA CONTROL
+========================================================= */
+
+let mouseDown = false;
+let previousMouseX = 0;
+let previousMouseY = 0;
+
+renderer.domElement.addEventListener("mousedown", (event) => {
+
+    if (event.button !== 2) return;
+
+    mouseDown = true;
+
+    previousMouseX = event.clientX;
+    previousMouseY = event.clientY;
+});
+
+window.addEventListener("mouseup", () => {
+    mouseDown = false;
+});
+
+window.addEventListener("mousemove", (event) => {
+
+    if (!mouseDown) return;
+
+    const dx = event.clientX - previousMouseX;
+    const dy = event.clientY - previousMouseY;
+
+    cameraYaw -= dx * .005;
+    cameraPitch += dy * .005;
+
+    cameraPitch = THREE.MathUtils.clamp(
+        cameraPitch,
+        -.4,
+        1.1
+    );
+
+    previousMouseX = event.clientX;
+    previousMouseY = event.clientY;
+});
+
+renderer.domElement.addEventListener("contextmenu", e => {
+    e.preventDefault();
+});
+
+
+/* =========================================================
+   MANUAL MOVEMENT
+========================================================= */
+
+let mode = "manual";
+
+function manualControls(delta) {
+
+    const forward = new THREE.Vector3(
+        -Math.sin(cameraYaw),
+        0,
+        -Math.cos(cameraYaw)
+    );
+
+    const right = new THREE.Vector3(
+        Math.cos(cameraYaw),
+        0,
+        -Math.sin(cameraYaw)
+    );
+
+    const direction = new THREE.Vector3();
+
+    if (keys.KeyW || keys.ArrowUp) {
+        direction.add(forward);
+    }
+
+    if (keys.KeyS || keys.ArrowDown) {
+        direction.sub(forward);
+    }
+
+    if (keys.KeyD || keys.ArrowRight) {
+        direction.add(right);
+    }
+
+    if (keys.KeyA || keys.ArrowLeft) {
+        direction.sub(right);
+    }
+
+    if (direction.lengthSq() > 0) {
+        direction.normalize();
+    }
+
+    const running = keys.ShiftLeft || keys.ShiftRight;
+
+    const speed = running ? 9 : 5;
+
+    const targetX = direction.x * speed;
+    const targetZ = direction.z * speed;
+
+    const acceleration = playerOnFloor ? 18 : 6;
+
+    playerVelocity.x = THREE.MathUtils.damp(
+        playerVelocity.x,
+        targetX,
+        acceleration,
+        delta
+    );
+
+    playerVelocity.z = THREE.MathUtils.damp(
+        playerVelocity.z,
+        targetZ,
+        acceleration,
+        delta
+    );
+}
+
+
+/* =========================================================
+   THROWABLE OBJECTS
+========================================================= */
+
+const projectiles = [];
+
+function throwObject() {
+
+    const geometry = new THREE.SphereGeometry(.16, 16, 12);
+
+    const material = new THREE.MeshStandardMaterial({
+        color: 0xffa500,
+        roughness: .4
+    });
+
+    const ball = new THREE.Mesh(geometry, material);
+
+    const direction = new THREE.Vector3();
+
+    camera.getWorldDirection(direction);
+
+    ball.position.copy(camera.position).addScaledVector(
+        direction,
+        1
+    );
+
+    ball.castShadow = true;
+
+    scene.add(ball);
+
+    projectiles.push({
+        mesh: ball,
+        velocity: direction.multiplyScalar(14)
+    });
+}
+
+renderer.domElement.addEventListener("click", (event) => {
+
+    if (event.button === 0) {
+        throwObject();
+    }
+});
+
+function updateProjectiles(delta) {
+
+    for (let i = projectiles.length - 1; i >= 0; i--) {
+
+        const p = projectiles[i];
+
+        p.velocity.y -= GRAVITY * delta;
+
+        p.mesh.position.addScaledVector(
+            p.velocity,
+            delta
+        );
+
+        if (p.mesh.position.y < -5) {
+
+            scene.remove(p.mesh);
+
+            p.mesh.geometry.dispose();
+            p.mesh.material.dispose();
+
+            projectiles.splice(i, 1);
+        }
+    }
+}
+
+
+/* =========================================================
+   3D PORTFOLIO DISPLAY
+========================================================= */
+
+const portfolioGroup = new THREE.Group();
+
+scene.add(portfolioGroup);
+
+const board = new THREE.Mesh(
+    new THREE.BoxGeometry(5, 3.4, .18),
+    new THREE.MeshStandardMaterial({
+        color: 0x102a43,
+        metalness: .3,
+        roughness: .4
+    })
+);
+
+board.position.set(0, 2.1, -3.5);
+
+portfolioGroup.add(board);
+
+const boardText = new THREE.Mesh(
+    new THREE.PlaneGeometry(4.6, 3),
+    new THREE.MeshBasicMaterial({
+        color: 0x102a43
+    })
+);
+
+boardText.position.set(0, 2.1, -3.39);
+
+portfolioGroup.add(boardText);
+
+function createBoardLabel(text, x, y, size = .23) {
+
+    const canvas = document.createElement("canvas");
+
+    canvas.width = 1024;
+    canvas.height = 256;
+
+    const context = canvas.getContext("2d");
+
+    context.fillStyle = "#102a43";
+    context.fillRect(0, 0, 1024, 256);
+
+    context.fillStyle = "#ffffff";
+    context.font = "bold 90px Arial";
+    context.textAlign = "center";
+    context.textBaseline = "middle";
+
+    context.fillText(text, 512, 128);
+
+    const texture = new THREE.CanvasTexture(canvas);
+
+    const label = new THREE.Mesh(
+        new THREE.PlaneGeometry(size * 10, size * 2.5),
+        new THREE.MeshBasicMaterial({
+            map: texture,
+            transparent: true
+        })
+    );
+
+    label.position.set(x, y, -3.28);
+
+    portfolioGroup.add(label);
+
+    return label;
+}
+
+createBoardLabel("PERSONAL CORTEX", 0, 2.85);
+createBoardLabel("3D PORTFOLIO", 0, 2.25);
+createBoardLabel("CLICK  E  TO EXPLORE", 0, 1.65);
+
+function interactPortfolio() {
+
+    const playerPosition = getPlayerPosition();
+
+    const distance = playerPosition.distanceTo(
+        new THREE.Vector3(0, 1.5, -3.5)
+    );
+
+    if (distance < 8) {
+
+        document.getElementById(
+            "portfolioPanel"
+        ).style.display = "block";
+    }
+}
+
+function closePortfolio() {
+
+    document.getElementById(
+        "portfolioPanel"
+    ).style.display = "none";
+}
+
+document.getElementById("closePortfolio")
+    .addEventListener("click", closePortfolio);
+
+
+/* =========================================================
+   REINFORCEMENT LEARNING
+========================================================= */
+
+const RL = {
+
+    q: {},
+
+    episode: 0,
+
+    steps: 0,
+
+    totalReward: 0,
+
+    learningRate: .18,
+
+    discount: .94,
+
+    epsilon: .25,
+
+    epsilonMin: .03,
+
+    epsilonDecay: .995,
+
+    goal: new THREE.Vector3(0, PLAYER_HEIGHT, 0),
+
+    start: new THREE.Vector3(0, PLAYER_RADIUS, 0),
+
+    training: false,
+
+    autopilot: false
+};
+
+const ACTIONS = [
+    [0, 0],
+    [0, -1],
+    [0, 1],
+    [-1, 0],
+    [1, 0],
+    [-1, -1],
+    [1, -1],
+    [-1, 1],
+    [1, 1]
+];
+
+function getState() {
+
+    const position = getPlayerPosition();
+
+    const dx = RL.goal.x - position.x;
+    const dz = RL.goal.z - position.z;
+
+    const angle = Math.atan2(dx, -dz);
+
+    const direction = Math.round(
+        ((angle + Math.PI) / (Math.PI * 2)) * 8
+    ) % 8;
+
+    const distance = Math.sqrt(dx * dx + dz * dz);
+
+    const distanceState =
+        distance < 2 ? 0 :
+        distance < 5 ? 1 :
+        distance < 10 ? 2 :
+        distance < 20 ? 3 : 4;
+
+    const heightState = Math.floor(
+        Math.max(0, position.y) / .5
+    );
+
+    return [
+        direction,
+        distanceState,
+        Math.min(heightState, 8)
+    ].join("_");
+}
+
+function ensureState(state) {
+
+    if (!RL.q[state]) {
+        RL.q[state] = Array(ACTIONS.length).fill(0);
+    }
+
+    return RL.q[state];
+}
+
+function chooseAction(state) {
+
+    const values = ensureState(state);
+
+    if (Math.random() < RL.epsilon) {
+        return Math.floor(Math.random() * ACTIONS.length);
+    }
+
+    let best = 0;
+
+    for (let i = 1; i < values.length; i++) {
+
+        if (values[i] > values[best]) {
+            best = i;
+        }
+    }
+
+    return best;
+}
+
+function getActionVelocity(action) {
+
+    const [x, z] = ACTIONS[action];
+
+    const direction = new THREE.Vector3(x, 0, z);
+
+    if (direction.lengthSq() > 0) {
+        direction.normalize();
+    }
+
+    const forward = new THREE.Vector3(
+        -Math.sin(cameraYaw),
+        0,
+        -Math.cos(cameraYaw)
+    );
+
+    const right = new THREE.Vector3(
+        Math.cos(cameraYaw),
+        0,
+        -Math.sin(cameraYaw)
+    );
+
+    const move = right.multiplyScalar(direction.x)
+        .add(forward.multiplyScalar(-direction.z));
+
+    if (move.lengthSq() > 0) {
+        move.normalize();
+    }
+
+    return move.multiplyScalar(5);
+}
+
+function calculateReward(oldDistance, newDistance, wallCollision) {
+
+    let reward = -0.03;
+
+    if (newDistance < oldDistance) {
+        reward += 1;
+    } else {
+        reward -= .2;
+    }
+
+    if (wallCollision) {
+        reward -= 4;
+    }
+
+    if (newDistance < 1.2) {
+        reward += 30;
+    }
+
+    return reward;
+}
+
+function trainStep() {
+
+    const state = getState();
+
+    const oldDistance = getPlayerPosition().distanceTo(
+        RL.goal
+    );
+
+    const action = chooseAction(state);
+
+    const targetVelocity = getActionVelocity(action);
+
+    playerVelocity.x = THREE.MathUtils.damp(
+        playerVelocity.x,
+        targetVelocity.x,
+        5,
+        PHYSICS_DT
+    );
+
+    playerVelocity.z = THREE.MathUtils.damp(
+        playerVelocity.z,
+        targetVelocity.z,
+        5,
+        PHYSICS_DT
+    );
+
+    const wallCollision = updatePlayer(PHYSICS_DT);
+
+    const newDistance = getPlayerPosition().distanceTo(
+        RL.goal
+    );
+
+    const reward = calculateReward(
+        oldDistance,
+        newDistance,
+        wallCollision
+    );
+
+    const nextState = getState();
+
+    const currentValues = ensureState(state);
+    const nextValues = ensureState(nextState);
+
+    const maxNext = Math.max(...nextValues);
+
+    currentValues[action] +=
+        RL.learningRate *
+        (
+            reward +
+            RL.discount * maxNext -
+            currentValues[action]
+        );
+
+    RL.totalReward += reward;
+    RL.steps++;
+
+    if (newDistance < 1.2 || RL.steps > 1500) {
+
+        RL.episode++;
+
+        RL.epsilon = Math.max(
+            RL.epsilonMin,
+            RL.epsilon * RL.epsilonDecay
+        );
+
+        resetEpisode();
+    }
+}
+
+function resetEpisode() {
+
+    setPlayerPosition(RL.start);
+
+    RL.steps = 0;
+    RL.totalReward = 0;
+}
+
+
+/* =========================================================
+   AUTOPILOT
+========================================================= */
+
+let autopilotActionTimer = 0;
+let currentRLAction = 0;
+
+function updateAutopilot(delta) {
+
+    autopilotActionTimer -= delta;
+
+    if (autopilotActionTimer <= 0) {
+
+        const state = getState();
+
+        const values = ensureState(state);
+
+        currentRLAction = 0;
+
+        for (let i = 1; i < values.length; i++) {
+
+            if (values[i] > values[currentRLAction]) {
+                currentRLAction = i;
+            }
+        }
+
+        autopilotActionTimer = .18;
+    }
+
+    const targetVelocity = getActionVelocity(
+        currentRLAction
+    );
+
+    playerVelocity.x = THREE.MathUtils.damp(
+        playerVelocity.x,
+        targetVelocity.x,
+        5,
+        delta
+    );
+
+    playerVelocity.z = THREE.MathUtils.damp(
+        playerVelocity.z,
+        targetVelocity.z,
+        5,
+        delta
+    );
+
+    updatePlayer(delta);
+}
+
+
+/* =========================================================
+   GOAL MARKER
+========================================================= */
+
+const goalGroup = new THREE.Group();
+
+scene.add(goalGroup);
+
+const goalBase = new THREE.Mesh(
+    new THREE.CylinderGeometry(.65, .65, .08, 32),
+    new THREE.MeshStandardMaterial({
+        color: 0x00ff88,
+        emissive: 0x004422
+    })
+);
+
+goalGroup.add(goalBase);
+
+const goalRing = new THREE.Mesh(
+    new THREE.TorusGeometry(.8, .055, 12, 48),
+    new THREE.MeshStandardMaterial({
+        color: 0xffff00,
+        emissive: 0x665500
+    })
+);
+
+goalRing.rotation.x = Math.PI / 2;
+
+goalGroup.add(goalRing);
+
+function findGroundHeight(x, z, fallback) {
+
+    const ray = new THREE.Ray(
+        new THREE.Vector3(x, 100, z),
+        new THREE.Vector3(0, -1, 0)
+    );
+
+    const hit = worldOctree.rayIntersect(ray);
+
+    if (hit) {
+        return 100 - hit.distance;
+    }
+
+    return fallback;
+}
+
+function updateGoalMarker() {
+
+    const groundY = findGroundHeight(
+        RL.goal.x,
+        RL.goal.z,
+        RL.goal.y - PLAYER_HEIGHT
+    );
+
+    goalGroup.position.set(
+        RL.goal.x,
+        groundY + .1,
+        RL.goal.z
+    );
+
+    goalRing.rotation.z += .012;
+}
+
+function setGoalAtPlayer() {
+
+    const position = getPlayerPosition();
+
+    // Goal is placed at the player's current horizontal position.
+    // There is deliberately no forward offset.
+    RL.goal.set(
+        position.x,
+        position.y,
+        position.z
+    );
+
+    updateGoalMarker();
+
+    console.log("Goal set at player position:", RL.goal);
+}
+
+
+/* =========================================================
+   UI CONTROLS
+========================================================= */
+
+function setMode(newMode) {
+
+    mode = newMode;
+
+    RL.training = newMode === "training";
+    RL.autopilot = newMode === "autopilot";
+
+    if (newMode === "manual") {
+        RL.epsilon = Math.max(RL.epsilon, .03);
+    }
+
+    document.getElementById("status").innerHTML =
+        "Mode: " + mode.toUpperCase() +
+        "<br>Episode: " + RL.episode +
+        "<br>Steps: " + RL.steps +
+        "<br>Reward: " + RL.totalReward.toFixed(2) +
+        "<br>Q States: " + Object.keys(RL.q).length;
+}
+
+document.getElementById("manualBtn").onclick = () => {
+    setMode("manual");
+};
+
+document.getElementById("trainBtn").onclick = () => {
+    setMode("training");
+};
+
+document.getElementById("autoBtn").onclick = () => {
+    setMode("autopilot");
+};
+
+document.getElementById("stopBtn").onclick = () => {
+
+    setMode("manual");
+
+    playerVelocity.x = 0;
+    playerVelocity.z = 0;
+};
+
+document.getElementById("goalBtn").onclick = () => {
+    setGoalAtPlayer();
+};
+
+document.getElementById("resetBtn").onclick = () => {
+
+    resetEpisode();
+
+    setMode("manual");
+};
+
+document.getElementById("saveBtn").onclick = () => {
+
+    localStorage.setItem(
+        "personalCortexQTable",
+        JSON.stringify(RL.q)
+    );
+
+    alert("Q-table saved.");
+};
+
+document.getElementById("loadBtn").onclick = () => {
+
+    const saved = localStorage.getItem(
+        "personalCortexQTable"
+    );
+
+    if (!saved) {
+        alert("No saved Q-table found.");
+        return;
+    }
+
+    try {
+
+        RL.q = JSON.parse(saved);
+
+        alert("Q-table loaded.");
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert("Could not load Q-table.");
+    }
+};
+
+
+/* =========================================================
+   TRAINING PHYSICS
+========================================================= */
+
+const PHYSICS_DT = 1 / 300;
+
+let physicsAccumulator = 0;
+
+
+/* =========================================================
+   ANIMATION LOOP
+========================================================= */
+
+const clock = new THREE.Clock();
+
+function animate() {
+
+    requestAnimationFrame(animate);
+
+    const delta = Math.min(clock.getDelta(), .05);
+
+    physicsAccumulator += delta;
+
+    if (mode === "training") {
+
+        // Training uses smaller, fixed physics steps.
+        while (physicsAccumulator >= PHYSICS_DT) {
+
+            trainStep();
+
+            physicsAccumulator -= PHYSICS_DT;
+        }
+
+    } else {
+
+        physicsAccumulator = 0;
+
+        if (mode === "manual") {
+
+            manualControls(delta);
+
+            updatePlayer(delta);
+
+        } else if (mode === "autopilot") {
+
+            updateAutopilot(delta);
+        }
+    }
+
+    updateSoldier(delta);
+
+    updateThirdPersonCamera(delta);
+
+    updateProjectiles(delta);
+
+    updateGoalMarker();
+
+    renderer.render(scene, camera);
+}
+
+animate();
+
+
+/* =========================================================
+   RESIZE
+========================================================= */
+
+window.addEventListener("resize", () => {
+
+    camera.aspect =
+        window.innerWidth / window.innerHeight;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+});
+
+
+/* =========================================================
+   INITIAL STATE
+========================================================= */
+
+setPlayerPosition(
+    new THREE.Vector3(0, PLAYER_RADIUS, 0)
+);
+
+RL.start.copy(playerCollider.start);
+
+RL.goal.set(0, PLAYER_HEIGHT, -12);
+
+updateGoalMarker();
+
+setMode("manual");
+
+</script>
+</body>
+</html>
