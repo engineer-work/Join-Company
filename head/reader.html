@@ -1,0 +1,2441 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REAOWL Reader — Volumetric Face</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: #101116;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+button, select, input { font: inherit; }
+button { cursor: pointer; }
+button:disabled { opacity: .45; cursor: not-allowed; }
+
+#app { padding: 12px; }
+
+#topbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+#title {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#fileControls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.fileBox {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.fileBox label {
+    color: #b8c4d8;
+    font-size: 12px;
+}
+
+.fileBox input {
+    max-width: 100%;
+    color: white;
+    font-size: 12px;
+}
+
+/* Independent face visibility button */
+
+#faceToggle {
+    padding: 9px 14px;
+    border: 1px solid #42638a;
+    border-radius: 7px;
+    background: #203653;
+    color: white;
+}
+
+#faceToggle:hover {
+    background: #2d4d73;
+}
+
+#mainLayout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(320px, .9fr);
+    gap: 12px;
+    align-items: start;
+}
+
+/* Hide only the complete face panel */
+
+#mainLayout.face-hidden {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+#mainLayout.face-hidden #facePanel {
+    display: none;
+}
+
+.panel {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid #303949;
+    border-radius: 12px;
+    background: #171c26;
+}
+
+.panelHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 13px 15px;
+    border-bottom: 1px solid #303949;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.panelHeader small {
+    color: #94a3b8;
+    font-size: 11px;
+    font-weight: normal;
+}
+
+/* Reader */
+
+#reader {
+    height: 460px;
+    overflow-y: auto;
+    padding: 22px;
+    background: #fafafa;
+    color: #20242b;
+    font-size: 18px;
+    line-height: 2;
+    overflow-wrap: anywhere;
+}
+
+.readerWord {
+    display: inline;
+    padding: 2px 3px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.readerWord.active {
+    background: #ffdf4d;
+    color: #111;
+}
+
+.readerWord:hover { background: #e2e8f0; }
+.readerWord.active:hover { background: #ffdf4d; }
+
+#readerFooter { padding: 12px; }
+
+#audio {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.controls button,
+.controls select {
+    padding: 8px 10px;
+    border: 1px solid #3b4658;
+    border-radius: 6px;
+    background: #202938;
+    color: white;
+    font-size: 12px;
+}
+
+.controls label {
+    color: #b8c4d8;
+    font-size: 12px;
+}
+
+#currentWord {
+    min-height: 25px;
+    margin-top: 10px;
+    color: #64b5ff;
+    font-size: 19px;
+    font-weight: bold;
+    overflow-wrap: anywhere;
+}
+
+#readerStatus {
+    margin-top: 5px;
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+/* Face */
+
+#facePanel { background: #101116; }
+
+#faceViewer {
+    position: relative;
+    height: 520px;
+    overflow: hidden;
+    background: #101116;
+}
+
+#faceViewer canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+#faceOverlay {
+    position: absolute;
+    z-index: 3;
+    right: 12px;
+    bottom: 12px;
+    left: 12px;
+    pointer-events: none;
+    text-shadow: 0 2px 5px #000;
+}
+
+#faceWord {
+    color: #75baff;
+    font-size: 23px;
+    font-weight: bold;
+    overflow-wrap: anywhere;
+}
+
+#faceStatus {
+    margin-top: 5px;
+    color: #c2c8d2;
+    font-size: 11px;
+}
+
+#volumeBar {
+    height: 5px;
+    margin-top: 8px;
+    overflow: hidden;
+    border-radius: 4px;
+    background: #303949;
+}
+
+#volumeLevel {
+    width: 0%;
+    height: 100%;
+    background: #48e08a;
+}
+
+/* Face playback and settings buttons */
+
+#faceControls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px;
+    border-top: 1px solid #303949;
+}
+
+#faceControls button {
+    padding: 8px 10px;
+    border: 1px solid #3b4658;
+    border-radius: 6px;
+    background: #202938;
+    color: white;
+    font-size: 12px;
+}
+
+#faceControls button:hover {
+    background: #30415b;
+}
+
+/* Independent settings toggle */
+
+#settingsToggle {
+    border-color: #42638a;
+    background: #203653;
+}
+
+#settingsToggle:hover {
+    background: #2d4d73;
+}
+
+/* Settings wrapper: hidden initially */
+
+#faceSettings[hidden] {
+    display: none !important;
+}
+
+#faceSettings:not([hidden]) {
+    display: block;
+}
+
+/* Debug information */
+
+#faceDebug {
+    padding: 10px 12px;
+    border-top: 1px solid #303949;
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+/* Fog control panel */
+
+#fogControls {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    padding: 12px;
+    border-top: 1px solid #303949;
+}
+
+.fogControl {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.fogControl label {
+    color: #b8c4d8;
+    font-size: 11px;
+}
+
+.fogControl input[type="range"] {
+    width: 100%;
+    accent-color: #75baff;
+}
+
+.fogControl select {
+    width: 100%;
+    padding: 7px;
+    border: 1px solid #3b4658;
+    border-radius: 6px;
+    background: #202938;
+    color: white;
+    font-size: 12px;
+}
+
+#timelinePanel {
+    margin-top: 12px;
+    padding: 12px;
+    border: 1px solid #303949;
+    border-radius: 10px;
+    background: #171c26;
+}
+
+#progress {
+    width: 100%;
+    accent-color: #2878e8;
+}
+
+#timeRow {
+    display: flex;
+    justify-content: space-between;
+    color: #aab6c8;
+    font-size: 12px;
+}
+
+@media (max-width: 900px) {
+    #mainLayout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    #reader { height: 360px; }
+    #faceViewer { height: 430px; }
+}
+
+@media (max-width: 560px) {
+    #app { padding: 6px; }
+    #reader { padding: 14px; font-size: 16px; }
+    .fileBox { width: 100%; }
+}
+</style>
+
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.webgpu.js",
+        "three/webgpu": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.webgpu.js",
+        "three/tsl": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.tsl.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.183.0/examples/jsm/"
+    }
+}
+</script>
+</head>
+
+<body>
+
+<div id="app">
+
+    <div id="topbar">
+
+        <div id="title">🎙️ REAOWL Reader — Volumetric Face</div>
+
+        <div id="fileControls">
+
+            <div class="fileBox">
+                <label for="audioFile">Upload WAV</label>
+                <input id="audioFile" type="file" accept=".wav,audio/wav,audio/x-wav">
+            </div>
+
+            <div class="fileBox">
+                <label for="jsonFile">Upload JSON timings</label>
+                <input id="jsonFile" type="file" accept=".json,application/json">
+            </div>
+
+        </div>
+
+        <!-- Face visible initially -->
+
+        <button id="faceToggle" aria-expanded="true">
+            Hide Face
+        </button>
+
+    </div>
+
+
+    <div id="mainLayout">
+
+        <!-- READER -->
+
+        <section class="panel" id="readerPanel">
+
+            <div class="panelHeader">
+                <span>📖 Word-Synchronized Reader</span>
+                <small id="wordCount">0 words</small>
+            </div>
+
+            <div id="reader">
+                Upload your WAV and JSON files.
+            </div>
+
+            <div id="readerFooter">
+
+                <audio id="audio" controls preload="metadata"></audio>
+
+                <div class="controls">
+
+                    <button id="previousButton" disabled>⏮ Previous</button>
+                    <button id="nextButton" disabled>Next ⏭</button>
+                    <button id="repeatButton" disabled>🔁 Repeat Word</button>
+                    <button id="playButton" disabled>▶ Play</button>
+                    <button id="pauseButton" disabled>Ⅱ Pause</button>
+                    <button id="resetButton" disabled>↺ Reset</button>
+
+                    <label for="speedSelect">Speed</label>
+
+                    <select id="speedSelect">
+                        <option value=".75">0.75x</option>
+                        <option value=".9">0.9x</option>
+                        <option value="1" selected>1.0x</option>
+                        <option value="1.1">1.1x</option>
+                        <option value="1.25">1.25x</option>
+                        <option value="1.5">1.5x</option>
+                    </select>
+
+                    <label for="fontSelect">Font</label>
+
+                    <select id="fontSelect">
+                        <option value="Arial, sans-serif">Arial</option>
+                        <option value="Georgia, serif">Georgia</option>
+                        <option value="Verdana, sans-serif">Verdana</option>
+                        <option value="'Times New Roman', serif">Times New Roman</option>
+                        <option value="monospace">Monospace</option>
+                    </select>
+
+                    <button id="fontDecrease">A−</button>
+                    <span id="fontSizeDisplay">18px</span>
+                    <button id="fontIncrease">A+</button>
+
+                </div>
+
+                <div id="currentWord">Waiting for files...</div>
+                <div id="readerStatus">Upload WAV and JSON.</div>
+
+            </div>
+
+        </section>
+
+
+        <!-- FACE PANEL -->
+
+        <section class="panel" id="facePanel">
+
+            <div class="panelHeader">
+                <span>🧠 3D Face — Volumetric Lighting</span>
+                <small>Drag to rotate · Scroll to zoom</small>
+            </div>
+
+            <div id="faceViewer">
+
+                <div id="faceOverlay">
+
+                    <div id="faceWord">Waiting for speech...</div>
+
+                    <div id="faceStatus">Initializing WebGPU...</div>
+
+                    <div id="volumeBar">
+                        <div id="volumeLevel"></div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Face playback controls -->
+
+            <div id="faceControls">
+
+                <button id="facePlayButton" disabled>▶ Play</button>
+                <button id="facePauseButton" disabled>Ⅱ Pause</button>
+                <button id="faceResetButton" disabled>↺ Reset</button>
+                <button id="resetViewButton">Reset View</button>
+
+                <!-- Independent settings visibility -->
+
+                <button id="settingsToggle"
+                        aria-expanded="false"
+                        aria-controls="faceSettings">
+                    Show Face Settings
+                </button>
+
+            </div>
+
+
+            <!-- ALL TECHNICAL SETTINGS HIDDEN TOGETHER INITIALLY -->
+
+            <div id="faceSettings" hidden>
+
+                <div id="fogControls">
+
+                    <div class="fogControl">
+                        <label for="fogResolution">Volumetric resolution</label>
+                        <input id="fogResolution"
+                               type="range"
+                               min=".1"
+                               max="1"
+                               step=".05"
+                               value=".35">
+                    </div>
+
+                    <div class="fogControl">
+                        <label for="fogSteps">Ray-marching steps</label>
+                        <input id="fogSteps"
+                               type="range"
+                               min="2"
+                               max="16"
+                               step="1"
+                               value="12">
+                    </div>
+
+                    <div class="fogControl">
+                        <label for="fogIntensity">Fog intensity</label>
+                        <input id="fogIntensity"
+                               type="range"
+                               min="0"
+                               max="2"
+                               step=".05"
+                               value="1">
+                    </div>
+
+                    <div class="fogControl">
+                        <label for="smokeAmount">Smoke amount</label>
+                        <input id="smokeAmount"
+                               type="range"
+                               min="0"
+                               max="3"
+                               step=".05"
+                               value="2">
+                    </div>
+
+                    <div class="fogControl">
+                        <label for="denoiseStrength">Denoise strength</label>
+                        <input id="denoiseStrength"
+                               type="range"
+                               min="0"
+                               max="1"
+                               step=".05"
+                               value=".6">
+                    </div>
+
+                    <div class="fogControl">
+                        <label for="denoiseToggle">Denoising</label>
+                        <select id="denoiseToggle">
+                            <option value="true" selected>Enabled</option>
+                            <option value="false">Disabled</option>
+                        </select>
+                    </div>
+
+                    <div class="fogControl">
+                        <label for="pointIntensity">Point light intensity</label>
+                        <input id="pointIntensity"
+                               type="range"
+                               min="0"
+                               max="6"
+                               step=".1"
+                               value="3">
+                    </div>
+
+                    <div class="fogControl">
+                        <label for="spotIntensity">Spot light intensity</label>
+                        <input id="spotIntensity"
+                               type="range"
+                               min="0"
+                               max="200"
+                               step="1"
+                               value="100">
+                    </div>
+
+                </div>
+
+                <!-- Jaw morph target information is hidden with settings -->
+
+                <div id="faceDebug">
+                    Loading face model and morph targets...
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+    <div id="timelinePanel">
+
+        <input id="progress"
+               type="range"
+               min="0"
+               max="1000"
+               value="0"
+               disabled>
+
+        <div id="timeRow">
+            <span id="currentTime">00:00</span>
+            <span id="duration">00:00</span>
+        </div>
+
+    </div>
+
+</div>
+
+
+<script type="module">
+
+import * as THREE from "three/webgpu";
+
+import {
+    vec3,
+    Fn,
+    time,
+    texture3D,
+    screenUV,
+    uniform,
+    screenCoordinate,
+    pass
+} from "three/tsl";
+
+import { OrbitControls } from
+    "three/addons/controls/OrbitControls.js";
+
+import { GLTFLoader } from
+    "three/addons/loaders/GLTFLoader.js";
+
+import { KTX2Loader } from
+    "three/addons/loaders/KTX2Loader.js";
+
+import { MeshoptDecoder } from
+    "three/addons/libs/meshopt_decoder.module.js";
+
+import { ImprovedNoise } from
+    "three/addons/math/ImprovedNoise.js";
+
+import { bayer16 } from
+    "three/addons/tsl/math/Bayer.js";
+
+import { gaussianBlur } from
+    "three/addons/tsl/display/GaussianBlurNode.js";
+
+
+/* =========================================================
+   DOM AND STATE
+========================================================= */
+
+const $ = id => document.getElementById(id);
+
+const audio = $("audio");
+const reader = $("reader");
+const mainLayout = $("mainLayout");
+
+let audioLoaded = false;
+let jsonLoaded = false;
+let audioURL = null;
+
+let timingData = [];
+let readerWords = [];
+let currentWordIndex = -1;
+
+let repeatStart = null;
+let repeatEnd = null;
+
+let fontSize = 18;
+let syncFrame = null;
+let isSeeking = false;
+
+
+/* =========================================================
+   FACE PANEL SHOW / HIDE
+========================================================= */
+
+$("faceToggle").addEventListener("click", () => {
+
+    const hidden =
+        mainLayout.classList.toggle("face-hidden");
+
+    $("faceToggle").textContent =
+        hidden ? "Show Face" : "Hide Face";
+
+    $("faceToggle").setAttribute(
+        "aria-expanded",
+        String(!hidden)
+    );
+
+    requestAnimationFrame(() => {
+        resizeFace();
+    });
+
+});
+
+
+/* =========================================================
+   FACE SETTINGS SHOW / HIDE
+========================================================= */
+
+$("settingsToggle").addEventListener("click", () => {
+
+    const settings = $("faceSettings");
+
+    const currentlyHidden = settings.hidden;
+
+    settings.hidden = !currentlyHidden;
+
+    $("settingsToggle").textContent =
+        currentlyHidden
+            ? "Hide Face Settings"
+            : "Show Face Settings";
+
+    $("settingsToggle").setAttribute(
+        "aria-expanded",
+        String(currentlyHidden)
+    );
+
+});
+
+
+/* =========================================================
+   AUDIO FILE
+========================================================= */
+
+$("audioFile").addEventListener("change", () => {
+
+    const file = $("audioFile").files[0];
+
+    if (!file) return;
+
+    audio.pause();
+
+    audioLoaded = false;
+
+    if (audioURL) {
+        URL.revokeObjectURL(audioURL);
+    }
+
+    audioURL = URL.createObjectURL(file);
+
+    audio.src = audioURL;
+
+    audio.load();
+
+    updateButtons();
+
+});
+
+
+audio.addEventListener("loadedmetadata", () => {
+
+    audioLoaded = true;
+
+    $("duration").textContent =
+        formatTime(audio.duration);
+
+    $("readerStatus").textContent =
+        "Audio loaded.";
+
+    $("faceStatus").textContent =
+        "Audio loaded. Ready for playback.";
+
+    updateButtons();
+
+});
+
+
+audio.addEventListener("error", () => {
+
+    audioLoaded = false;
+
+    $("readerStatus").textContent =
+        "Unable to load WAV.";
+
+    updateButtons();
+
+});
+
+
+/* =========================================================
+   JSON WORD TIMINGS
+========================================================= */
+
+$("jsonFile").addEventListener("change", async () => {
+
+    const file = $("jsonFile").files[0];
+
+    if (!file) return;
+
+    try {
+
+        const data = JSON.parse(await file.text());
+
+        let entries = [];
+
+        if (Array.isArray(data)) {
+            entries = data;
+        } else if (Array.isArray(data.word_timings)) {
+            entries = data.word_timings;
+        } else if (Array.isArray(data.words)) {
+            entries = data.words;
+        } else if (Array.isArray(data.alignment)) {
+            entries = data.alignment;
+        } else {
+            throw new Error(
+                "Expected word_timings, words, alignment, or an array."
+            );
+        }
+
+        timingData = entries.map((item, index) => {
+
+            const text = String(
+                item?.text ??
+                item?.word ??
+                item?.token ??
+                ""
+            ).trim();
+
+            const start = Number(
+                item?.start ??
+                item?.start_time ??
+                item?.startTime
+            );
+
+            const end = Number(
+                item?.end ??
+                item?.end_time ??
+                item?.endTime
+            );
+
+            return {
+                text,
+                start,
+                end,
+                originalIndex: index
+            };
+
+        }).filter(item =>
+            item.text &&
+            Number.isFinite(item.start) &&
+            Number.isFinite(item.end) &&
+            item.start >= 0 &&
+            item.end > item.start
+        );
+
+        timingData.sort((a, b) => a.start - b.start);
+
+        if (!timingData.length) {
+            throw new Error("No valid word timing entries found.");
+        }
+
+        jsonLoaded = true;
+
+        buildReader();
+
+        $("readerStatus").textContent =
+            `Loaded ${timingData.length} words.`;
+
+        $("faceStatus").textContent =
+            "Word timing data loaded.";
+
+        updateButtons();
+
+    } catch (error) {
+
+        console.error(error);
+
+        jsonLoaded = false;
+
+        reader.textContent =
+            "JSON error: " + error.message;
+
+        $("readerStatus").textContent =
+            "JSON error: " + error.message;
+
+        updateButtons();
+
+    }
+
+});
+
+
+/* =========================================================
+   READER BUILD
+========================================================= */
+
+function buildReader() {
+
+    reader.replaceChildren();
+
+    readerWords = [];
+
+    timingData.forEach((item, index) => {
+
+        const span = document.createElement("span");
+
+        span.className = "readerWord";
+
+        span.textContent = item.text;
+
+        span.addEventListener("click", () => {
+            playFromWord(index);
+        });
+
+        reader.appendChild(span);
+
+        reader.appendChild(
+            document.createTextNode(" ")
+        );
+
+        readerWords.push(span);
+
+    });
+
+    $("wordCount").textContent =
+        `${readerWords.length} words`;
+
+    if (readerWords.length) {
+        setWord(0);
+    }
+
+}
+
+
+function setWord(index, scroll = true) {
+
+    if (
+        index < 0 ||
+        index >= readerWords.length
+    ) {
+        return;
+    }
+
+    if (currentWordIndex >= 0) {
+        readerWords[currentWordIndex]
+            ?.classList.remove("active");
+    }
+
+    currentWordIndex = index;
+
+    const span = readerWords[index];
+
+    span.classList.add("active");
+
+    $("currentWord").textContent =
+        timingData[index].text;
+
+    $("faceWord").textContent =
+        timingData[index].text;
+
+    $("readerStatus").textContent =
+        `Word ${index + 1} / ${timingData.length}`;
+
+    if (scroll) {
+
+        const readerRect = reader.getBoundingClientRect();
+
+        const wordRect = span.getBoundingClientRect();
+
+        const target =
+            reader.scrollTop +
+            wordRect.top -
+            readerRect.top -
+            reader.clientHeight / 2 +
+            wordRect.height / 2;
+
+        reader.scrollTo({
+            top: Math.max(0, target),
+            behavior: "auto"
+        });
+
+    }
+
+}
+
+
+function findWordAtTime(seconds) {
+
+    let low = 0;
+    let high = timingData.length - 1;
+
+    while (low <= high) {
+
+        const mid = (low + high) >> 1;
+
+        const item = timingData[mid];
+
+        if (seconds < item.start) {
+            high = mid - 1;
+        } else if (seconds >= item.end) {
+            low = mid + 1;
+        } else {
+            return mid;
+        }
+
+    }
+
+    return low < timingData.length ? low : -1;
+
+}
+
+
+/* =========================================================
+   AUDIO PLAYBACK
+========================================================= */
+
+async function playAudio() {
+
+    if (!audioLoaded) return;
+
+    try {
+
+        setupAudioAnalyser();
+
+        if (audioContext.state === "suspended") {
+            await audioContext.resume();
+        }
+
+        await audio.play();
+
+    } catch (error) {
+
+        console.error(error);
+
+        $("readerStatus").textContent =
+            "Playback error: " + error.message;
+
+    }
+
+}
+
+
+function pauseAudio() {
+
+    audio.pause();
+
+    targetJaw = 0;
+
+}
+
+
+function resetAudio() {
+
+    audio.pause();
+
+    audio.currentTime = 0;
+
+    repeatStart = null;
+    repeatEnd = null;
+
+    currentJaw = 0;
+    targetJaw = 0;
+
+    setJaw(0);
+
+    $("progress").value = 0;
+
+    $("currentTime").textContent = "00:00";
+
+    if (timingData.length) {
+        setWord(0);
+    }
+
+}
+
+
+function playFromWord(index) {
+
+    if (
+        index < 0 ||
+        index >= timingData.length
+    ) {
+        return;
+    }
+
+    repeatStart = null;
+    repeatEnd = null;
+
+    setWord(index);
+
+    audio.currentTime =
+        timingData[index].start;
+
+    playAudio();
+
+}
+
+
+$("playButton").addEventListener("click", playAudio);
+$("facePlayButton").addEventListener("click", playAudio);
+
+$("pauseButton").addEventListener("click", pauseAudio);
+$("facePauseButton").addEventListener("click", pauseAudio);
+
+$("resetButton").addEventListener("click", resetAudio);
+$("faceResetButton").addEventListener("click", resetAudio);
+
+
+$("previousButton").addEventListener("click", () => {
+
+    if (currentWordIndex >= 0) {
+        playFromWord(
+            Math.max(0, currentWordIndex - 1)
+        );
+    }
+
+});
+
+
+$("nextButton").addEventListener("click", () => {
+
+    if (currentWordIndex >= 0) {
+        playFromWord(
+            Math.min(
+                timingData.length - 1,
+                currentWordIndex + 1
+            )
+        );
+    }
+
+});
+
+
+$("repeatButton").addEventListener("click", () => {
+
+    if (currentWordIndex < 0) return;
+
+    const item = timingData[currentWordIndex];
+
+    repeatStart = item.start;
+    repeatEnd = item.end;
+
+    audio.currentTime = repeatStart;
+
+    playAudio();
+
+});
+
+
+$("speedSelect").addEventListener("change", () => {
+    audio.playbackRate = Number($("speedSelect").value);
+});
+
+
+$("fontSelect").addEventListener("change", () => {
+    reader.style.fontFamily = $("fontSelect").value;
+});
+
+
+$("fontDecrease").addEventListener("click", () => {
+    fontSize = Math.max(12, fontSize - 2);
+    updateFontSize();
+});
+
+
+$("fontIncrease").addEventListener("click", () => {
+    fontSize = Math.min(48, fontSize + 2);
+    updateFontSize();
+});
+
+
+function updateFontSize() {
+
+    reader.style.fontSize = fontSize + "px";
+
+    $("fontSizeDisplay").textContent =
+        fontSize + "px";
+
+}
+
+
+/* =========================================================
+   TIMELINE
+========================================================= */
+
+$("progress").addEventListener("input", () => {
+
+    if (
+        !audioLoaded ||
+        !Number.isFinite(audio.duration)
+    ) {
+        return;
+    }
+
+    isSeeking = true;
+
+    audio.currentTime =
+        Number($("progress").value) / 1000 *
+        audio.duration;
+
+    const index = findWordAtTime(audio.currentTime);
+
+    if (index >= 0) {
+        setWord(index);
+    }
+
+});
+
+
+$("progress").addEventListener("change", () => {
+    isSeeking = false;
+});
+
+
+audio.addEventListener("play", () => {
+
+    try {
+        setupAudioAnalyser();
+    } catch (error) {
+        console.warn(error);
+    }
+
+    startSync();
+
+});
+
+
+audio.addEventListener("pause", stopSync);
+
+audio.addEventListener("ended", () => {
+
+    stopSync();
+
+    repeatStart = null;
+    repeatEnd = null;
+
+    targetJaw = 0;
+
+    $("currentWord").textContent = "Audio finished.";
+
+    $("faceWord").textContent = "Audio finished.";
+
+});
+
+
+function syncLoop() {
+
+    if (audio.paused || audio.ended) {
+        syncFrame = null;
+        return;
+    }
+
+    const index = findWordAtTime(audio.currentTime);
+
+    if (index >= 0) {
+        setWord(index);
+    }
+
+    if (
+        repeatEnd !== null &&
+        audio.currentTime >= repeatEnd
+    ) {
+
+        audio.pause();
+
+        audio.currentTime = repeatStart;
+
+        repeatStart = null;
+        repeatEnd = null;
+
+        syncFrame = null;
+
+        return;
+
+    }
+
+    syncFrame = requestAnimationFrame(syncLoop);
+
+}
+
+
+function startSync() {
+
+    if (syncFrame === null) {
+        syncFrame = requestAnimationFrame(syncLoop);
+    }
+
+}
+
+
+function stopSync() {
+
+    if (syncFrame !== null) {
+        cancelAnimationFrame(syncFrame);
+        syncFrame = null;
+    }
+
+}
+
+
+function updateButtons() {
+
+    const ready = audioLoaded && jsonLoaded;
+
+    $("previousButton").disabled = !ready;
+    $("nextButton").disabled = !ready;
+    $("repeatButton").disabled = !ready;
+
+    $("playButton").disabled = !audioLoaded;
+    $("pauseButton").disabled = !audioLoaded;
+    $("resetButton").disabled = !audioLoaded;
+
+    $("facePlayButton").disabled = !audioLoaded;
+    $("facePauseButton").disabled = !audioLoaded;
+    $("faceResetButton").disabled = !audioLoaded;
+
+    $("progress").disabled = !audioLoaded;
+
+}
+
+
+function formatTime(seconds) {
+
+    if (!Number.isFinite(seconds) || seconds < 0) {
+        return "00:00";
+    }
+
+    const minutes = Math.floor(seconds / 60);
+
+    const secondsPart = Math.floor(seconds % 60);
+
+    return (
+        String(minutes).padStart(2, "0") +
+        ":" +
+        String(secondsPart).padStart(2, "0")
+    );
+
+}
+
+
+/* =========================================================
+   THREE.JS GLOBALS
+========================================================= */
+
+let renderer;
+let scene;
+let camera;
+let controls;
+
+let faceModel;
+let morphMeshes = [];
+let jawMorph = null;
+
+let volumetricMesh;
+let volumetricMaterial;
+let noiseTexture3D;
+
+let renderPipeline;
+let volumetricPass;
+let scenePass;
+let blurredVolumetricPass;
+
+let volumetricLightingIntensity;
+let smokeAmount;
+let denoiseStrength;
+
+let pointLight;
+let spotLight;
+
+let audioContext = null;
+let audioSource = null;
+let analyser = null;
+let audioData = null;
+
+let currentJaw = 0;
+let targetJaw = 0;
+
+const VOLUME_LAYER = 10;
+
+const params = {
+    resolution: .35,
+    denoise: true
+};
+
+
+/* =========================================================
+   WEBGPU INITIALIZATION
+========================================================= */
+
+await initializeThree();
+
+
+async function initializeThree() {
+
+    try {
+
+        renderer = new THREE.WebGPURenderer({
+            antialias: false,
+            powerPreference: "high-performance"
+        });
+
+        renderer.setPixelRatio(
+            Math.min(window.devicePixelRatio, 1.25)
+        );
+
+        const initialWidth = Math.max(
+            $("faceViewer").clientWidth,
+            1
+        );
+
+        const initialHeight = Math.max(
+            $("faceViewer").clientHeight,
+            1
+        );
+
+        renderer.setSize(
+            initialWidth,
+            initialHeight
+        );
+
+        renderer.toneMapping = THREE.NeutralToneMapping;
+
+        renderer.toneMappingExposure = 2;
+
+        renderer.shadowMap.enabled = true;
+
+        $("faceViewer").appendChild(renderer.domElement);
+
+        await renderer.init();
+
+
+        /* Scene */
+
+        scene = new THREE.Scene();
+
+        scene.background =
+            new THREE.Color(0x101116);
+
+
+        /* Camera */
+
+        camera = new THREE.PerspectiveCamera(
+            60,
+            initialWidth / initialHeight,
+            .01,
+            100
+        );
+
+        camera.position.set(0, 0, 2.8);
+
+
+        /* Controls */
+
+        controls = new OrbitControls(
+            camera,
+            renderer.domElement
+        );
+
+        controls.enableDamping = true;
+
+        controls.dampingFactor = .06;
+
+        controls.minDistance = .4;
+
+        controls.maxDistance = 10;
+
+        controls.target.set(0, 0, 0);
+
+        controls.update();
+
+
+        createLights();
+
+        createVolumetricFog();
+
+        createPostProcessing();
+
+        loadFaceModel();
+
+        setupFogControls();
+
+        window.addEventListener("resize", resizeFace);
+
+        const resizeObserver =
+            new ResizeObserver(resizeFace);
+
+        resizeObserver.observe($("faceViewer"));
+
+        renderer.setAnimationLoop(animate);
+
+        $("faceStatus").textContent =
+            "WebGPU initialized. Loading face...";
+
+    } catch (error) {
+
+        console.error(error);
+
+        $("faceStatus").textContent =
+            "WebGPU initialization failed: " +
+            error.message;
+
+        $("faceDebug").textContent =
+            "Try a WebGPU-compatible browser using localhost.";
+
+    }
+
+}
+
+
+/* =========================================================
+   LIGHTS
+========================================================= */
+
+function createLights() {
+
+    const hemi = new THREE.HemisphereLight(
+        0xffffff,
+        0x30384b,
+        2
+    );
+
+    hemi.layers.enable(VOLUME_LAYER);
+
+    scene.add(hemi);
+
+
+    const keyLight = new THREE.DirectionalLight(
+        0xffffff,
+        3
+    );
+
+    keyLight.position.set(2, 3, 4);
+
+    keyLight.layers.enable(VOLUME_LAYER);
+
+    scene.add(keyLight);
+
+
+    pointLight = new THREE.PointLight(
+        0xf9bb50,
+        3,
+        100
+    );
+
+    pointLight.castShadow = true;
+
+    pointLight.position.set(0, 1.4, 0);
+
+    pointLight.layers.enable(VOLUME_LAYER);
+
+    scene.add(pointLight);
+
+
+    spotLight = new THREE.SpotLight(
+        0xffffff,
+        100
+    );
+
+    spotLight.position.set(2.5, 5, 2.5);
+
+    spotLight.angle = Math.PI / 6;
+
+    spotLight.penumbra = 1;
+
+    spotLight.decay = 2;
+
+    spotLight.distance = 0;
+
+    spotLight.castShadow = true;
+
+    spotLight.shadow.intensity = .98;
+
+    spotLight.shadow.mapSize.set(1024, 1024);
+
+    spotLight.shadow.camera.near = 1;
+
+    spotLight.shadow.camera.far = 15;
+
+    spotLight.shadow.focus = 1;
+
+    spotLight.layers.enable(VOLUME_LAYER);
+
+
+    const textureLoader = new THREE.TextureLoader();
+
+    spotLight.map = textureLoader.load(
+        "https://threejs.org/examples/textures/colors.png"
+    );
+
+    spotLight.map.colorSpace = THREE.SRGBColorSpace;
+
+    scene.add(spotLight);
+
+}
+
+
+/* =========================================================
+   1. 3D NOISE TEXTURE
+========================================================= */
+
+function createTexture3D() {
+
+    let i = 0;
+
+    const size = 128;
+
+    const data = new Uint8Array(
+        size * size * size
+    );
+
+    const scale = 10;
+
+    const perlin = new ImprovedNoise();
+
+    const repeatFactor = 5.0;
+
+
+    for (let z = 0; z < size; z++) {
+
+        for (let y = 0; y < size; y++) {
+
+            for (let x = 0; x < size; x++) {
+
+                const nx = (x / size) * repeatFactor;
+
+                const ny = (y / size) * repeatFactor;
+
+                const nz = (z / size) * repeatFactor;
+
+                const noiseValue = perlin.noise(
+                    nx * scale,
+                    ny * scale,
+                    nz * scale
+                );
+
+                data[i] = 128 + 128 * noiseValue;
+
+                i++;
+
+            }
+
+        }
+
+    }
+
+
+    const texture = new THREE.Data3DTexture(
+        data,
+        size,
+        size,
+        size
+    );
+
+    texture.format = THREE.RedFormat;
+
+    texture.minFilter = THREE.LinearFilter;
+
+    texture.magFilter = THREE.LinearFilter;
+
+    texture.wrapS = THREE.RepeatWrapping;
+
+    texture.wrapT = THREE.RepeatWrapping;
+
+    texture.wrapR = THREE.RepeatWrapping;
+
+    texture.unpackAlignment = 1;
+
+    texture.needsUpdate = true;
+
+    return texture;
+
+}
+
+
+/* =========================================================
+   2. VOLUMETRIC FOG
+========================================================= */
+
+function createVolumetricFog() {
+
+    noiseTexture3D = createTexture3D();
+
+    smokeAmount = uniform(2);
+
+    volumetricMaterial =
+        new THREE.VolumeNodeMaterial();
+
+    volumetricMaterial.steps = 12;
+
+    volumetricMaterial.offsetNode =
+        bayer16(screenCoordinate);
+
+
+    volumetricMaterial.scatteringNode = Fn(
+        ({ positionRay }) => {
+
+            const timeScaled = vec3(
+                time,
+                0,
+                time.mul(.3)
+            );
+
+
+            const sampleGrain = (
+                scale,
+                timeScale = 1
+            ) => {
+
+                return texture3D(
+                    noiseTexture3D,
+
+                    positionRay
+                        .add(timeScaled.mul(timeScale))
+                        .mul(scale)
+                        .mod(1),
+
+                    0
+
+                ).r.add(.5);
+
+            };
+
+
+            let density = sampleGrain(.1);
+
+            density = density.mul(
+                sampleGrain(.05, 1)
+            );
+
+            density = density.mul(
+                sampleGrain(.02, 2)
+            );
+
+
+            return smokeAmount.mix(
+                1,
+                density
+            );
+
+        }
+    );
+
+
+    volumetricMesh = new THREE.Mesh(
+        new THREE.BoxGeometry(3.5, 4, 3.5),
+        volumetricMaterial
+    );
+
+    volumetricMesh.position.set(0, 0, 0);
+
+    volumetricMesh.receiveShadow = true;
+
+    volumetricMesh.layers.disableAll();
+
+    volumetricMesh.layers.enable(
+        VOLUME_LAYER
+    );
+
+    scene.add(volumetricMesh);
+
+}
+
+
+/* =========================================================
+   3. FACE MODEL
+========================================================= */
+
+function loadFaceModel() {
+
+    const ktx2Loader = new KTX2Loader();
+
+    ktx2Loader.setTranscoderPath(
+        "https://cdn.jsdelivr.net/npm/three@0.183.0/examples/jsm/libs/basis/"
+    );
+
+    ktx2Loader.detectSupport(renderer);
+
+    const loader = new GLTFLoader();
+
+    loader.setKTX2Loader(ktx2Loader);
+
+    loader.setMeshoptDecoder(MeshoptDecoder);
+
+
+    loader.load(
+        "https://threejs.org/examples/models/gltf/facecap.glb",
+
+        gltf => {
+
+            faceModel = gltf.scene;
+
+            scene.add(faceModel);
+
+            faceModel.updateMatrixWorld(true);
+
+            morphMeshes = [];
+
+            faceModel.traverse(object => {
+
+                if (
+                    object.isMesh &&
+                    object.morphTargetDictionary &&
+                    object.morphTargetInfluences
+                ) {
+
+                    morphMeshes.push(object);
+
+                }
+
+            });
+
+
+            if (!morphMeshes.length) {
+
+                $("faceDebug").textContent =
+                    "Face loaded, but no morph targets were found.";
+
+                return;
+
+            }
+
+
+            jawMorph = findJawMorph();
+
+
+            /* Center and scale model */
+
+            const box =
+                new THREE.Box3().setFromObject(faceModel);
+
+            const size =
+                box.getSize(new THREE.Vector3());
+
+            const center =
+                box.getCenter(new THREE.Vector3());
+
+            faceModel.position.sub(center);
+
+            faceModel.updateMatrixWorld(true);
+
+
+            const maxDimension = Math.max(
+                size.x,
+                size.y,
+                size.z
+            );
+
+            const scale = 1.8 / maxDimension;
+
+            faceModel.scale.setScalar(scale);
+
+            faceModel.updateMatrixWorld(true);
+
+
+            camera.position.set(0, 0, 2.8);
+
+            camera.near = .01;
+
+            camera.far = 100;
+
+            camera.updateProjectionMatrix();
+
+            controls.target.set(0, 0, 0);
+
+            controls.update();
+
+
+            $("faceDebug").textContent =
+                jawMorph
+                    ? "Jaw morph target: " + jawMorph.name
+                    : "Face loaded. Jaw morph target not found.";
+
+            $("faceStatus").textContent =
+                "Face loaded. Play audio for lip sync.";
+
+        },
+
+        undefined,
+
+        error => {
+
+            console.error("Face model loading failed:", error);
+
+            $("faceStatus").textContent =
+                "Face model failed to load.";
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   MORPH TARGET SEARCH
+========================================================= */
+
+function normalizeMorphName(name) {
+
+    return String(name)
+        .replace(/^blendShape[._]*/i, "")
+        .replace(/[^a-z0-9]/gi, "")
+        .toLowerCase();
+
+}
+
+
+function findJawMorph() {
+
+    const wanted = [
+        "jawOpen",
+        "mouthOpen",
+        "jaw_open",
+        "mouth_open"
+    ].map(normalizeMorphName);
+
+
+    for (const mesh of morphMeshes) {
+
+        for (
+            const [name, index]
+            of Object.entries(mesh.morphTargetDictionary)
+        ) {
+
+            if (
+                wanted.includes(
+                    normalizeMorphName(name)
+                )
+            ) {
+
+                return {
+                    mesh,
+                    name,
+                    index
+                };
+
+            }
+
+        }
+
+    }
+
+    return null;
+
+}
+
+
+function setJaw(amount) {
+
+    if (!jawMorph) return;
+
+    jawMorph.mesh.morphTargetInfluences[
+        jawMorph.index
+    ] = THREE.MathUtils.clamp(amount, 0, 1);
+
+}
+
+
+/* =========================================================
+   4. POST PROCESSING
+========================================================= */
+
+function createPostProcessing() {
+
+    renderPipeline =
+        new THREE.RenderPipeline(renderer);
+
+
+    volumetricLightingIntensity = uniform(1);
+
+    denoiseStrength = uniform(.6);
+
+
+    scenePass = pass(
+        scene,
+        camera
+    );
+
+    const sceneDepth =
+        scenePass.getTextureNode("depth");
+
+
+    volumetricMaterial.depthNode =
+        sceneDepth.sample(screenUV);
+
+
+    const volumetricLayer = new THREE.Layers();
+
+    volumetricLayer.disableAll();
+
+    volumetricLayer.enable(VOLUME_LAYER);
+
+
+    volumetricPass = pass(
+        scene,
+        camera,
+        {
+            depthBuffer: false
+        }
+    );
+
+    volumetricPass.name =
+        "Face Volumetric Lighting";
+
+    volumetricPass.setLayers(
+        volumetricLayer
+    );
+
+    volumetricPass.setResolutionScale(
+        params.resolution
+    );
+
+
+    blurredVolumetricPass = gaussianBlur(
+        volumetricPass,
+        denoiseStrength
+    );
+
+
+    const volumetricOutput =
+        params.denoise
+            ? blurredVolumetricPass
+            : volumetricPass;
+
+
+    const scenePassColor = scenePass.add(
+        volumetricOutput.mul(
+            volumetricLightingIntensity
+        )
+    );
+
+
+    renderPipeline.outputNode =
+        scenePassColor;
+
+}
+
+
+/* =========================================================
+   FOG CONTROL SLIDERS
+========================================================= */
+
+function setupFogControls() {
+
+    $("fogResolution").addEventListener("input", event => {
+
+        params.resolution = Number(event.target.value);
+
+        if (volumetricPass) {
+            volumetricPass.setResolutionScale(
+                params.resolution
+            );
+        }
+
+    });
+
+
+    $("fogSteps").addEventListener("input", event => {
+
+        if (volumetricMaterial) {
+            volumetricMaterial.steps =
+                Number(event.target.value);
+        }
+
+    });
+
+
+    $("fogIntensity").addEventListener("input", event => {
+
+        if (volumetricLightingIntensity) {
+            volumetricLightingIntensity.value =
+                Number(event.target.value);
+        }
+
+    });
+
+
+    $("smokeAmount").addEventListener("input", event => {
+
+        if (smokeAmount) {
+            smokeAmount.value =
+                Number(event.target.value);
+        }
+
+    });
+
+
+    $("denoiseStrength").addEventListener("input", event => {
+
+        if (denoiseStrength) {
+            denoiseStrength.value =
+                Number(event.target.value);
+        }
+
+    });
+
+
+    $("denoiseToggle").addEventListener("change", event => {
+
+        params.denoise =
+            event.target.value === "true";
+
+        updatePostProcessingOutput();
+
+    });
+
+
+    $("pointIntensity").addEventListener("input", event => {
+
+        if (pointLight) {
+            pointLight.intensity =
+                Number(event.target.value);
+        }
+
+    });
+
+
+    $("spotIntensity").addEventListener("input", event => {
+
+        if (spotLight) {
+            spotLight.intensity =
+                Number(event.target.value);
+        }
+
+    });
+
+}
+
+
+function updatePostProcessingOutput() {
+
+    if (!scenePass || !renderPipeline) return;
+
+    const volumetricOutput =
+        params.denoise
+            ? blurredVolumetricPass
+            : volumetricPass;
+
+    const scenePassColor = scenePass.add(
+        volumetricOutput.mul(
+            volumetricLightingIntensity
+        )
+    );
+
+    renderPipeline.outputNode =
+        scenePassColor;
+
+    renderPipeline.needsUpdate = true;
+
+}
+
+
+/* =========================================================
+   AUDIO ANALYSER — RMS LIP SYNC
+========================================================= */
+
+function setupAudioAnalyser() {
+
+    if (audioContext) return;
+
+    const AudioContextClass =
+        window.AudioContext ||
+        window.webkitAudioContext;
+
+    if (!AudioContextClass) {
+        throw new Error("Web Audio API not supported.");
+    }
+
+    audioContext = new AudioContextClass();
+
+    analyser = audioContext.createAnalyser();
+
+    analyser.fftSize = 1024;
+
+    analyser.smoothingTimeConstant = .65;
+
+    audioData = new Uint8Array(
+        analyser.fftSize
+    );
+
+    audioSource =
+        audioContext.createMediaElementSource(audio);
+
+    audioSource.connect(analyser);
+
+    analyser.connect(
+        audioContext.destination
+    );
+
+}
+
+
+function getAudioRMS() {
+
+    if (
+        !analyser ||
+        audio.paused ||
+        audio.ended
+    ) {
+
+        targetJaw = 0;
+
+        return 0;
+
+    }
+
+    analyser.getByteTimeDomainData(audioData);
+
+    let sum = 0;
+
+    for (let i = 0; i < audioData.length; i++) {
+
+        const sample =
+            (audioData[i] - 128) / 128;
+
+        sum += sample * sample;
+
+    }
+
+    const rms = Math.sqrt(
+        sum / audioData.length
+    );
+
+    const threshold = .018;
+
+    const gain = 7;
+
+    targetJaw = THREE.MathUtils.clamp(
+        Math.max(0, (rms - threshold) * gain),
+        0,
+        .85
+    );
+
+    return rms;
+
+}
+
+
+/* =========================================================
+   RESET CAMERA VIEW
+========================================================= */
+
+$("resetViewButton").addEventListener("click", () => {
+
+    if (!camera || !controls) return;
+
+    camera.position.set(0, 0, 2.8);
+
+    controls.target.set(0, 0, 0);
+
+    controls.update();
+
+});
+
+
+/* =========================================================
+   RESIZE
+========================================================= */
+
+function resizeFace() {
+
+    if (!renderer || !camera) return;
+
+    const width = Math.max(
+        $("faceViewer").clientWidth,
+        1
+    );
+
+    const height = Math.max(
+        $("faceViewer").clientHeight,
+        1
+    );
+
+    camera.aspect = width / height;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(width, height);
+
+}
+
+
+/* =========================================================
+   ANIMATION — LIGHT MOTION + FACE AUDIO
+========================================================= */
+
+const clock = new THREE.Clock();
+
+function animate() {
+
+    if (!renderer || !renderPipeline) return;
+
+    const delta = Math.min(
+        clock.getDelta(),
+        .05
+    );
+
+    const elapsed = performance.now() * .001;
+
+    const scale = 2.4;
+
+
+    /* Animate point light */
+
+    if (pointLight) {
+
+        pointLight.position.x =
+            Math.sin(elapsed * .7) * scale;
+
+        pointLight.position.y =
+            Math.cos(elapsed * .5) * scale;
+
+        pointLight.position.z =
+            Math.cos(elapsed * .3) * scale;
+
+    }
+
+
+    /* Animate spotlight */
+
+    if (spotLight) {
+
+        spotLight.position.x =
+            Math.cos(elapsed * .3) * scale;
+
+        spotLight.lookAt(0, 0, 0);
+
+    }
+
+
+    /* Audio RMS drives jaw */
+
+    let rms = 0;
+
+    if (
+        audioLoaded &&
+        !audio.paused &&
+        !audio.ended
+    ) {
+
+        rms = getAudioRMS();
+
+    } else {
+
+        targetJaw = 0;
+
+    }
+
+
+    /* Smooth mouth movement */
+
+    const speed =
+        targetJaw > currentJaw ? 18 : 10;
+
+    const smoothing =
+        1 - Math.exp(-speed * delta);
+
+    currentJaw +=
+        (targetJaw - currentJaw) * smoothing;
+
+    setJaw(currentJaw);
+
+
+    /* Volume meter */
+
+    $("volumeLevel").style.width =
+        Math.min(rms * 400, 100) + "%";
+
+
+    /* Timeline */
+
+    if (
+        audioLoaded &&
+        Number.isFinite(audio.duration) &&
+        audio.duration > 0 &&
+        !isSeeking
+    ) {
+
+        $("progress").value =
+            audio.currentTime /
+            audio.duration *
+            1000;
+
+        $("currentTime").textContent =
+            formatTime(audio.currentTime);
+
+        $("duration").textContent =
+            formatTime(audio.duration);
+
+    }
+
+
+    /* Reader and face synchronization */
+
+    if (
+        audioLoaded &&
+        !audio.paused &&
+        !audio.ended
+    ) {
+
+        const index =
+            findWordAtTime(audio.currentTime);
+
+        if (index >= 0) {
+            setWord(index);
+        }
+
+    }
+
+
+    controls.update();
+
+    renderPipeline.render();
+
+}
+
+</script>
+
+</body>
+</html>

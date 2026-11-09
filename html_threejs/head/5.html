@@ -1,0 +1,1432 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personal Cortex — Audio Reader & 3D Face</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #10131c;
+    --panel: #191e2b;
+    --panel2: #22293a;
+    --text: #edf2ff;
+    --muted: #9ba8c2;
+    --accent: #6d8cff;
+    --accent2: #9d7bff;
+    --border: #30394e;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Arial, sans-serif;
+}
+
+button,
+input,
+select {
+    font: inherit;
+}
+
+button {
+    border: 0;
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: white;
+    background: var(--accent);
+    cursor: pointer;
+}
+
+button:hover {
+    filter: brightness(1.12);
+}
+
+button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.app {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.topbar {
+    height: 62px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 0 20px;
+    background: #151a26;
+    border-bottom: 1px solid var(--border);
+}
+
+.brand {
+    font-weight: bold;
+    font-size: 17px;
+    letter-spacing: 0.3px;
+}
+
+.brand span {
+    color: var(--accent);
+}
+
+.status {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.workspace {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 38%);
+    gap: 14px;
+    padding: 14px;
+}
+
+.workspace.face-hidden {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.reader-panel,
+.face-panel {
+    min-width: 0;
+    min-height: 0;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--panel);
+    overflow: hidden;
+}
+
+.reader-panel {
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-header {
+    flex-shrink: 0;
+    min-height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.panel-header h2 {
+    margin: 0;
+    font-size: 15px;
+}
+
+.face-toggle {
+    background: linear-gradient(135deg, #657fff, #8b65f5);
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.reader-content {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 16px;
+    overflow: auto;
+}
+
+.upload-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.upload-box {
+    flex: 1;
+    min-width: 180px;
+    padding: 12px;
+    border: 1px dashed #46516c;
+    border-radius: 10px;
+    background: #141925;
+}
+
+.upload-box label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.upload-box input {
+    width: 100%;
+    color: var(--text);
+    font-size: 12px;
+}
+
+.reader-text {
+    flex: 1;
+    min-height: 180px;
+    padding: 22px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: #111621;
+    color: #d9e2f7;
+    font-size: clamp(17px, 2vw, 23px);
+    line-height: 1.9;
+    white-space: pre-wrap;
+    overflow-y: auto;
+}
+
+.word {
+    display: inline;
+    border-radius: 4px;
+    transition: background 0.08s, color 0.08s;
+}
+
+.word.active {
+    background: #f4d35e;
+    color: #11131a;
+    box-shadow: 0 0 12px #f4d35e55;
+}
+
+.reader-placeholder {
+    color: #75829d;
+}
+
+.reader-controls {
+    flex-shrink: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.reader-controls button {
+    min-width: 42px;
+}
+
+.reader-controls .primary {
+    background: #6d8cff;
+}
+
+.reader-controls .secondary {
+    background: #343e55;
+}
+
+.reader-controls label {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.reader-controls select {
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 8px;
+    color: var(--text);
+    background: #22293a;
+}
+
+.progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.progress-wrap input {
+    flex: 1;
+    min-width: 0;
+    accent-color: var(--accent);
+}
+
+.time-label {
+    width: 92px;
+    color: var(--muted);
+    font-size: 12px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.message {
+    color: var(--muted);
+    font-size: 12px;
+    min-height: 16px;
+}
+
+.face-panel {
+    display: flex;
+    flex-direction: column;
+}
+
+.face-panel[hidden] {
+    display: none !important;
+}
+
+.face-header {
+    flex-shrink: 0;
+    min-height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.face-header h2 {
+    margin: 0;
+    font-size: 15px;
+}
+
+.face-label {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+#faceContainer {
+    position: relative;
+    flex: 1;
+    min-height: 300px;
+    width: 100%;
+    overflow: hidden;
+    background:
+        radial-gradient(ellipse at 50% 42%, #2c3651 0%, #151a27 50%, #10131c 100%);
+}
+
+#faceContainer canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.face-overlay {
+    position: absolute;
+    left: 12px;
+    bottom: 12px;
+    padding: 7px 10px;
+    border: 1px solid #ffffff1b;
+    border-radius: 8px;
+    background: #10131cbb;
+    color: #aebbd6;
+    font-size: 11px;
+    pointer-events: none;
+}
+
+@media (max-width: 900px) {
+    body {
+        overflow: auto;
+    }
+
+    .app {
+        min-height: 100vh;
+        height: auto;
+    }
+
+    .workspace {
+        grid-template-columns: minmax(0, 1fr);
+        overflow: visible;
+    }
+
+    .reader-panel {
+        min-height: 75vh;
+    }
+
+    .face-panel {
+        min-height: 55vh;
+    }
+
+    #faceContainer {
+        min-height: 45vh;
+    }
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+    <header class="topbar">
+        <div class="brand">PERSONAL <span>CORTEX</span></div>
+        <div class="status" id="appStatus">Ready</div>
+    </header>
+
+    <main class="workspace face-hidden" id="workspace">
+
+        <!-- READER -->
+        <section class="reader-panel">
+
+            <div class="panel-header">
+                <h2>Audio Reader</h2>
+
+                <button
+                    class="face-toggle"
+                    id="faceToggle"
+                    type="button"
+                    aria-expanded="false"
+                    aria-controls="facePanel">
+                    Show Face
+                </button>
+            </div>
+
+            <div class="reader-content">
+
+                <div class="upload-row">
+
+                    <div class="upload-box">
+                        <label for="audioFile">Upload audio (.wav, .mp3, etc.)</label>
+                        <input
+                            type="file"
+                            id="audioFile"
+                            accept="audio/*">
+                    </div>
+
+                    <div class="upload-box">
+                        <label for="jsonFile">Upload word timings (.json)</label>
+                        <input
+                            type="file"
+                            id="jsonFile"
+                            accept=".json,application/json">
+                    </div>
+
+                    <div class="upload-box">
+                        <label for="modelFile">Optional 3D face model (.glb, .gltf)</label>
+                        <input
+                            type="file"
+                            id="modelFile"
+                            accept=".glb,.gltf">
+                    </div>
+
+                </div>
+
+                <div class="reader-text" id="readerText">
+                    <span class="reader-placeholder">
+                        Upload an audio file and a JSON word-timing file to begin.
+                    </span>
+                </div>
+
+                <div class="progress-wrap">
+                    <input
+                        type="range"
+                        id="progress"
+                        min="0"
+                        max="100"
+                        value="0"
+                        step="0.01">
+
+                    <div class="time-label" id="timeLabel">00:00 / 00:00</div>
+                </div>
+
+                <div class="reader-controls">
+                    <button class="secondary" id="previousWord" title="Previous word">⏮</button>
+                    <button class="primary" id="playButton">▶ Play</button>
+                    <button class="secondary" id="nextWord" title="Next word">⏭</button>
+                    <button class="secondary" id="repeatWord">Repeat Word</button>
+
+                    <label for="playbackRate">Speed</label>
+                    <select id="playbackRate">
+                        <option value="0.5">0.5×</option>
+                        <option value="0.75">0.75×</option>
+                        <option value="1" selected>1×</option>
+                        <option value="1.25">1.25×</option>
+                        <option value="1.5">1.5×</option>
+                        <option value="2">2×</option>
+                    </select>
+                </div>
+
+                <div class="message" id="readerMessage">
+                    Waiting for audio and word timings.
+                </div>
+
+            </div>
+        </section>
+
+        <!-- FACE PANEL: HIDDEN INITIALLY -->
+        <section class="face-panel" id="facePanel" hidden>
+
+            <div class="face-header">
+                <h2>3D Face</h2>
+                <span class="face-label">Audio-reactive • Volumetric atmosphere</span>
+            </div>
+
+            <div id="faceContainer">
+                <div class="face-overlay">
+                    Drag to rotate · Scroll to zoom
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+</div>
+
+<audio id="audio" preload="metadata"></audio>
+
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+    }
+}
+</script>
+
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+
+/* -------------------------------------------------------
+   DOM
+------------------------------------------------------- */
+
+const workspace = document.getElementById("workspace");
+const facePanel = document.getElementById("facePanel");
+const faceToggle = document.getElementById("faceToggle");
+const faceContainer = document.getElementById("faceContainer");
+
+const audioInput = document.getElementById("audioFile");
+const jsonInput = document.getElementById("jsonFile");
+const modelInput = document.getElementById("modelFile");
+
+const audio = document.getElementById("audio");
+const readerText = document.getElementById("readerText");
+const readerMessage = document.getElementById("readerMessage");
+const appStatus = document.getElementById("appStatus");
+
+const playButton = document.getElementById("playButton");
+const previousWordButton = document.getElementById("previousWord");
+const nextWordButton = document.getElementById("nextWord");
+const repeatWordButton = document.getElementById("repeatWord");
+
+const progress = document.getElementById("progress");
+const timeLabel = document.getElementById("timeLabel");
+const playbackRate = document.getElementById("playbackRate");
+
+/* -------------------------------------------------------
+   INITIAL FACE VISIBILITY
+------------------------------------------------------- */
+
+facePanel.hidden = true;
+workspace.classList.add("face-hidden");
+
+faceToggle.textContent = "Show Face";
+faceToggle.setAttribute("aria-expanded", "false");
+
+faceToggle.addEventListener("click", () => {
+    const showFace = facePanel.hidden;
+
+    facePanel.hidden = !showFace;
+    workspace.classList.toggle("face-hidden", !showFace);
+
+    faceToggle.textContent = showFace ? "Hide Face" : "Show Face";
+    faceToggle.setAttribute("aria-expanded", String(showFace));
+
+    requestAnimationFrame(() => {
+        resizeFaceRenderer();
+    });
+});
+
+/* -------------------------------------------------------
+   READER / TIMING DATA
+------------------------------------------------------- */
+
+let words = [];
+let activeWordIndex = -1;
+let audioObjectURL = null;
+let jsonDataLoaded = false;
+let repeatCurrentWord = false;
+
+function formatTime(seconds) {
+    if (!Number.isFinite(seconds) || seconds < 0) {
+        seconds = 0;
+    }
+
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+
+    return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+}
+
+function setMessage(message) {
+    readerMessage.textContent = message;
+}
+
+function setStatus(message) {
+    appStatus.textContent = message;
+}
+
+function normalizeTimingEntry(entry) {
+    if (typeof entry === "string") {
+        return {
+            text: entry,
+            start: null,
+            end: null
+        };
+    }
+
+    const text =
+        entry.text ??
+        entry.word ??
+        entry.token ??
+        entry.value ??
+        "";
+
+    let start =
+        entry.start ??
+        entry.start_time ??
+        entry.startTime ??
+        entry.begin ??
+        entry.from;
+
+    let end =
+        entry.end ??
+        entry.end_time ??
+        entry.endTime ??
+        entry.finish ??
+        entry.to;
+
+    if (start !== undefined && start !== null) {
+        start = Number(start);
+    }
+
+    if (end !== undefined && end !== null) {
+        end = Number(end);
+    }
+
+    return {
+        text: String(text),
+        start: Number.isFinite(start) ? start : null,
+        end: Number.isFinite(end) ? end : null
+    };
+}
+
+function extractWordEntries(data) {
+    if (Array.isArray(data)) {
+        return data;
+    }
+
+    if (!data || typeof data !== "object") {
+        return [];
+    }
+
+    if (Array.isArray(data.words)) {
+        return data.words;
+    }
+
+    if (Array.isArray(data.word_timings)) {
+        return data.word_timings;
+    }
+
+    if (Array.isArray(data.wordTimings)) {
+        return data.wordTimings;
+    }
+
+    if (Array.isArray(data.segments)) {
+        return data.segments;
+    }
+
+    if (Array.isArray(data.transcript)) {
+        return data.transcript;
+    }
+
+    return [];
+}
+
+function buildReader(entries) {
+    readerText.replaceChildren();
+    words = [];
+    activeWordIndex = -1;
+
+    if (!entries.length) {
+        readerText.textContent = "No word timings were found in this JSON file.";
+        return;
+    }
+
+    entries.forEach((rawEntry, index) => {
+        const entry = normalizeTimingEntry(rawEntry);
+
+        if (!entry.text.trim()) {
+            return;
+        }
+
+        const span = document.createElement("span");
+        span.className = "word";
+        span.textContent = entry.text;
+
+        readerText.appendChild(span);
+
+        // Add a space after each token, unless the token already
+        // includes punctuation or whitespace.
+        const trailingSpace = document.createTextNode(" ");
+        readerText.appendChild(trailingSpace);
+
+        words.push({
+            text: entry.text,
+            start: entry.start,
+            end: entry.end,
+            element: span,
+            sourceIndex: index
+        });
+    });
+
+    if (words.length) {
+        readerText.scrollTop = 0;
+        setMessage(`${words.length} word entries loaded.`);
+    }
+}
+
+function setActiveWord(index, scroll = true) {
+    if (!words.length) {
+        return;
+    }
+
+    index = Math.max(0, Math.min(words.length - 1, index));
+
+    if (activeWordIndex === index) {
+        return;
+    }
+
+    if (activeWordIndex >= 0 && words[activeWordIndex]) {
+        words[activeWordIndex].element.classList.remove("active");
+    }
+
+    activeWordIndex = index;
+
+    const current = words[activeWordIndex];
+
+    if (current) {
+        current.element.classList.add("active");
+
+        if (scroll) {
+            current.element.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+                inline: "nearest"
+            });
+        }
+    }
+}
+
+function findWordAtTime(currentTime) {
+    if (!words.length) {
+        return -1;
+    }
+
+    // Find the word whose timing contains the current audio time.
+    for (let i = 0; i < words.length; i++) {
+        const word = words[i];
+
+        if (
+            word.start !== null &&
+            word.end !== null &&
+            currentTime >= word.start &&
+            currentTime <= word.end
+        ) {
+            return i;
+        }
+    }
+
+    // If timings have gaps, find the latest word that has started.
+    let latest = -1;
+
+    for (let i = 0; i < words.length; i++) {
+        if (words[i].start !== null && words[i].start <= currentTime) {
+            latest = i;
+        }
+    }
+
+    return latest;
+}
+
+function seekToWord(index) {
+    if (!words.length) {
+        return;
+    }
+
+    index = Math.max(0, Math.min(words.length - 1, index));
+
+    const word = words[index];
+
+    if (word.start !== null) {
+        audio.currentTime = word.start;
+        setActiveWord(index);
+    }
+}
+
+/* -------------------------------------------------------
+   AUDIO INPUT
+------------------------------------------------------- */
+
+audioInput.addEventListener("change", () => {
+    const file = audioInput.files?.[0];
+
+    if (!file) {
+        return;
+    }
+
+    if (audioObjectURL) {
+        URL.revokeObjectURL(audioObjectURL);
+    }
+
+    audioObjectURL = URL.createObjectURL(file);
+
+    audio.pause();
+    audio.src = audioObjectURL;
+    audio.load();
+
+    setStatus("Audio loaded");
+    setMessage(`Loaded: ${file.name}`);
+});
+
+jsonInput.addEventListener("change", async () => {
+    const file = jsonInput.files?.[0];
+
+    if (!file) {
+        return;
+    }
+
+    try {
+        const text = await file.text();
+        const data = JSON.parse(text);
+        const entries = extractWordEntries(data);
+
+        buildReader(entries);
+        jsonDataLoaded = true;
+
+        setStatus("Word timings loaded");
+
+        if (!entries.length) {
+            setMessage("JSON loaded, but no recognized word-timing array was found.");
+        }
+    } catch (error) {
+        console.error(error);
+        setMessage("Could not parse the JSON file. Please check its format.");
+    }
+});
+
+audio.addEventListener("loadedmetadata", () => {
+    progress.max = audio.duration || 0;
+    updateTimeLabel();
+
+    setMessage(
+        `Audio duration: ${formatTime(audio.duration)}`
+    );
+});
+
+audio.addEventListener("play", () => {
+    playButton.textContent = "⏸ Pause";
+    setStatus("Playing");
+    initializeAudioAnalysis();
+});
+
+audio.addEventListener("pause", () => {
+    playButton.textContent = "▶ Play";
+    setStatus("Paused");
+});
+
+audio.addEventListener("ended", () => {
+    playButton.textContent = "▶ Play";
+    setStatus("Finished");
+});
+
+playButton.addEventListener("click", async () => {
+    if (!audio.src) {
+        setMessage("Please upload an audio file first.");
+        return;
+    }
+
+    if (audio.paused) {
+        try {
+            await audio.play();
+        } catch (error) {
+            console.error(error);
+            setMessage("The audio could not be played.");
+        }
+    } else {
+        audio.pause();
+    }
+});
+
+previousWordButton.addEventListener("click", () => {
+    if (activeWordIndex <= 0) {
+        seekToWord(0);
+    } else {
+        seekToWord(activeWordIndex - 1);
+    }
+});
+
+nextWordButton.addEventListener("click", () => {
+    if (activeWordIndex < 0) {
+        seekToWord(0);
+    } else {
+        seekToWord(activeWordIndex + 1);
+    }
+});
+
+repeatWordButton.addEventListener("click", () => {
+    if (!words.length || activeWordIndex < 0) {
+        setMessage("Play the audio or select a word first.");
+        return;
+    }
+
+    const word = words[activeWordIndex];
+
+    if (word.start === null || word.end === null) {
+        setMessage("The current word has no start/end timing.");
+        return;
+    }
+
+    repeatCurrentWord = true;
+    audio.currentTime = word.start;
+    audio.play();
+
+    setMessage(`Repeating: ${word.text}`);
+});
+
+playbackRate.addEventListener("change", () => {
+    audio.playbackRate = Number(playbackRate.value);
+});
+
+progress.addEventListener("input", () => {
+    if (Number.isFinite(audio.duration) && audio.duration > 0) {
+        audio.currentTime = Number(progress.value);
+    }
+});
+
+function updateTimeLabel() {
+    timeLabel.textContent =
+        `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
+}
+
+/* -------------------------------------------------------
+   AUDIO SYNCHRONIZATION
+------------------------------------------------------- */
+
+audio.addEventListener("timeupdate", () => {
+    if (!Number.isFinite(audio.duration) || audio.duration <= 0) {
+        return;
+    }
+
+    progress.value = audio.currentTime;
+    updateTimeLabel();
+
+    const index = findWordAtTime(audio.currentTime);
+
+    if (index >= 0) {
+        setActiveWord(index, true);
+    }
+
+    if (repeatCurrentWord && activeWordIndex >= 0) {
+        const word = words[activeWordIndex];
+
+        if (
+            word &&
+            word.end !== null &&
+            audio.currentTime >= word.end
+        ) {
+            audio.currentTime = word.start ?? audio.currentTime;
+        }
+    }
+});
+
+/* -------------------------------------------------------
+   THREE.JS FACE AND LIGHTING
+------------------------------------------------------- */
+
+let renderer = null;
+let scene = null;
+let camera = null;
+let controls = null;
+let faceRoot = null;
+let faceModel = null;
+
+let jawMorphs = [];
+let jawValue = 0;
+
+let volumetricMesh = null;
+let volumeMaterial = null;
+
+const clock = new THREE.Clock();
+
+const FACE_MODEL_URL =
+    "https://threejs.org/examples/models/gltf/facecap.glb";
+
+function initThree() {
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x10131c);
+    scene.fog = new THREE.FogExp2(0x171d2b, 0.075);
+
+    camera = new THREE.PerspectiveCamera(
+        40,
+        1,
+        0.1,
+        100
+    );
+
+    camera.position.set(0, 0.15, 3.6);
+
+    renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: false
+    });
+
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(1, 1);
+
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.15;
+
+    faceContainer.appendChild(renderer.domElement);
+
+    controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.06;
+    controls.target.set(0, 0, 0);
+    controls.minDistance = 1.5;
+    controls.maxDistance = 6;
+
+    // Scene lighting
+    const hemisphere = new THREE.HemisphereLight(
+        0xbacbff,
+        0x1c2030,
+        1.7
+    );
+    scene.add(hemisphere);
+
+    const keyLight = new THREE.DirectionalLight(0xe6edff, 3.2);
+    keyLight.position.set(2.5, 3.5, 3.2);
+    scene.add(keyLight);
+
+    const fillLight = new THREE.PointLight(0x758cff, 28, 8);
+    fillLight.position.set(-2.2, 0.7, 2.3);
+    scene.add(fillLight);
+
+    const rimLight = new THREE.PointLight(0x9b5dff, 40, 7);
+    rimLight.position.set(0.5, 1.6, -2.0);
+    scene.add(rimLight);
+
+    createAtmosphere();
+
+    // Optional model load. The user can replace it with their own GLB.
+    loadFaceModel(FACE_MODEL_URL);
+
+    resizeFaceRenderer();
+    renderer.setAnimationLoop(animate);
+}
+
+function createAtmosphere() {
+    /*
+      Procedural volumetric-style atmosphere:
+      a transparent shader volume around the head.
+      The shader creates soft density variation and light scattering.
+    */
+
+    const geometry = new THREE.BoxGeometry(3.8, 3.8, 3.8);
+
+    volumeMaterial = new THREE.ShaderMaterial({
+        transparent: true,
+        depthWrite: false,
+        side: THREE.BackSide,
+        blending: THREE.AdditiveBlending,
+
+        uniforms: {
+            uTime: { value: 0 },
+            uColor: { value: new THREE.Color(0x667dff) },
+            uIntensity: { value: 0.28 }
+        },
+
+        vertexShader: `
+            varying vec3 vLocalPosition;
+            varying vec3 vWorldPosition;
+
+            void main() {
+                vLocalPosition = position;
+
+                vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+                vWorldPosition = worldPosition.xyz;
+
+                gl_Position = projectionMatrix *
+                              viewMatrix *
+                              worldPosition;
+            }
+        `,
+
+        fragmentShader: `
+            varying vec3 vLocalPosition;
+            varying vec3 vWorldPosition;
+
+            uniform float uTime;
+            uniform vec3 uColor;
+            uniform float uIntensity;
+
+            float hash(vec3 p) {
+                p = fract(p * 0.3183099 + vec3(0.1, 0.2, 0.3));
+                p *= 17.0;
+                return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
+            }
+
+            float noise(vec3 p) {
+                vec3 i = floor(p);
+                vec3 f = fract(p);
+
+                f = f * f * (3.0 - 2.0 * f);
+
+                float n000 = hash(i + vec3(0.0, 0.0, 0.0));
+                float n100 = hash(i + vec3(1.0, 0.0, 0.0));
+                float n010 = hash(i + vec3(0.0, 1.0, 0.0));
+                float n110 = hash(i + vec3(1.0, 1.0, 0.0));
+
+                float n001 = hash(i + vec3(0.0, 0.0, 1.0));
+                float n101 = hash(i + vec3(1.0, 0.0, 1.0));
+                float n011 = hash(i + vec3(0.0, 1.0, 1.0));
+                float n111 = hash(i + vec3(1.0, 1.0, 1.0));
+
+                float x00 = mix(n000, n100, f.x);
+                float x10 = mix(n010, n110, f.x);
+                float x01 = mix(n001, n101, f.x);
+                float x11 = mix(n011, n111, f.x);
+
+                float y0 = mix(x00, x10, f.y);
+                float y1 = mix(x01, x11, f.y);
+
+                return mix(y0, y1, f.z);
+            }
+
+            void main() {
+                vec3 p = vLocalPosition * 2.2;
+
+                float n1 = noise(p + vec3(0.0, uTime * 0.10, 0.0));
+                float n2 = noise(p * 2.1 + vec3(uTime * 0.07, 0.0, 0.0));
+
+                float density = n1 * 0.65 + n2 * 0.35;
+
+                float radial = length(vLocalPosition);
+                float edgeFade = smoothstep(1.9, 0.55, radial);
+
+                float cloud = smoothstep(0.38, 0.78, density);
+
+                float alpha = cloud * edgeFade * uIntensity;
+
+                vec3 color = uColor;
+                color += vec3(0.16, 0.22, 0.48) * density;
+
+                gl_FragColor = vec4(color, alpha);
+            }
+        `
+    });
+
+    volumetricMesh = new THREE.Mesh(geometry, volumeMaterial);
+    volumetricMesh.position.set(0, 0, -0.15);
+    volumetricMesh.scale.set(1, 1, 1);
+
+    scene.add(volumetricMesh);
+}
+
+/* -------------------------------------------------------
+   FACE MODEL
+------------------------------------------------------- */
+
+function findJawMorphTargets(root) {
+    jawMorphs = [];
+
+    root.traverse((object) => {
+        if (!object.isMesh || !object.morphTargetDictionary) {
+            return;
+        }
+
+        const dictionary = object.morphTargetDictionary;
+        const influences = object.morphTargetInfluences;
+
+        if (!influences) {
+            return;
+        }
+
+        for (const name in dictionary) {
+            const normalizedName = name
+                .toLowerCase()
+                .replace(/[^a-z0-9]/g, "");
+
+            if (
+                normalizedName.includes("jawopen") ||
+                normalizedName.includes("mouthopen") ||
+                normalizedName === "jawdrop"
+            ) {
+                jawMorphs.push({
+                    mesh: object,
+                    index: dictionary[name]
+                });
+            }
+        }
+    });
+}
+
+function centerAndScaleModel(model) {
+    const box = new THREE.Box3().setFromObject(model);
+
+    if (box.isEmpty()) {
+        return;
+    }
+
+    const size = new THREE.Vector3();
+    const center = new THREE.Vector3();
+
+    box.getSize(size);
+    box.getCenter(center);
+
+    model.position.sub(center);
+
+    const maxDimension = Math.max(size.x, size.y, size.z);
+
+    if (maxDimension > 0) {
+        const targetSize = 1.8;
+        const scale = targetSize / maxDimension;
+
+        model.scale.setScalar(scale);
+    }
+
+    // Recenter after scaling.
+    const scaledBox = new THREE.Box3().setFromObject(model);
+    const scaledCenter = new THREE.Vector3();
+
+    scaledBox.getCenter(scaledCenter);
+    model.position.sub(scaledCenter);
+}
+
+function loadFaceModel(url) {
+    const loader = new GLTFLoader();
+
+    setStatus("Loading 3D face");
+
+    loader.load(
+        url,
+
+        (gltf) => {
+            if (faceModel) {
+                scene.remove(faceModel);
+            }
+
+            faceModel = gltf.scene;
+
+            centerAndScaleModel(faceModel);
+            findJawMorphTargets(faceModel);
+
+            faceModel.traverse((object) => {
+                if (!object.isMesh) {
+                    return;
+                }
+
+                object.castShadow = true;
+                object.receiveShadow = true;
+
+                if (object.material) {
+                    object.material.side = THREE.DoubleSide;
+                }
+            });
+
+            scene.add(faceModel);
+
+            controls.target.set(0, 0, 0);
+            camera.position.set(0, 0.15, 3.6);
+            controls.update();
+
+            setStatus("3D face ready");
+
+            if (jawMorphs.length) {
+                setMessage(
+                    `Face loaded. Jaw morph targets found: ${jawMorphs.length}`
+                );
+            } else {
+                setMessage(
+                    "Face loaded. No jaw-open morph target was detected in this model."
+                );
+            }
+        },
+
+        undefined,
+
+        (error) => {
+            console.error("Face model loading failed:", error);
+            setStatus("3D model load failed");
+
+            setMessage(
+                "The default face model could not be loaded. Try uploading your own GLB model."
+            );
+        }
+    );
+}
+
+modelInput.addEventListener("change", () => {
+    const file = modelInput.files?.[0];
+
+    if (!file) {
+        return;
+    }
+
+    const url = URL.createObjectURL(file);
+
+    loadFaceModel(url);
+});
+
+/* -------------------------------------------------------
+   AUDIO ANALYSIS / LIP SYNC
+------------------------------------------------------- */
+
+let audioContext = null;
+let analyser = null;
+let audioSource = null;
+let audioData = null;
+let audioAnalysisReady = false;
+
+function initializeAudioAnalysis() {
+    if (audioAnalysisReady) {
+        return;
+    }
+
+    try {
+        audioContext = new (
+            window.AudioContext ||
+            window.webkitAudioContext
+        )();
+
+        analyser = audioContext.createAnalyser();
+        analyser.fftSize = 1024;
+        analyser.smoothingTimeConstant = 0.72;
+
+        audioSource = audioContext.createMediaElementSource(audio);
+
+        audioSource.connect(analyser);
+        analyser.connect(audioContext.destination);
+
+        audioData = new Uint8Array(analyser.fftSize);
+
+        audioAnalysisReady = true;
+    } catch (error) {
+        console.error("Audio analysis setup failed:", error);
+    }
+}
+
+function getAudioLevel() {
+    if (!analyser || !audioData || audio.paused) {
+        return 0;
+    }
+
+    analyser.getByteTimeDomainData(audioData);
+
+    let sum = 0;
+
+    for (let i = 0; i < audioData.length; i++) {
+        const sample = (audioData[i] - 128) / 128;
+        sum += sample * sample;
+    }
+
+    const rms = Math.sqrt(sum / audioData.length);
+
+    return Math.min(1, rms * 5.0);
+}
+
+function updateJaw(delta) {
+    const audioLevel = getAudioLevel();
+
+    // Smooth the jaw movement to avoid jitter.
+    const targetJaw = audio.paused
+        ? 0
+        : Math.max(0, Math.min(0.8, audioLevel * 0.8));
+
+    jawValue += (targetJaw - jawValue) * Math.min(1, delta * 12);
+
+    for (const morph of jawMorphs) {
+        morph.mesh.morphTargetInfluences[morph.index] = jawValue;
+    }
+}
+
+/* -------------------------------------------------------
+   RESIZE
+------------------------------------------------------- */
+
+function resizeFaceRenderer() {
+    if (!renderer || !camera) {
+        return;
+    }
+
+    const width = Math.max(1, faceContainer.clientWidth);
+    const height = Math.max(1, faceContainer.clientHeight);
+
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(width, height, false);
+}
+
+window.addEventListener("resize", resizeFaceRenderer);
+
+/* -------------------------------------------------------
+   RENDER LOOP
+------------------------------------------------------- */
+
+function animate() {
+    if (!renderer || !scene || !camera) {
+        return;
+    }
+
+    const delta = Math.min(clock.getDelta(), 0.05);
+    const elapsed = clock.elapsedTime;
+
+    if (volumeMaterial) {
+        volumeMaterial.uniforms.uTime.value = elapsed;
+    }
+
+    if (faceModel) {
+        updateJaw(delta);
+
+        // Tiny natural idle movement.
+        if (audio.paused) {
+            faceModel.rotation.y =
+                Math.sin(elapsed * 0.35) * 0.025;
+        } else {
+            faceModel.rotation.y =
+                Math.sin(elapsed * 0.15) * 0.012;
+        }
+    }
+
+    if (volumetricMesh) {
+        volumetricMesh.rotation.y = elapsed * 0.025;
+        volumetricMesh.rotation.x = Math.sin(elapsed * 0.15) * 0.025;
+    }
+
+    controls?.update();
+
+    renderer.render(scene, camera);
+}
+
+/* -------------------------------------------------------
+   START
+------------------------------------------------------- */
+
+try {
+    initThree();
+} catch (error) {
+    console.error(error);
+
+    setStatus("3D initialization failed");
+    setMessage(
+        "Could not initialize Three.js. Check browser WebGL support and the console."
+    );
+}
+</script>
+
+</body>
+</html>

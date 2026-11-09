@@ -1,0 +1,1374 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>T2S Synchronized Reader and 3D Lip Sync</title>
+
+<link rel="icon" href="data:,">
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: var(--jp-layout-color0, #f5f6f8);
+    color: var(--jp-ui-font-color1, #222);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* =========================================================
+   MAIN LAYOUT
+========================================================= */
+
+.t2s-container {
+    width: 100%;
+    max-width: 1500px;
+    margin: 12px auto;
+    padding: 10px;
+}
+
+.t2s-title {
+    margin: 0 0 14px;
+    font-size: 21px;
+    font-weight: 700;
+}
+
+.t2s-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(340px, 0.85fr);
+    gap: 14px;
+    align-items: stretch;
+}
+
+.t2s-reader-panel,
+.t2s-face-panel {
+    min-width: 0;
+    border: 1px solid var(--jp-border-color2, #ccc);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--jp-layout-color1, #fff);
+}
+
+/* =========================================================
+   READER
+========================================================= */
+
+.t2s-reader-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--jp-border-color2, #ddd);
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.t2s-reader {
+    box-sizing: border-box;
+    width: 100%;
+    height: 430px;
+    overflow-y: auto;
+    padding: 22px;
+    background: var(--jp-layout-color1, #fff);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    line-height: 2;
+    overflow-wrap: anywhere;
+    scroll-behavior: auto;
+}
+
+.t2s-word {
+    display: inline;
+    padding: 2px 3px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.t2s-word.active {
+    color: #111;
+    background: #ffdf4d;
+}
+
+.t2s-word.t2s-unsynced {
+    text-decoration: underline dotted;
+    text-decoration-color: #999;
+    text-underline-offset: 4px;
+}
+
+.t2s-reader-footer {
+    padding: 12px 14px;
+    border-top: 1px solid var(--jp-border-color2, #ddd);
+}
+
+/* =========================================================
+   AUDIO AND CONTROLS
+========================================================= */
+
+.t2s-audio {
+    display: block;
+    width: 100%;
+    margin: 0 0 12px;
+}
+
+.t2s-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.t2s-controls button,
+.t2s-controls select {
+    padding: 8px 11px;
+    border: 1px solid var(--jp-border-color2, #ccc);
+    border-radius: 6px;
+    background: var(--jp-layout-color1, #fff);
+    color: var(--jp-ui-font-color1, #222);
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.t2s-controls button:hover,
+.t2s-controls select:hover {
+    background: var(--jp-layout-color2, #eee);
+}
+
+.t2s-controls button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.t2s-controls label {
+    font-size: 12px;
+    margin-left: 3px;
+}
+
+.t2s-font-size {
+    min-width: 42px;
+    text-align: center;
+    font-size: 13px;
+}
+
+.t2s-current-word {
+    min-height: 28px;
+    margin-top: 10px;
+    color: #2676d2;
+    font-size: 18px;
+    font-weight: bold;
+    overflow-wrap: anywhere;
+}
+
+.t2s-reader-status {
+    margin-top: 6px;
+    color: var(--jp-ui-font-color2, #777);
+    font-size: 12px;
+}
+
+/* =========================================================
+   THREE.JS FACE PANEL
+========================================================= */
+
+.t2s-face-panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 550px;
+    background: #10131a;
+    color: white;
+}
+
+.t2s-face-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 16px;
+    border-bottom: 1px solid #343b49;
+    background: #151a23;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.t2s-face-heading small {
+    color: #9eacc0;
+    font-size: 11px;
+    font-weight: normal;
+}
+
+.t2s-face-viewer {
+    position: relative;
+    flex: 1;
+    min-height: 450px;
+    overflow: hidden;
+    background: #10131a;
+}
+
+.t2s-face-viewer canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.t2s-face-overlay {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.t2s-face-word {
+    color: #64b5ff;
+    font-size: 23px;
+    font-weight: bold;
+    text-shadow: 0 2px 5px #000;
+    overflow-wrap: anywhere;
+}
+
+.t2s-face-status {
+    margin-top: 5px;
+    color: #b4c1d3;
+    font-size: 11px;
+    line-height: 1.5;
+    text-shadow: 0 1px 3px #000;
+}
+
+.t2s-volume-bar {
+    width: 100%;
+    height: 5px;
+    margin-top: 9px;
+    border-radius: 5px;
+    background: #343c4b;
+    overflow: hidden;
+}
+
+.t2s-volume-level {
+    width: 0%;
+    height: 100%;
+    background: #35d07f;
+}
+
+.t2s-face-footer {
+    padding: 10px 14px;
+    border-top: 1px solid #343b49;
+    background: #151a23;
+    color: #9eacc0;
+    font-size: 11px;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+    .t2s-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .t2s-face-panel {
+        min-height: 500px;
+    }
+
+    .t2s-face-viewer {
+        min-height: 420px;
+    }
+
+    .t2s-reader {
+        height: 350px;
+    }
+}
+
+@media (max-width: 500px) {
+    .t2s-container {
+        padding: 5px;
+    }
+
+    .t2s-reader {
+        padding: 14px;
+        font-size: 16px;
+    }
+
+    .t2s-controls button,
+    .t2s-controls select {
+        padding: 7px 9px;
+    }
+}
+</style>
+
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.183.0/examples/jsm/"
+    }
+}
+</script>
+
+</head>
+
+<body>
+
+<div class="t2s-container">
+
+    <div class="t2s-title">
+        🎙️ Synchronized TTS Reader + 3D Lip Sync
+    </div>
+
+    <div class="t2s-layout">
+
+        <!-- =============================================
+             LEFT: WORD READER
+        ============================================== -->
+
+        <section class="t2s-reader-panel">
+
+            <div class="t2s-reader-heading">
+                <span>📖 Synchronized Reader</span>
+                <span id="t2sWordCount">__WORD_COUNT__ words</span>
+            </div>
+
+            <div class="t2s-reader" id="t2sReader">
+                __WORDS_HTML__
+            </div>
+
+            <div class="t2s-reader-footer">
+
+                <audio
+                    id="t2sAudio"
+                    class="t2s-audio"
+                    controls
+                    preload="auto">
+
+                    <source
+                        src="data:__AUDIO_MIME__;base64,__AUDIO_BASE64__"
+                        type="__AUDIO_MIME__">
+
+                    Your browser does not support HTML audio.
+                </audio>
+
+                <div class="t2s-controls">
+
+                    <button type="button" id="t2sPrevious">
+                        Previous
+                    </button>
+
+                    <button type="button" id="t2sNext">
+                        Next
+                    </button>
+
+                    <button type="button" id="t2sRepeat">
+                        Repeat Word
+                    </button>
+
+                    <button type="button" id="t2sPlayPause">
+                        Play / Pause
+                    </button>
+
+                    <label for="t2sSpeed">Speed</label>
+
+                    <select id="t2sSpeed" aria-label="Playback speed">
+                        <option value="0.75">0.75x</option>
+                        <option value="0.9">0.9x</option>
+                        <option value="1.0">1.0x</option>
+                        <option value="1.1">1.1x</option>
+                        <option value="1.25">1.25x</option>
+                        <option value="1.5">1.5x</option>
+                    </select>
+
+                    <label for="t2sFontFamily">Font</label>
+
+                    <select id="t2sFontFamily" aria-label="Font family">
+                        <option value="Arial, Helvetica, sans-serif">
+                            Arial
+                        </option>
+
+                        <option value="Georgia, serif">
+                            Georgia
+                        </option>
+
+                        <option value="Verdana, sans-serif">
+                            Verdana
+                        </option>
+
+                        <option value="'Times New Roman', serif">
+                            Times New Roman
+                        </option>
+
+                        <option value="'Trebuchet MS', sans-serif">
+                            Trebuchet MS
+                        </option>
+
+                        <option value="monospace">
+                            Monospace
+                        </option>
+                    </select>
+
+                    <label>Font size</label>
+
+                    <button
+                        type="button"
+                        id="t2sFontDecrease"
+                        aria-label="Decrease font size">
+                        A−
+                    </button>
+
+                    <span class="t2s-font-size" id="t2sFontSize">
+                        18px
+                    </span>
+
+                    <button
+                        type="button"
+                        id="t2sFontIncrease"
+                        aria-label="Increase font size">
+                        A+
+                    </button>
+
+                </div>
+
+                <div class="t2s-current-word" id="t2sCurrentWord">
+                    Ready
+                </div>
+
+                <div class="t2s-reader-status" id="t2sReaderStatus">
+                    Audio and reader are ready.
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- =============================================
+             RIGHT: THREE.JS FACE
+        ============================================== -->
+
+        <section class="t2s-face-panel">
+
+            <div class="t2s-face-heading">
+                <span>🧠 3D Audio Lip Sync</span>
+                <small>Drag to rotate · Scroll to zoom</small>
+            </div>
+
+            <div class="t2s-face-viewer" id="t2sFaceViewer">
+
+                <div class="t2s-face-overlay">
+
+                    <div class="t2s-face-word" id="t2sFaceWord">
+                        Waiting for speech...
+                    </div>
+
+                    <div class="t2s-face-status" id="t2sFaceStatus">
+                        Loading 3D face model...
+                    </div>
+
+                    <div class="t2s-volume-bar">
+                        <div class="t2s-volume-level" id="t2sVolumeLevel"></div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="t2s-face-footer" id="t2sFaceDebug">
+                Loading morph targets...
+            </div>
+
+        </section>
+
+    </div>
+
+</div>
+
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { KTX2Loader } from "three/addons/loaders/KTX2Loader.js";
+import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const audio = document.getElementById("t2sAudio");
+const reader = document.getElementById("t2sReader");
+
+const words = Array.from(
+    reader.querySelectorAll(".t2s-word")
+);
+
+const previousButton = document.getElementById("t2sPrevious");
+const nextButton = document.getElementById("t2sNext");
+const repeatButton = document.getElementById("t2sRepeat");
+const playPauseButton = document.getElementById("t2sPlayPause");
+
+const speedSelect = document.getElementById("t2sSpeed");
+const fontFamilySelect = document.getElementById("t2sFontFamily");
+const fontDecrease = document.getElementById("t2sFontDecrease");
+const fontIncrease = document.getElementById("t2sFontIncrease");
+const fontSizeDisplay = document.getElementById("t2sFontSize");
+
+const currentWordDisplay = document.getElementById("t2sCurrentWord");
+const readerStatus = document.getElementById("t2sReaderStatus");
+
+const faceViewer = document.getElementById("t2sFaceViewer");
+const faceWordDisplay = document.getElementById("t2sFaceWord");
+const faceStatus = document.getElementById("t2sFaceStatus");
+const faceDebug = document.getElementById("t2sFaceDebug");
+const volumeLevel = document.getElementById("t2sVolumeLevel");
+
+/* =========================================================
+   WORD TIMING DATA
+========================================================= */
+
+let currentWordIndex = -1;
+let animationFrame = null;
+
+let repeatStart = null;
+let repeatEnd = null;
+
+let fontSize = 18;
+
+const timedWords = words
+    .map((element, index) => {
+        const startText = element.dataset.start;
+        const endText = element.dataset.end;
+
+        if (startText === "" || endText === "") {
+            element.classList.add("t2s-unsynced");
+            return null;
+        }
+
+        const start = Number(startText);
+        const end = Number(endText);
+
+        if (
+            !Number.isFinite(start) ||
+            !Number.isFinite(end) ||
+            start < 0 ||
+            end <= start
+        ) {
+            element.classList.add("t2s-unsynced");
+            return null;
+        }
+
+        return {
+            element,
+            index,
+            start,
+            end
+        };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.start - b.start);
+
+document.getElementById("t2sWordCount").textContent =
+    `${words.length} words`;
+
+/* =========================================================
+   READER WORD HIGHLIGHTING
+========================================================= */
+
+function clearHighlight() {
+    if (
+        currentWordIndex >= 0 &&
+        currentWordIndex < words.length
+    ) {
+        words[currentWordIndex].classList.remove("active");
+    }
+}
+
+function scrollToWord(element) {
+    const readerRect = reader.getBoundingClientRect();
+    const wordRect = element.getBoundingClientRect();
+
+    const relativeTop = wordRect.top - readerRect.top;
+
+    const targetTop =
+        reader.scrollTop +
+        relativeTop -
+        reader.clientHeight / 2 +
+        wordRect.height / 2;
+
+    reader.scrollTo({
+        top: Math.max(0, targetTop),
+        behavior: "auto"
+    });
+}
+
+function setWord(index, shouldScroll = true) {
+    if (index < 0 || index >= words.length) {
+        return;
+    }
+
+    if (index === currentWordIndex) {
+        if (shouldScroll) {
+            scrollToWord(words[index]);
+        }
+        return;
+    }
+
+    clearHighlight();
+
+    currentWordIndex = index;
+
+    const element = words[index];
+
+    element.classList.add("active");
+
+    const wordText = element.textContent.trim();
+
+    currentWordDisplay.textContent = wordText || "…";
+    faceWordDisplay.textContent = wordText || "…";
+
+    if (shouldScroll) {
+        scrollToWord(element);
+    }
+}
+
+function findWord(time) {
+    if (timedWords.length === 0) {
+        return -1;
+    }
+
+    let low = 0;
+    let high = timedWords.length - 1;
+
+    while (low <= high) {
+        const mid = (low + high) >> 1;
+        const item = timedWords[mid];
+
+        if (time < item.start) {
+            high = mid - 1;
+        } else if (time >= item.end) {
+            low = mid + 1;
+        } else {
+            return item.index;
+        }
+    }
+
+    // During silence, select the next timed word.
+    if (low < timedWords.length) {
+        return timedWords[low].index;
+    }
+
+    return -1;
+}
+
+function getTiming(index) {
+    if (index < 0 || index >= words.length) {
+        return null;
+    }
+
+    const element = words[index];
+
+    const startText = element.dataset.start;
+    const endText = element.dataset.end;
+
+    if (startText === "" || endText === "") {
+        return null;
+    }
+
+    const start = Number(startText);
+    const end = Number(endText);
+
+    if (
+        !Number.isFinite(start) ||
+        !Number.isFinite(end) ||
+        start < 0 ||
+        end <= start
+    ) {
+        return null;
+    }
+
+    return { start, end };
+}
+
+function playFromWord(index) {
+    if (index < 0 || index >= words.length) {
+        return;
+    }
+
+    repeatStart = null;
+    repeatEnd = null;
+
+    const timing = getTiming(index);
+
+    setWord(index);
+
+    if (!timing) {
+        readerStatus.textContent =
+            "This word has no valid audio timestamp.";
+        return;
+    }
+
+    audio.currentTime = timing.start;
+
+    audio.play().catch(error => {
+        console.warn("Audio playback failed:", error);
+        readerStatus.textContent =
+            "Playback requires interaction with the audio player.";
+    });
+}
+
+/* Click words to seek audio. */
+
+words.forEach((word, index) => {
+    word.addEventListener("click", () => {
+        playFromWord(index);
+    });
+});
+
+/* Previous word. */
+
+previousButton.addEventListener("click", () => {
+    const nextIndex =
+        currentWordIndex < 0
+            ? 0
+            : currentWordIndex - 1;
+
+    playFromWord(Math.max(0, nextIndex));
+});
+
+/* Next word. */
+
+nextButton.addEventListener("click", () => {
+    const nextIndex =
+        currentWordIndex < 0
+            ? 0
+            : currentWordIndex + 1;
+
+    playFromWord(
+        Math.min(words.length - 1, nextIndex)
+    );
+});
+
+/* Repeat current word. */
+
+repeatButton.addEventListener("click", () => {
+    if (currentWordIndex < 0) {
+        const index = findWord(audio.currentTime);
+
+        if (index < 0) {
+            readerStatus.textContent =
+                "No timed word is active.";
+            return;
+        }
+
+        currentWordIndex = index;
+    }
+
+    const timing = getTiming(currentWordIndex);
+
+    if (!timing) {
+        readerStatus.textContent =
+            "This word has no valid timestamp.";
+        return;
+    }
+
+    repeatStart = timing.start;
+    repeatEnd = timing.end;
+
+    audio.currentTime = timing.start;
+
+    setWord(currentWordIndex);
+
+    audio.play().catch(error => {
+        console.warn("Audio playback failed:", error);
+    });
+});
+
+/* Play / Pause button. */
+
+playPauseButton.addEventListener("click", () => {
+    if (audio.paused) {
+        audio.play().catch(error => {
+            console.warn("Audio playback failed:", error);
+        });
+    } else {
+        audio.pause();
+    }
+});
+
+/* Playback speed. */
+
+speedSelect.value = "__INITIAL_SPEED__";
+audio.playbackRate = Number(speedSelect.value);
+
+speedSelect.addEventListener("change", () => {
+    audio.playbackRate = Number(speedSelect.value);
+});
+
+/* Font family. */
+
+fontFamilySelect.addEventListener("change", () => {
+    reader.style.fontFamily = fontFamilySelect.value;
+});
+
+/* Font size. */
+
+function updateFontSize() {
+    reader.style.fontSize = fontSize + "px";
+    fontSizeDisplay.textContent = fontSize + "px";
+}
+
+fontDecrease.addEventListener("click", () => {
+    fontSize = Math.max(12, fontSize - 2);
+    updateFontSize();
+});
+
+fontIncrease.addEventListener("click", () => {
+    fontSize = Math.min(48, fontSize + 2);
+    updateFontSize();
+});
+
+updateFontSize();
+
+/* =========================================================
+   AUDIO SYNCHRONIZATION LOOP
+========================================================= */
+
+function syncReaderToAudio() {
+    if (audio.paused || audio.ended) {
+        animationFrame = null;
+        return;
+    }
+
+    const index = findWord(audio.currentTime);
+
+    if (index >= 0) {
+        setWord(index);
+    }
+
+    // Stop at the end of a repeated word.
+    if (
+        repeatEnd !== null &&
+        audio.currentTime >= repeatEnd
+    ) {
+        audio.pause();
+        audio.currentTime = repeatStart;
+
+        repeatStart = null;
+        repeatEnd = null;
+
+        return;
+    }
+
+    animationFrame =
+        requestAnimationFrame(syncReaderToAudio);
+}
+
+function startReaderSync() {
+    if (animationFrame === null) {
+        animationFrame =
+            requestAnimationFrame(syncReaderToAudio);
+    }
+}
+
+function stopReaderSync() {
+    if (animationFrame !== null) {
+        cancelAnimationFrame(animationFrame);
+        animationFrame = null;
+    }
+}
+
+audio.addEventListener("play", () => {
+    playPauseButton.textContent = "Pause";
+    readerStatus.textContent = "Playing...";
+    startReaderSync();
+});
+
+audio.addEventListener("pause", () => {
+    playPauseButton.textContent = "Play";
+    readerStatus.textContent = "Paused.";
+    stopReaderSync();
+});
+
+audio.addEventListener("ended", () => {
+    stopReaderSync();
+
+    repeatStart = null;
+    repeatEnd = null;
+
+    clearHighlight();
+
+    currentWordIndex = -1;
+
+    currentWordDisplay.textContent = "Finished.";
+    faceWordDisplay.textContent = "Finished.";
+
+    playPauseButton.textContent = "Play / Pause";
+    readerStatus.textContent = "Audio finished.";
+});
+
+audio.addEventListener("seeked", () => {
+    const index = findWord(audio.currentTime);
+
+    if (index >= 0) {
+        setWord(index);
+    }
+});
+
+/* =========================================================
+   THREE.JS SCENE
+========================================================= */
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x10131a);
+
+const camera = new THREE.PerspectiveCamera(
+    35,
+    1,
+    0.01,
+    100
+);
+
+camera.position.set(0, 0, 2);
+
+const renderer = new THREE.WebGLRenderer({
+    antialias: true,
+    alpha: false
+});
+
+renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio, 2)
+);
+
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.setSize(
+    faceViewer.clientWidth,
+    faceViewer.clientHeight
+);
+
+faceViewer.appendChild(renderer.domElement);
+
+const controls = new OrbitControls(
+    camera,
+    renderer.domElement
+);
+
+controls.enableDamping = true;
+controls.dampingFactor = 0.06;
+controls.target.set(0, 0, 0);
+
+/* =========================================================
+   LIGHTING
+========================================================= */
+
+scene.add(
+    new THREE.HemisphereLight(
+        0xffffff,
+        0x343b50,
+        2
+    )
+);
+
+const keyLight = new THREE.DirectionalLight(
+    0xffffff,
+    3
+);
+
+keyLight.position.set(2, 3, 4);
+scene.add(keyLight);
+
+const fillLight = new THREE.DirectionalLight(
+    0x8bbcff,
+    1.5
+);
+
+fillLight.position.set(-3, 1, 2);
+scene.add(fillLight);
+
+/* =========================================================
+   LOAD FACE MODEL
+========================================================= */
+
+let faceModel = null;
+let morphMeshes = [];
+let jawMorph = null;
+
+const BASIS_PATH =
+    "https://cdn.jsdelivr.net/npm/three@0.183.0/examples/jsm/libs/basis/";
+
+const ktx2Loader = new KTX2Loader();
+
+ktx2Loader.setTranscoderPath(BASIS_PATH);
+ktx2Loader.detectSupport(renderer);
+
+const loader = new GLTFLoader();
+
+loader.setKTX2Loader(ktx2Loader);
+loader.setMeshoptDecoder(MeshoptDecoder);
+
+loader.load(
+    "https://threejs.org/examples/models/gltf/facecap.glb",
+
+    (gltf) => {
+        faceModel = gltf.scene;
+
+        scene.add(faceModel);
+
+        faceModel.updateMatrixWorld(true);
+
+        morphMeshes = [];
+
+        faceModel.traverse((object) => {
+            if (
+                object.isMesh &&
+                object.morphTargetDictionary &&
+                object.morphTargetInfluences
+            ) {
+                morphMeshes.push(object);
+            }
+        });
+
+        if (morphMeshes.length === 0) {
+            faceStatus.textContent =
+                "Model loaded, but no morph targets were found.";
+
+            faceDebug.textContent =
+                "No morph-target meshes detected.";
+
+            return;
+        }
+
+        jawMorph = findMorph([
+            "jawOpen",
+            "mouthOpen",
+            "jaw_open",
+            "mouth_open"
+        ]);
+
+        if (jawMorph) {
+            faceDebug.textContent =
+                "Jaw morph target: " + jawMorph.name;
+        } else {
+            faceDebug.textContent =
+                "Warning: jaw-open morph target not found.";
+        }
+
+        // Fit the face model into the viewer.
+        const box = new THREE.Box3().setFromObject(faceModel);
+
+        const size = box.getSize(new THREE.Vector3());
+        const center = box.getCenter(new THREE.Vector3());
+
+        faceModel.position.sub(center);
+        faceModel.updateMatrixWorld(true);
+
+        const maxDimension = Math.max(
+            size.x,
+            size.y,
+            size.z
+        );
+
+        const distance =
+            (maxDimension / 2) /
+            Math.tan(
+                THREE.MathUtils.degToRad(camera.fov / 2)
+            );
+
+        camera.position.set(
+            0,
+            0,
+            Math.max(distance * 1.8, 0.5)
+        );
+
+        camera.near = Math.max(distance / 100, 0.001);
+        camera.far = distance * 100;
+
+        camera.updateProjectionMatrix();
+
+        controls.target.set(0, 0, 0);
+        controls.update();
+
+        faceStatus.textContent =
+            "3D face loaded. Play the audio to animate the mouth.";
+    },
+
+    undefined,
+
+    (error) => {
+        console.error("Face model loading error:", error);
+
+        faceStatus.textContent =
+            "Could not load the 3D model. Check internet access.";
+
+        faceDebug.textContent =
+            "GLB loading failed.";
+    }
+);
+
+/* =========================================================
+   MORPH TARGET HELPERS
+========================================================= */
+
+function normalizeMorphName(name) {
+    return String(name)
+        .replace(/^blendShape[._]*/i, "")
+        .replace(/[^a-z0-9]/gi, "")
+        .toLowerCase();
+}
+
+function findMorph(possibleNames) {
+    const wanted = possibleNames.map(normalizeMorphName);
+
+    for (const mesh of morphMeshes) {
+        const dictionary = mesh.morphTargetDictionary;
+
+        for (const [name, index] of Object.entries(dictionary)) {
+            if (wanted.includes(normalizeMorphName(name))) {
+                return {
+                    mesh,
+                    name,
+                    index
+                };
+            }
+        }
+    }
+
+    return null;
+}
+
+function setJaw(amount) {
+    if (!jawMorph) {
+        return;
+    }
+
+    jawMorph.mesh.morphTargetInfluences[jawMorph.index] =
+        THREE.MathUtils.clamp(amount, 0, 1);
+}
+
+function resetMorphs() {
+    for (const mesh of morphMeshes) {
+        mesh.morphTargetInfluences.fill(0);
+    }
+}
+
+/* =========================================================
+   WEB AUDIO API
+========================================================= */
+
+let audioContext = null;
+let analyser = null;
+let audioSource = null;
+let audioData = null;
+
+let currentJaw = 0;
+let targetJaw = 0;
+
+function setupAudioAnalyser() {
+    if (audioContext) {
+        return;
+    }
+
+    const AudioContextClass =
+        window.AudioContext ||
+        window.webkitAudioContext;
+
+    if (!AudioContextClass) {
+        throw new Error(
+            "Web Audio API is not supported by this browser."
+        );
+    }
+
+    audioContext = new AudioContextClass();
+
+    analyser = audioContext.createAnalyser();
+
+    analyser.fftSize = 1024;
+    analyser.smoothingTimeConstant = 0.65;
+
+    audioData = new Uint8Array(analyser.fftSize);
+
+    // Create exactly one source from the shared audio element.
+    audioSource =
+        audioContext.createMediaElementSource(audio);
+
+    audioSource.connect(analyser);
+    analyser.connect(audioContext.destination);
+}
+
+function calculateAudioVolume() {
+    if (
+        !analyser ||
+        audio.paused ||
+        audio.ended
+    ) {
+        targetJaw = 0;
+        return 0;
+    }
+
+    analyser.getByteTimeDomainData(audioData);
+
+    let sum = 0;
+
+    for (let i = 0; i < audioData.length; i++) {
+        const sample =
+            (audioData[i] - 128) / 128;
+
+        sum += sample * sample;
+    }
+
+    const rms = Math.sqrt(
+        sum / audioData.length
+    );
+
+    // RMS threshold and gain for speech movement.
+    const threshold = 0.018;
+    const gain = 7.0;
+
+    const normalized = Math.max(
+        0,
+        (rms - threshold) * gain
+    );
+
+    targetJaw = THREE.MathUtils.clamp(
+        normalized,
+        0,
+        0.85
+    );
+
+    return rms;
+}
+
+/* =========================================================
+   ENABLE WEB AUDIO WHEN PLAYBACK STARTS
+========================================================= */
+
+audio.addEventListener("play", async () => {
+    try {
+        setupAudioAnalyser();
+
+        if (audioContext.state === "suspended") {
+            await audioContext.resume();
+        }
+
+        faceStatus.textContent =
+            "Playing audio and tracking mouth movement.";
+
+    } catch (error) {
+        console.error("Audio analyser setup failed:", error);
+
+        faceStatus.textContent =
+            "Audio lip-sync error: " + error.message;
+    }
+});
+
+/* =========================================================
+   ANIMATION
+========================================================= */
+
+const clock = new THREE.Clock();
+
+function animate() {
+    const delta = Math.min(
+        clock.getDelta(),
+        0.05
+    );
+
+    controls.update();
+
+    let rms = 0;
+
+    if (
+        audioContext &&
+        !audio.paused &&
+        !audio.ended
+    ) {
+        rms = calculateAudioVolume();
+    } else {
+        targetJaw = 0;
+    }
+
+    // Smooth jaw movement.
+    const smoothingSpeed =
+        targetJaw > currentJaw ? 18 : 10;
+
+    const smoothing =
+        1 - Math.exp(-smoothingSpeed * delta);
+
+    currentJaw +=
+        (targetJaw - currentJaw) * smoothing;
+
+    setJaw(currentJaw);
+
+    // Reader highlighting remains synchronized to audio.
+    if (!audio.paused && !audio.ended) {
+        const index = findWord(audio.currentTime);
+
+        if (index >= 0) {
+            setWord(index);
+        }
+    }
+
+    // RMS level indicator.
+    volumeLevel.style.width =
+        Math.min(rms * 400, 100) + "%";
+
+    renderer.render(scene, camera);
+}
+
+renderer.setAnimationLoop(animate);
+
+/* =========================================================
+   RESIZE
+========================================================= */
+
+function resizeFaceViewer() {
+    const width = Math.max(
+        faceViewer.clientWidth,
+        1
+    );
+
+    const height = Math.max(
+        faceViewer.clientHeight,
+        1
+    );
+
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(width, height);
+}
+
+const resizeObserver = new ResizeObserver(() => {
+    resizeFaceViewer();
+});
+
+resizeObserver.observe(faceViewer);
+
+window.addEventListener("resize", resizeFaceViewer);
+
+/* =========================================================
+   CLEANUP
+========================================================= */
+
+window.addEventListener("pagehide", () => {
+    stopReaderSync();
+
+    renderer.setAnimationLoop(null);
+
+    resizeObserver.disconnect();
+
+    controls.dispose();
+
+    ktx2Loader.dispose();
+
+    if (audioContext && audioContext.state !== "closed") {
+        audioContext.close().catch(() => {});
+    }
+
+    renderer.dispose();
+});
+
+</script>
+
+</body>
+</html>
