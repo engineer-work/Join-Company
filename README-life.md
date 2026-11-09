@@ -775,6 +775,8 @@ That’s why rejection feels like a mix of **💔 pain, 😢 sadness, 😡 anger
 |1. Productive Procrastination - Escape Loop Error [Critique](https://engineer-work.github.io/Join-Company/audio/audio_file.html) | [![Watch the video](https://img.youtube.com/vi/N-wd35bUIhc/maxresdefault.jpg)](https://youtu.be/N-wd35bUIhc)|[![Watch the video](https://img.youtube.com/vi/_eJjmWl-yLU/maxresdefault.jpg)](https://youtu.be/_eJjmWl-yLU)|
 | 2. Switch From Learning - from *M* to *R* |[![Watch the video](https://img.youtube.com/vi/ddAHOtXetb0/maxresdefault.jpg)](https://youtu.be/ddAHOtXetb0) |[![Watch the video](https://img.youtube.com/vi/99vAZkCt0fk/maxresdefault.jpg)](https://youtu.be/99vAZkCt0fk) |
 
+[![Watch the video](https://img.youtube.com/vi/6qMctuqYRRM/maxresdefault.jpg)](https://youtu.be/6qMctuqYRRM?si=u6P-9r0klwAdx7V7)
+
 ---
 
 # ChatGPT, Gemini AI help me to find the truth [💸🤑💰  donate](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html)
