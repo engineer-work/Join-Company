@@ -664,8 +664,9 @@ A direct comparison between **DD Returns** and the education/competition system 
 | Survival depends on understanding the game      | Success depends on understanding the system + building skills |
 | [![](https://img.youtube.com/vi/5Qet4r_a3ak/default.jpg)](https://youtu.be/5Qet4r_a3ak)  [![](https://img.youtube.com/vi/WELaTP6ErBg/default.jpg)](https://youtu.be/WELaTP6ErBg) [![](https://img.youtube.com/vi/MC5nObVSYJY/default.jpg)](https://youtu.be/MC5nObVSYJY?si=9Kb0a0ydzL50OMCZ)| [![](https://img.youtube.com/vi/NSHlKY63yiU/default.jpg)](https://youtu.be/NSHlKY63yiU?si=PUlRIbbow6NrZIa6) [![](https://img.youtube.com/vi/op36HPrhCt0/default.jpg)](https://youtu.be/op36HPrhCt0?si=7LhkaTQHEidVqDKG) [![](https://img.youtube.com/vi/0TYGHGRjHNc/default.jpg)](https://youtu.be/0TYGHGRjHNc?si=om9G_iFJusGR86Oi)|
 | [![](https://img.youtube.com/vi/XY_VajurvLE/default.jpg)](https://youtu.be/XY_VajurvLE?si=-7HHShpyzWDs5bl9) [![](https://img.youtube.com/vi/ktuPsWAQgww/default.jpg)](https://youtu.be/ktuPsWAQgww?si=M1dc7uUw8fisqGN-) [![](https://img.youtube.com/vi/CrJFexx5b3o/default.jpg)](https://youtu.be/CrJFexx5b3o?si=uSs6Oe_7Qau4E_jE) | [![](https://img.youtube.com/vi/_qlKFVW2UZc/default.jpg)](https://youtu.be/_qlKFVW2UZc?si=RKFmaIZNVmvbFOgn) [![](https://img.youtube.com/vi/489ahBPK1nU/default.jpg)](https://youtu.be/489ahBPK1nU?si=-S76EK3l3eA_1Ms8) [![](https://img.youtube.com/vi/_ecKPUqvhWk/default.jpg)](https://youtu.be/_ecKPUqvhWk?si=aEOcAuqh9sM5XhmS) |
+| [![](https://img.youtube.com/vi/tCsw72Mx28Y/maxresdefault.jpg)](https://youtu.be/tCsw72Mx28Y?si=zt2PwVy1jn_uToPh) | [![](https://img.youtube.com/vi/MAvmt1xtrkQ/maxresdefault.jpg)](https://youtu.be/MAvmt1xtrkQ?si=G6_0hagW8IADdlIp) |
 
-[![](https://img.youtube.com/vi/tCsw72Mx28Y/maxresdefault.jpg)](https://youtu.be/tCsw72Mx28Y?si=zt2PwVy1jn_uToPh)
+[![](https://img.youtube.com/vi/N2a1J0UPeL4/maxresdefault.jpg)](https://youtu.be/N2a1J0UPeL4?si=5T6dtYOQY_LSNVZG)
 
 ### Core similarity
 
@@ -774,6 +775,8 @@ That’s why rejection feels like a mix of **💔 pain, 😢 sadness, 😡 anger
 | :--- | --- | --- |
 |1. Productive Procrastination - Escape Loop Error [Critique](https://engineer-work.github.io/Join-Company/audio/audio_file.html) | [![Watch the video](https://img.youtube.com/vi/N-wd35bUIhc/maxresdefault.jpg)](https://youtu.be/N-wd35bUIhc)|[![Watch the video](https://img.youtube.com/vi/_eJjmWl-yLU/maxresdefault.jpg)](https://youtu.be/_eJjmWl-yLU)|
 | 2. Switch From Learning - from *M* to *R* |[![Watch the video](https://img.youtube.com/vi/ddAHOtXetb0/maxresdefault.jpg)](https://youtu.be/ddAHOtXetb0) |[![Watch the video](https://img.youtube.com/vi/99vAZkCt0fk/maxresdefault.jpg)](https://youtu.be/99vAZkCt0fk) |
+
+[![Watch the video](https://img.youtube.com/vi/6qMctuqYRRM/maxresdefault.jpg)](https://youtu.be/6qMctuqYRRM?si=u6P-9r0klwAdx7V7)
 
 ---
 
