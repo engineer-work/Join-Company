@@ -1,0 +1,951 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>💔 My Life Experiences — Spin Wheel</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background: radial-gradient(circle at center, #202a43, #090d18 85%);
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+header {
+    text-align: center;
+    padding: 25px 15px 5px;
+}
+
+header h1 {
+    margin: 0;
+    font-size: clamp(25px, 4vw, 38px);
+}
+
+header p {
+    color: #b9c5df;
+    font-size: 16px;
+}
+
+.game {
+    width: min(100%, 1050px);
+    margin: auto;
+    padding: 10px 15px 35px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#wheel-container {
+    width: min(90vw, 620px);
+    height: min(90vw, 620px);
+    position: relative;
+    margin-top: 15px;
+}
+
+#wheel-container canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.pointer {
+    position: absolute;
+    z-index: 5;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 22px solid transparent;
+    border-right: 22px solid transparent;
+    border-top: 48px solid white;
+    filter: drop-shadow(0 3px 5px black);
+}
+
+.controls {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+button {
+    border: none;
+    padding: 14px 28px;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    color: white;
+    background: linear-gradient(135deg, #7357ff, #00b8d9);
+    box-shadow: 0 5px 20px #0007;
+    transition: transform .2s, opacity .2s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+}
+
+button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+#soundBtn {
+    background: #283650;
+}
+
+.result {
+    width: min(95%, 580px);
+    min-height: 135px;
+    text-align: center;
+    padding: 18px;
+    border: 1px solid #455574;
+    border-radius: 18px;
+    background: #151e30;
+    margin: 12px auto;
+}
+
+.result h2 {
+    margin: 5px 0 12px;
+}
+
+.result a {
+    color: #58d9ff;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.result a:hover {
+    text-decoration: underline;
+}
+
+.result small {
+    color: #aebbd4;
+}
+
+.sections {
+    width: min(95%, 850px);
+    margin: 25px auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 10px;
+}
+
+.section {
+    padding: 13px;
+    border-radius: 10px;
+    background: #19243a;
+    border: 1px solid #35445f;
+    color: #eaf0ff;
+    text-decoration: none;
+    transition: .2s;
+}
+
+.section:hover {
+    background: #293b5b;
+    transform: translateY(-2px);
+}
+
+footer {
+    text-align: center;
+    color: #8290a9;
+    padding: 25px;
+    font-size: 13px;
+}
+
+@media(max-width: 500px) {
+
+    .pointer {
+        border-left-width: 17px;
+        border-right-width: 17px;
+        border-top-width: 38px;
+    }
+
+    button {
+        padding: 12px 22px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>💔 My Life Experiences</h1>
+    <p>Spin the wheel and discover a chapter of my life.</p>
+</header>
+
+<main class="game">
+
+    <div id="wheel-container">
+        <div class="pointer"></div>
+    </div>
+
+    <div class="controls">
+        <button id="spinBtn">🎡 SPIN THE WHEEL</button>
+        <button id="soundBtn">🔊 Sound ON</button>
+    </div>
+
+    <div class="result" id="result">
+        <h2>✨ Ready to Spin?</h2>
+        <small>
+            Press the spin button to select a life experience.
+        </small>
+    </div>
+
+    <h2>📚 All 12 Life Experiences</h2>
+
+    <div class="sections" id="sections"></div>
+
+</main>
+
+<footer>
+    My Life Experiences · Three.js 3D Spin Wheel
+</footer>
+
+<script type="module">
+
+import * as THREE from
+'https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js';
+
+// ==================================================
+// 1. LIFE EXPERIENCE DATA
+// ==================================================
+
+const experiences = [
+    { name: "Perspective", emoji: "👁️", color: "#e74c3c" },
+    { name: "Creations", emoji: "🎨", color: "#e67e22" },
+    { name: "Journey", emoji: "🛤️", color: "#f1c40f" },
+    { name: "Justice", emoji: "⚖️", color: "#2ecc71" },
+    { name: "Wealth", emoji: "💰", color: "#1abc9c" },
+    { name: "Integrity", emoji: "🤝", color: "#3498db" },
+    { name: "Accountability", emoji: "🛡️", color: "#5b6ee1" },
+    { name: "Identity", emoji: "🪪", color: "#9b59b6" },
+    { name: "Uncertainty", emoji: "❓", color: "#d946ef" },
+    { name: "Complexity", emoji: "🧩", color: "#e84393" },
+    { name: "Awakening", emoji: "🌅", color: "#ff8c42" },
+    { name: "Resilience", emoji: "💪", color: "#16a085" }
+];
+
+const count = experiences.length;
+const slice = Math.PI * 2 / count;
+
+function sectionURL(index) {
+    return `https://engineer-work.github.io/Join-Company/my_personal_life_pain/section${index + 1}.html`;
+}
+
+// ==================================================
+// 2. CREATE SECTION LINKS
+// ==================================================
+
+const sectionList = document.getElementById("sections");
+
+experiences.forEach((item, index) => {
+
+    const a = document.createElement("a");
+
+    a.className = "section";
+    a.href = sectionURL(index);
+
+    a.textContent =
+        `${index + 1}. ${item.emoji} ${item.name}`;
+
+    sectionList.appendChild(a);
+
+});
+
+// ==================================================
+// 3. THREE.JS SCENE
+// ==================================================
+
+const container =
+    document.getElementById("wheel-container");
+
+const scene = new THREE.Scene();
+
+const camera = new THREE.PerspectiveCamera(
+    45,
+    1,
+    0.1,
+    100
+);
+
+camera.position.set(0, 0, 9);
+
+const renderer = new THREE.WebGLRenderer({
+    antialias: true,
+    alpha: true
+});
+
+renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio, 2)
+);
+
+renderer.setSize(
+    container.clientWidth,
+    container.clientHeight
+);
+
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+container.appendChild(renderer.domElement);
+
+// ==================================================
+// 4. LIGHTING
+// ==================================================
+
+scene.add(
+    new THREE.AmbientLight(0xffffff, 2)
+);
+
+const light = new THREE.PointLight(
+    0xffffff,
+    30
+);
+
+light.position.set(0, 0, 8);
+
+scene.add(light);
+
+// ==================================================
+// 5. WHEEL GROUP
+// ==================================================
+
+const wheel = new THREE.Group();
+
+scene.add(wheel);
+
+const radius = 3.2;
+
+const backing = new THREE.Mesh(
+    new THREE.CylinderGeometry(
+        radius,
+        radius,
+        0.25,
+        128
+    ),
+    new THREE.MeshStandardMaterial({
+        color: 0x101a2c,
+        metalness: 0.7,
+        roughness: 0.25
+    })
+);
+
+backing.rotation.x = Math.PI / 2;
+
+wheel.add(backing);
+
+// ==================================================
+// 6. WHEEL SECTORS
+// ==================================================
+
+const sectorGroup = new THREE.Group();
+
+wheel.add(sectorGroup);
+
+const sectorRadius = radius - 0.08;
+
+experiences.forEach((item, index) => {
+
+    const start = index * slice;
+    const end = start + slice;
+
+    const shape = new THREE.Shape();
+
+    shape.moveTo(0, 0);
+
+    shape.lineTo(
+        sectorRadius * Math.cos(start),
+        sectorRadius * Math.sin(start)
+    );
+
+    shape.absarc(
+        0,
+        0,
+        sectorRadius,
+        start,
+        end,
+        false
+    );
+
+    shape.lineTo(0, 0);
+
+    const geometry = new THREE.ShapeGeometry(
+        shape,
+        32
+    );
+
+    const material = new THREE.MeshStandardMaterial({
+        color: item.color,
+        side: THREE.DoubleSide,
+        roughness: 0.42,
+        metalness: 0.15
+    });
+
+    const sector = new THREE.Mesh(
+        geometry,
+        material
+    );
+
+    sector.position.z = 0.17;
+
+    sectorGroup.add(sector);
+
+    // ----------------------------------------------
+    // READABLE RADIAL LABELS
+    // ----------------------------------------------
+
+    const angle = start + slice / 2;
+
+    const labelRadius = 2.05;
+
+    const label = makeLabel(
+        `${item.emoji} ${item.name}`
+    );
+
+    label.position.set(
+        labelRadius * Math.cos(angle),
+        labelRadius * Math.sin(angle),
+        0.23
+    );
+
+    // Keep text upright on both sides.
+    let textRotation = angle;
+
+    if (
+        angle > Math.PI / 2 &&
+        angle < 3 * Math.PI / 2
+    ) {
+        textRotation += Math.PI;
+    }
+
+    label.rotation.z = textRotation;
+
+    sectorGroup.add(label);
+
+});
+
+// ==================================================
+// 7. LABEL TEXT GENERATOR
+// ==================================================
+
+function makeLabel(text) {
+
+    const canvas = document.createElement("canvas");
+
+    canvas.width = 1024;
+    canvas.height = 180;
+
+    const ctx = canvas.getContext("2d");
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    // Dynamically fit the text.
+    let fontSize = 180;
+
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    do {
+
+        ctx.font = `bold ${fontSize}px Arial`;
+
+        if (
+            ctx.measureText(text).width <= 970
+        ) {
+            break;
+        }
+
+        fontSize -= 2;
+
+    } while (fontSize > 28);
+
+    ctx.font = `bold ${fontSize}px Arial`;
+
+    ctx.fillStyle = "#ffffff";
+
+    ctx.shadowColor = "#000000";
+    ctx.shadowBlur = 8;
+    ctx.shadowOffsetX = 2;
+    ctx.shadowOffsetY = 2;
+
+    ctx.fillText(
+        text,
+        canvas.width / 2,
+        canvas.height / 2
+    );
+
+    const texture = new THREE.CanvasTexture(canvas);
+
+    texture.colorSpace = THREE.SRGBColorSpace;
+
+    texture.anisotropy =
+        renderer.capabilities.getMaxAnisotropy();
+
+    const material = new THREE.MeshBasicMaterial({
+        map: texture,
+        transparent: true,
+        side: THREE.DoubleSide,
+        depthWrite: false,
+        toneMapped: false
+    });
+
+    const geometry = new THREE.PlaneGeometry(
+        2.0,
+        0.36
+    );
+
+    return new THREE.Mesh(
+        geometry,
+        material
+    );
+}
+
+// ==================================================
+// 8. CENTER HUB
+// ==================================================
+
+const hub = new THREE.Mesh(
+    new THREE.CylinderGeometry(
+        0.48,
+        0.48,
+        0.32,
+        64
+    ),
+    new THREE.MeshStandardMaterial({
+        color: 0xffffff,
+        metalness: 0.8,
+        roughness: 0.2
+    })
+);
+
+hub.rotation.x = Math.PI / 2;
+
+hub.position.z = 0.3;
+
+wheel.add(hub);
+
+// Center text
+
+const hubCanvas = document.createElement("canvas");
+
+hubCanvas.width = 256;
+hubCanvas.height = 128;
+
+const hubCtx = hubCanvas.getContext("2d");
+
+hubCtx.fillStyle = "#101827";
+hubCtx.font = "bold 48px Arial";
+hubCtx.textAlign = "center";
+hubCtx.textBaseline = "middle";
+
+hubCtx.fillText("LIFE", 128, 64);
+
+const hubTexture = new THREE.CanvasTexture(hubCanvas);
+
+const hubText = new THREE.Mesh(
+    new THREE.PlaneGeometry(0.8, 0.4),
+    new THREE.MeshBasicMaterial({
+        map: hubTexture,
+        transparent: true,
+        toneMapped: false
+    })
+);
+
+hubText.position.z = 0.51;
+
+wheel.add(hubText);
+
+// ==================================================
+// 9. OUTER GOLD RING
+// ==================================================
+
+const ring = new THREE.Mesh(
+    new THREE.TorusGeometry(
+        radius,
+        0.09,
+        16,
+        128
+    ),
+    new THREE.MeshStandardMaterial({
+        color: 0xffd166,
+        metalness: 0.8,
+        roughness: 0.2
+    })
+);
+
+ring.position.z = 0.12;
+
+wheel.add(ring);
+
+// ==================================================
+// 10. AUDIO SYSTEM
+// ==================================================
+
+let audioContext = null;
+
+let soundEnabled = true;
+
+function initAudio() {
+
+    if (!audioContext) {
+
+        audioContext = new (
+            window.AudioContext ||
+            window.webkitAudioContext
+        )();
+
+    }
+
+    if (audioContext.state === "suspended") {
+        audioContext.resume();
+    }
+}
+
+function playTone(
+    frequency,
+    duration = 0.08,
+    type = "sine",
+    volume = 0.15
+) {
+
+    if (!soundEnabled || !audioContext) return;
+
+    const oscillator =
+        audioContext.createOscillator();
+
+    const gain =
+        audioContext.createGain();
+
+    oscillator.type = type;
+
+    oscillator.frequency.value = frequency;
+
+    gain.gain.setValueAtTime(
+        volume,
+        audioContext.currentTime
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+        0.001,
+        audioContext.currentTime + duration
+    );
+
+    oscillator.connect(gain);
+
+    gain.connect(audioContext.destination);
+
+    oscillator.start();
+
+    oscillator.stop(
+        audioContext.currentTime + duration
+    );
+
+}
+
+function tickSound() {
+
+    playTone(
+        700,
+        0.045,
+        "square",
+        0.055
+    );
+
+}
+
+function winnerSound() {
+
+    playTone(523.25, 0.3, "sine", 0.16);
+
+    setTimeout(() => {
+        playTone(659.25, 0.3, "sine", 0.16);
+    }, 150);
+
+    setTimeout(() => {
+        playTone(783.99, 0.45, "sine", 0.16);
+    }, 300);
+
+    setTimeout(() => {
+        playTone(1046.5, 0.6, "sine", 0.16);
+    }, 450);
+
+}
+
+// ==================================================
+// 11. SPIN SYSTEM
+// ==================================================
+
+const spinBtn =
+    document.getElementById("spinBtn");
+
+const result =
+    document.getElementById("result");
+
+const soundBtn =
+    document.getElementById("soundBtn");
+
+let spinning = false;
+
+let currentRotation = 0;
+
+let animationStart = null;
+
+let startRotation = 0;
+
+let targetRotation = 0;
+
+const spinDuration = 6500;
+
+let previousTick = -1;
+
+let winningIndex = -1;
+
+const pointerAngle = Math.PI / 2;
+
+// ==================================================
+// 12. RANDOM WINNER CALCULATION
+// ==================================================
+
+function spinWheel() {
+
+    if (spinning) return;
+
+    initAudio();
+
+    spinning = true;
+
+    spinBtn.disabled = true;
+
+    result.innerHTML = `
+        <h2>🎡 The wheel is spinning...</h2>
+        <small>Let's discover a life experience!</small>
+    `;
+
+    startRotation = currentRotation;
+
+    winningIndex = Math.floor(
+        Math.random() * count
+    );
+
+    // Center of the selected sector.
+    const selectedCenter =
+        (winningIndex + 0.5) * slice;
+
+    const desiredRotation =
+        pointerAngle - selectedCenter;
+
+    const currentMod = (
+        currentRotation % (Math.PI * 2) +
+        Math.PI * 2
+    ) % (Math.PI * 2);
+
+    const desiredMod = (
+        desiredRotation % (Math.PI * 2) +
+        Math.PI * 2
+    ) % (Math.PI * 2);
+
+    const extraRotation = (
+        desiredMod - currentMod + Math.PI * 2
+    ) % (Math.PI * 2);
+
+    // Six complete rotations before stopping.
+    targetRotation =
+        currentRotation +
+        Math.PI * 2 * 6 +
+        extraRotation;
+
+    animationStart = performance.now();
+
+    previousTick = -1;
+
+}
+
+// ==================================================
+// 13. ANIMATION
+// ==================================================
+
+function easeOut(t) {
+
+    return 1 - Math.pow(1 - t, 5);
+
+}
+
+function animate(time) {
+
+    requestAnimationFrame(animate);
+
+    if (
+        spinning &&
+        animationStart !== null
+    ) {
+
+        const elapsed =
+            time - animationStart;
+
+        const progress = Math.min(
+            elapsed / spinDuration,
+            1
+        );
+
+        const eased = easeOut(progress);
+
+        currentRotation =
+            startRotation +
+            (targetRotation - startRotation) * eased;
+
+        wheel.rotation.z = currentRotation;
+
+        // Ticking sound at each sector transition.
+        const tickPosition = Math.floor(
+            currentRotation / slice
+        );
+
+        if (tickPosition !== previousTick) {
+
+            tickSound();
+
+            previousTick = tickPosition;
+
+        }
+
+        // Finish spinning.
+        if (progress >= 1) {
+
+            spinning = false;
+
+            animationStart = null;
+
+            currentRotation = targetRotation;
+
+            wheel.rotation.z = currentRotation;
+
+            showWinner(winningIndex);
+
+        }
+
+    }
+
+    // Gentle idle animation.
+    if (!spinning) {
+
+        wheel.rotation.x =
+            Math.sin(time * 0.0005) * 0.015;
+
+    }
+
+    renderer.render(scene, camera);
+
+}
+
+requestAnimationFrame(animate);
+
+// ==================================================
+// 14. SHOW WINNER
+// ==================================================
+
+function showWinner(index) {
+
+    const item = experiences[index];
+
+    winnerSound();
+
+    result.innerHTML = `
+        <h2>🎉 Selected Experience!</h2>
+
+        <h2>
+            ${item.emoji} ${item.name}
+        </h2>
+
+        <a href="${sectionURL(index)}">
+            📖 Open ${item.name} Section →
+        </a>
+
+        <br><br>
+
+        <small>
+            Section ${index + 1} of 12
+        </small>
+    `;
+
+    spinBtn.disabled = false;
+
+}
+
+// ==================================================
+// 15. BUTTON EVENTS
+// ==================================================
+
+spinBtn.addEventListener(
+    "click",
+    spinWheel
+);
+
+soundBtn.addEventListener(
+    "click",
+    () => {
+
+        soundEnabled = !soundEnabled;
+
+        soundBtn.textContent = soundEnabled
+            ? "🔊 Sound ON"
+            : "🔇 Sound OFF";
+
+        if (soundEnabled) {
+
+            initAudio();
+
+            playTone(700, 0.1);
+
+        }
+
+    }
+);
+
+// ==================================================
+// 16. RESPONSIVE RESIZING
+// ==================================================
+
+function resize() {
+
+    const width = container.clientWidth;
+
+    const height = container.clientHeight;
+
+    camera.aspect = width / height;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(width, height);
+
+}
+
+window.addEventListener(
+    "resize",
+    resize
+);
+
+resize();
+
+</script>
+
+</body>
+</html>
