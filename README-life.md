@@ -666,6 +666,7 @@ A direct comparison between **DD Returns** and the education/competition system 
 | [![](https://img.youtube.com/vi/XY_VajurvLE/default.jpg)](https://youtu.be/XY_VajurvLE?si=-7HHShpyzWDs5bl9) [![](https://img.youtube.com/vi/ktuPsWAQgww/default.jpg)](https://youtu.be/ktuPsWAQgww?si=M1dc7uUw8fisqGN-) [![](https://img.youtube.com/vi/CrJFexx5b3o/default.jpg)](https://youtu.be/CrJFexx5b3o?si=uSs6Oe_7Qau4E_jE) | [![](https://img.youtube.com/vi/_qlKFVW2UZc/default.jpg)](https://youtu.be/_qlKFVW2UZc?si=RKFmaIZNVmvbFOgn) [![](https://img.youtube.com/vi/489ahBPK1nU/default.jpg)](https://youtu.be/489ahBPK1nU?si=-S76EK3l3eA_1Ms8) [![](https://img.youtube.com/vi/_ecKPUqvhWk/default.jpg)](https://youtu.be/_ecKPUqvhWk?si=aEOcAuqh9sM5XhmS) |
 | [![](https://img.youtube.com/vi/tCsw72Mx28Y/maxresdefault.jpg)](https://youtu.be/tCsw72Mx28Y?si=zt2PwVy1jn_uToPh) | [![](https://img.youtube.com/vi/MAvmt1xtrkQ/maxresdefault.jpg)](https://youtu.be/MAvmt1xtrkQ?si=G6_0hagW8IADdlIp) |
 
+[![](https://img.youtube.com/vi/N2a1J0UPeL4/maxresdefault.jpg)](https://youtu.be/N2a1J0UPeL4?si=5T6dtYOQY_LSNVZG)
 
 ### Core similarity
 
