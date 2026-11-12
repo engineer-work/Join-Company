@@ -49,6 +49,8 @@ A direct comparison between **DD Returns** and the education/competition system 
 |   [![](https://img.youtube.com/vi/1_iv-S02hJ0/maxresdefault.jpg)](https://youtu.be/1_iv-S02hJ0?si=B0SJGhxQe063zg_c) | [![](https://img.youtube.com/vi/BdIGxeGz4wA/maxresdefault.jpg)](https://youtu.be/BdIGxeGz4wA?si=8nVwhUHEowGOJEuL) |
 
 
+[![](https://img.youtube.com/vi/ws8PuCIAVzQ/maxresdefault.jpg)](https://youtu.be/ws8PuCIAVzQ?si=QOgDLncZBpPmC9w7)
+
 ---
 
 # Did Exam is Required for Human Species? 
