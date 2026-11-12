@@ -47,7 +47,7 @@ A direct comparison between **DD Returns** and the education/competition system 
 | [![](https://img.youtube.com/vi/N2a1J0UPeL4/maxresdefault.jpg)](https://youtu.be/N2a1J0UPeL4?si=5T6dtYOQY_LSNVZG) | [![](https://img.youtube.com/vi/hosmln0I82A/maxresdefault.jpg)](https://youtu.be/hosmln0I82A?si=dcp4aUOZRIQ1kr_v) |
 | [![](https://img.youtube.com/vi/tCsw72Mx28Y/maxresdefault.jpg)](https://youtu.be/tCsw72Mx28Y?si=zt2PwVy1jn_uToPh) | [![](https://img.youtube.com/vi/MAvmt1xtrkQ/maxresdefault.jpg)](https://youtu.be/MAvmt1xtrkQ?si=G6_0hagW8IADdlIp) |
 |   [![](https://img.youtube.com/vi/1_iv-S02hJ0/maxresdefault.jpg)](https://youtu.be/1_iv-S02hJ0?si=B0SJGhxQe063zg_c) | [![](https://img.youtube.com/vi/BdIGxeGz4wA/maxresdefault.jpg)](https://youtu.be/BdIGxeGz4wA?si=8nVwhUHEowGOJEuL) |
-
+|  [![](https://img.youtube.com/vi/UAkQhCV2v_o/maxresdefault.jpg)](https://youtu.be/UAkQhCV2v_o?si=kGcXI3x-Db2SnVcE)  | [![](https://img.youtube.com/vi/YovHdlRN7VM/maxresdefault.jpg)](https://youtu.be/YovHdlRN7VM?si=jW80wGpQTFlD5xZR) |
 
 [![](https://img.youtube.com/vi/ws8PuCIAVzQ/maxresdefault.jpg)](https://youtu.be/ws8PuCIAVzQ?si=QOgDLncZBpPmC9w7)
 
