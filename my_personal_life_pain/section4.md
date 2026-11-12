@@ -1,6 +1,8 @@
 
 
-# I vote only for NOTA  [💸🤑💰](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html)
+# I vote only for NOTA ("None of the Above")   [💸🤑💰](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html)
+
+![](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzPWn-Hhtfm-b3BOPbVMwJPcaCwoHc_qVknldvyN33PA&s=10)
 
 > Two different statement for my point view, but,It look like same. [💸🤑💰 donate](https://engineer-e.github.io/Nvidia-Learning/donate/donate.html)
 
